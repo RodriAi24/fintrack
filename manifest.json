@@ -1,0 +1,21 @@
+{
+  "name": "FinTrack",
+  "short_name": "FinTrack",
+  "description": "Tus finanzas bajo control",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a1218",
+  "theme_color": "#0a1218",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
