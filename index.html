@@ -958,23 +958,65 @@
 
         /* Balance section specific */
         .balance-hero {
-            text-align: center;
-            padding: 20px 16px
+            padding: 16px 16px 8px
         }
 
         .balance-hero-label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: var(--ink3);
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 8px
+            margin-bottom: 10px;
+            text-align: center
+        }
+
+        .balance-hero-row {
+            display: flex;
+            gap: 10px
+        }
+
+        .balance-hero-card {
+            flex: 1;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--rsm);
+            padding: 16px;
+            text-align: center;
+            position: relative;
+            overflow: hidden
+        }
+
+        .balance-hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px
+        }
+
+        .balance-hero-card.ars::before {
+            background: var(--accent)
+        }
+
+        .balance-hero-card.usd::before {
+            background: var(--green)
+        }
+
+        .balance-hero-currency {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--ink3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px
         }
 
         .balance-hero-value {
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 42px;
-            letter-spacing: 2px
+            font-size: 26px;
+            letter-spacing: 1px
         }
 
         /* Savings */
@@ -1656,6 +1698,348 @@
             padding: 0 16px;
             border: none
         }
+
+        /* === BUDGETS === */
+        .budget-list {
+            padding: 0 16px
+        }
+
+        .budget-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--rsm);
+            padding: 14px 16px;
+            margin-bottom: 8px
+        }
+
+        .budget-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px
+        }
+
+        .budget-top-left {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .budget-cat-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-dim);
+            color: var(--accent)
+        }
+
+        .budget-cat-icon svg {
+            width: 16px;
+            height: 16px
+        }
+
+        .budget-cat-name {
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .budget-amounts {
+            font-size: 11px;
+            color: var(--ink3);
+            text-align: right
+        }
+
+        .budget-amounts strong {
+            color: var(--ink2)
+        }
+
+        .budget-bar-wrap {
+            height: 8px;
+            background: var(--surface);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 4px
+        }
+
+        .budget-bar-inner {
+            height: 100%;
+            border-radius: 4px;
+            transition: width .5s var(--ease)
+        }
+
+        .budget-bar-inner.ok {
+            background: var(--green)
+        }
+
+        .budget-bar-inner.warn {
+            background: var(--yellow)
+        }
+
+        .budget-bar-inner.over {
+            background: var(--red)
+        }
+
+        .budget-pct {
+            font-size: 10px;
+            font-weight: 600;
+            text-align: right
+        }
+
+        .budget-pct.ok {
+            color: var(--green)
+        }
+
+        .budget-pct.warn {
+            color: var(--yellow)
+        }
+
+        .budget-pct.over {
+            color: var(--red)
+        }
+
+        /* Home alert cards */
+        .home-alerts {
+            padding: 0 16px 8px
+        }
+
+        .alert-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: var(--rsm);
+            margin-bottom: 6px;
+            border: 1px solid
+        }
+
+        .alert-card.warn {
+            background: var(--yellow-dim);
+            border-color: rgba(255, 215, 64, 0.2)
+        }
+
+        .alert-card.over {
+            background: var(--red-dim);
+            border-color: rgba(255, 82, 82, 0.2)
+        }
+
+        .alert-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px
+        }
+
+        .alert-card.warn .alert-icon {
+            background: rgba(255, 215, 64, 0.15);
+            color: var(--yellow)
+        }
+
+        .alert-card.over .alert-icon {
+            background: rgba(255, 82, 82, 0.15);
+            color: var(--red)
+        }
+
+        .alert-text {
+            font-size: 11px;
+            font-weight: 500;
+            line-height: 1.4
+        }
+
+        .alert-card.warn .alert-text {
+            color: var(--yellow)
+        }
+
+        .alert-card.over .alert-text {
+            color: var(--red)
+        }
+
+        /* === YIELDS === */
+        .yield-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: var(--green-dim);
+            color: var(--green)
+        }
+
+        .yield-info {
+            font-size: 10px;
+            color: var(--green);
+            margin-top: 2px
+        }
+
+        .yield-config {
+            margin: 0 16px 12px;
+            padding: 14px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--rsm)
+        }
+
+        .yield-config-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: var(--ink2);
+            margin-bottom: 10px
+        }
+
+        .yield-summary {
+            display: flex;
+            gap: 10px;
+            padding: 0 16px 12px
+        }
+
+        .yield-summary-card {
+            flex: 1;
+            background: var(--card);
+            border: 1px solid var(--green-dim);
+            border-radius: var(--rsm);
+            padding: 12px;
+            text-align: center
+        }
+
+        .yield-summary-label {
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--green);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px
+        }
+
+        .yield-summary-val {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18px;
+            color: var(--green)
+        }
+
+        /* Income yield config card */
+        .income-yield-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--rsm);
+            padding: 14px 16px;
+            margin: 0 16px 8px
+        }
+
+        .income-yield-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px
+        }
+
+        .income-yield-title {
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .income-yield-toggle {
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--ink3);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer
+        }
+
+        .income-yield-toggle.active {
+            background: var(--green-dim);
+            color: var(--green);
+            border-color: var(--green)
+        }
+
+        /* Conversion display */
+        .saving-converted {
+            font-size: 10px;
+            color: var(--accent);
+            margin-top: 2px
+        }
+
+        .convert-btn {
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--ink3);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px
+        }
+
+        .convert-btn:active {
+            background: var(--card2);
+            color: var(--accent)
+        }
+
+        /* Conversion widget in home */
+        .converter-widget {
+            margin: 0 16px 12px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--rsm);
+            padding: 14px
+        }
+
+        .converter-row {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            margin-bottom: 8px
+        }
+
+        .converter-row .form-group {
+            margin: 0;
+            flex: 1
+        }
+
+        .converter-row .form-input {
+            padding: 10px 12px;
+            font-size: 13px
+        }
+
+        .converter-row .form-label {
+            font-size: 9px
+        }
+
+        .converter-result {
+            text-align: center;
+            padding: 10px;
+            background: var(--bg);
+            border-radius: var(--rxs);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            color: var(--accent);
+            letter-spacing: 1px
+        }
+
+        .converter-result-sub {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            color: var(--ink3);
+            font-weight: 400;
+            letter-spacing: 0
+        }
     </style>
 </head>
 
@@ -1710,11 +2094,43 @@
                 <div class="home-subtitle">Tus finanzas bajo control</div>
             </div>
 
+            <div class="home-alerts" id="homeAlerts"></div>
+
             <div class="stitle">BALANCE RÁPIDO</div>
             <div class="home-balance" id="homeBalance"></div>
 
             <div class="stitle">COTIZACIONES</div>
             <div class="watchlist" id="homeWatchlist"></div>
+
+            <div class="stitle">CONVERTIR</div>
+            <div class="converter-widget" id="converterWidget">
+                <div class="converter-row">
+                    <div class="form-group">
+                        <label class="form-label">Monto</label>
+                        <input type="text" class="form-input" id="convAmount" placeholder="1000" inputmode="decimal"
+                            oninput="runConversion()">
+                    </div>
+                    <div class="form-group" style="flex:0.8">
+                        <label class="form-label">De</label>
+                        <select class="form-input" id="convFrom" onchange="runConversion()">
+                            <option value="USD">USD</option>
+                            <option value="ARS">ARS</option>
+                            <option value="BTC">BTC</option>
+                            <option value="ETH">ETH</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:0.8">
+                        <label class="form-label">A</label>
+                        <select class="form-input" id="convTo" onchange="runConversion()">
+                            <option value="ARS">ARS</option>
+                            <option value="USD">USD</option>
+                            <option value="BTC">BTC</option>
+                            <option value="ETH">ETH</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="converter-result" id="convResult">—</div>
+            </div>
 
             <div class="stitle">SECCIONES</div>
             <div class="home-grid">
@@ -1752,6 +2168,7 @@
                 <button class="sub-tab active" onclick="switchSubTab('gastos','resumen',this)">Resumen</button>
                 <button class="sub-tab" onclick="switchSubTab('gastos','historial',this)">Historial</button>
                 <button class="sub-tab" onclick="switchSubTab('gastos','graficos',this)">Gráficos</button>
+                <button class="sub-tab" onclick="switchSubTab('gastos','presupuestos',this)">Presupuestos</button>
             </div>
 
             <!-- Gastos Resumen -->
@@ -1809,6 +2226,16 @@
                         <canvas id="gastosLineChart"></canvas>
                     </div>
                 </div>
+            </div>
+
+            <!-- Gastos Presupuestos -->
+            <div id="gastos-presupuestos" style="display:none">
+                <div class="budget-list" id="budgetList"></div>
+                <button class="btn-submit"
+                    style="background:var(--accent);box-shadow:0 4px 16px var(--accent-dim);margin-top:8px"
+                    onclick="openBudgetModal()">
+                    AGREGAR PRESUPUESTO
+                </button>
             </div>
         </div>
 
@@ -1911,8 +2338,8 @@
             <div class="form-row">
                 <div class="form-group" style="flex:2">
                     <label class="form-label">Monto</label>
-                    <input type="number" class="form-input" id="regAmount" placeholder="0.00" step="0.01"
-                        inputmode="decimal">
+                    <input type="text" class="form-input" id="regAmount" placeholder="0.00" inputmode="decimal"
+                        pattern="[0-9]*[.,]?[0-9]*">
                 </div>
                 <div class="form-group" style="flex:1">
                     <label class="form-label">Moneda</label>
@@ -1966,6 +2393,8 @@
             </div>
             <div class="stitle">DETALLE POR CATEGORÍA</div>
             <div id="balanceBreakdown"></div>
+            <div class="stitle" style="margin-top:16px">RENDIMIENTOS DE INGRESOS</div>
+            <div id="incomeYieldConfig"></div>
         </div>
 
         <!-- PAGE: AHORROS -->
@@ -1994,9 +2423,36 @@
                 <button class="back-btn" onclick="goPage('home')">←</button>
                 <div class="back-title">CONFIG<span style="color:var(--accent)">URACIÓN</span></div>
             </div>
+
+            <div class="stitle">DATOS</div>
+            <div style="padding:0 16px 8px">
+                <button class="btn-submit"
+                    style="background:var(--accent);box-shadow:0 4px 16px var(--accent-dim);margin:0 0 8px;width:100%"
+                    onclick="exportData('json')">EXPORTAR BACKUP (JSON)</button>
+                <button class="btn-submit"
+                    style="background:var(--surface);box-shadow:none;border:1px solid var(--border);margin:0 0 8px;width:100%"
+                    onclick="exportData('csv')">EXPORTAR CSV</button>
+                <button class="btn-submit"
+                    style="background:var(--surface);box-shadow:none;border:1px solid var(--border);margin:0 0 8px;width:100%"
+                    onclick="document.getElementById('importInput2').click()">IMPORTAR BACKUP (JSON)</button>
+                <input type="file" id="importInput2" accept=".json" style="display:none" onchange="importData(event)">
+            </div>
+
+            <div class="stitle">ZONA DE PELIGRO</div>
+            <div style="padding:0 16px">
+                <button class="btn-submit"
+                    style="background:var(--red-dim);color:var(--red);box-shadow:none;border:1px solid var(--red-dim);margin:0;width:100%"
+                    onclick="resetData()">BORRAR TODOS LOS DATOS</button>
+            </div>
+
+            <div class="stitle" style="margin-top:24px">INFO</div>
             <div class="ft-card">
-                <div style="font-size:14px;color:var(--ink2);line-height:1.6">
-                    Próximamente: categorías custom, presupuestos por categoría, preferencias de moneda, y más.
+                <div style="font-size:12px;color:var(--ink3);line-height:1.8">
+                    <strong style="color:var(--ink2)">FinTrack v4</strong><br>
+                    App de finanzas personales<br>
+                    Datos guardados localmente (localStorage)<br>
+                    APIs: DolarApi.com · CoinGecko<br>
+                    Hecho con Claude AI + Antigravity
                 </div>
             </div>
         </div>
@@ -2018,7 +2474,7 @@
     </div>
 
     <!-- Modal: Edit Transaction -->
-    <div class="modal-overlay" id="editModal">
+    <div class="modal-overlay" id="editModal" onclick="if(event.target===this)closeModal('editModal')">
         <div class="modal">
             <div class="modal-handle"></div>
             <div class="modal-title">EDITAR TRANSACCIÓN</div>
@@ -2032,7 +2488,8 @@
             <div class="form-row">
                 <div class="form-group" style="flex:2">
                     <label class="form-label">Monto</label>
-                    <input type="number" class="form-input" id="editAmount" step="0.01" inputmode="decimal">
+                    <input type="text" class="form-input" id="editAmount" inputmode="decimal"
+                        pattern="[0-9]*[.,]?[0-9]*">
                 </div>
                 <div class="form-group" style="flex:1">
                     <label class="form-label">Moneda</label>
@@ -2066,7 +2523,7 @@
     </div>
 
     <!-- Modal: Add Saving -->
-    <div class="modal-overlay" id="savingsModal">
+    <div class="modal-overlay" id="savingsModal" onclick="if(event.target===this)closeModal('savingsModal')">
         <div class="modal">
             <div class="modal-handle"></div>
             <div class="modal-title" id="savingsModalTitle">AGREGAR ACTIVO</div>
@@ -2080,8 +2537,8 @@
             <div class="form-row">
                 <div class="form-group" style="flex:2">
                     <label class="form-label">Monto</label>
-                    <input type="number" class="form-input" id="savingAmount" placeholder="0.00" step="0.01"
-                        inputmode="decimal">
+                    <input type="text" class="form-input" id="savingAmount" placeholder="0.00" inputmode="decimal"
+                        pattern="[0-9]*[.,]?[0-9]*">
                 </div>
                 <div class="form-group" style="flex:1">
                     <label class="form-label">Moneda</label>
@@ -2095,7 +2552,7 @@
 
             <div class="form-group">
                 <label class="form-label">Categoría</label>
-                <select class="form-input" id="savingCategory">
+                <select class="form-input" id="savingCategory" onchange="toggleCryptoFields()">
                     <option value="efectivo">Efectivo</option>
                     <option value="banco">Banco</option>
                     <option value="crypto">Crypto</option>
@@ -2104,9 +2561,46 @@
                 </select>
             </div>
 
+            <div id="cryptoSavingFields" style="display:none">
+                <div class="form-row">
+                    <div class="form-group" style="flex:2">
+                        <label class="form-label">Crypto (símbolo)</label>
+                        <select class="form-input" id="savingCryptoId">
+                            <option value="">Seleccionar...</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:1">
+                        <label class="form-label">Cantidad</label>
+                        <input type="text" class="form-input" id="savingCryptoQty" placeholder="0.01"
+                            inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*">
+                    </div>
+                </div>
+                <div style="font-size:10px;color:var(--ink3);padding:0 16px 8px">
+                    <button type="button" class="convert-btn" onclick="calcCryptoSavingValue()"
+                        style="margin-top:4px">Calcular valor actual</button>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label class="form-label">Nota (opcional)</label>
                 <input type="text" class="form-input" id="savingNote" placeholder="Detalles..." maxlength="100">
+            </div>
+
+            <div class="stitle" style="margin-top:8px">RENDIMIENTO</div>
+            <div class="form-row">
+                <div class="form-group" style="flex:2">
+                    <label class="form-label">TNA % (anual)</label>
+                    <input type="text" class="form-input" id="savingYieldRate" placeholder="0.0" inputmode="decimal"
+                        pattern="[0-9]*[.,]?[0-9]*">
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label class="form-label">Frecuencia</label>
+                    <select class="form-input" id="savingYieldFreq">
+                        <option value="">Sin rendim.</option>
+                        <option value="daily">Diario</option>
+                        <option value="monthly">Mensual</option>
+                    </select>
+                </div>
             </div>
 
             <div class="tx-actions">
@@ -2118,7 +2612,7 @@
     </div>
 
     <!-- Modal: Add Crypto -->
-    <div class="modal-overlay" id="cryptoModal">
+    <div class="modal-overlay" id="cryptoModal" onclick="if(event.target===this)closeModal('cryptoModal')">
         <div class="modal">
             <div class="modal-handle"></div>
             <div class="modal-title">AGREGAR CRYPTO</div>
@@ -2129,7 +2623,7 @@
     </div>
 
     <!-- Modal: Add Stock -->
-    <div class="modal-overlay" id="stockModal">
+    <div class="modal-overlay" id="stockModal" onclick="if(event.target===this)closeModal('stockModal')">
         <div class="modal">
             <div class="modal-handle"></div>
             <div class="modal-title" id="stockModalTitle">AGREGAR ACCIÓN</div>
@@ -2142,13 +2636,13 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Precio actual (USD)</label>
-                        <input type="number" class="form-input" id="stockPrice" placeholder="0.00" step="0.01"
-                            inputmode="decimal">
+                        <input type="text" class="form-input" id="stockPrice" placeholder="0.00" inputmode="decimal"
+                            pattern="[0-9]*[.,]?[0-9]*">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Variación 24h %</label>
-                        <input type="number" class="form-input" id="stockChange" placeholder="0.0" step="0.1"
-                            inputmode="decimal">
+                        <input type="text" class="form-input" id="stockChange" placeholder="0.0" inputmode="decimal"
+                            pattern="[-]?[0-9]*[.,]?[0-9]*">
                     </div>
                 </div>
             </div>
@@ -2160,8 +2654,96 @@
         </div>
     </div>
 
+    <!-- Modal: Budget -->
+    <div class="modal-overlay" id="budgetModal" onclick="if(event.target===this)closeModal('budgetModal')">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-title" id="budgetModalTitle">AGREGAR PRESUPUESTO</div>
+            <input type="hidden" id="budgetEditId">
+
+            <div class="form-group">
+                <label class="form-label">Categoría</label>
+                <select class="form-input" id="budgetCategory"></select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex:2">
+                    <label class="form-label">Límite mensual</label>
+                    <input type="text" class="form-input" id="budgetLimit" placeholder="0.00" inputmode="decimal"
+                        pattern="[0-9]*[.,]?[0-9]*">
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label class="form-label">Moneda</label>
+                    <div class="currency-toggle">
+                        <button class="currency-btn active" id="budCurARS"
+                            onclick="setBudgetCurrency('ARS')">ARS</button>
+                        <button class="currency-btn" id="budCurUSD" onclick="setBudgetCurrency('USD')">USD</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tx-actions" id="budgetActions">
+                <button class="tx-action-btn" onclick="closeModal('budgetModal')">CANCELAR</button>
+                <button class="tx-action-btn" onclick="saveBudget()"
+                    style="color:var(--accent);border-color:var(--accent)">GUARDAR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Income Yield -->
+    <div class="modal-overlay" id="iyModal" onclick="if(event.target===this)closeModal('iyModal')">
+        <div class="modal">
+            <div class="modal-handle"></div>
+            <div class="modal-title" id="iyModalTitle">AGREGAR RENDIMIENTO</div>
+            <input type="hidden" id="iyEditId">
+
+            <div class="form-group">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-input" id="iyName" placeholder="Ej: Mercado Pago, Plazo fijo...">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex:2">
+                    <label class="form-label">Capital</label>
+                    <input type="text" class="form-input" id="iyCapital" placeholder="0.00" inputmode="decimal"
+                        pattern="[0-9]*[.,]?[0-9]*">
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label class="form-label">Moneda</label>
+                    <div class="currency-toggle">
+                        <button class="currency-btn active" id="iyCurARS"
+                            onclick="window._iyCurrency='ARS';this.className='currency-btn active';document.getElementById('iyCurUSD').className='currency-btn'">ARS</button>
+                        <button class="currency-btn" id="iyCurUSD"
+                            onclick="window._iyCurrency='USD';this.className='currency-btn active';document.getElementById('iyCurARS').className='currency-btn'">USD</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex:2">
+                    <label class="form-label">TNA % (anual)</label>
+                    <input type="text" class="form-input" id="iyRate" placeholder="40.0" inputmode="decimal"
+                        pattern="[0-9]*[.,]?[0-9]*">
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label class="form-label">Frecuencia</label>
+                    <select class="form-input" id="iyFreq">
+                        <option value="daily">Diario</option>
+                        <option value="monthly">Mensual</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="tx-actions" id="iyActions">
+                <button class="tx-action-btn" onclick="closeModal('iyModal')">CANCELAR</button>
+                <button class="tx-action-btn" onclick="saveIncomeYield()"
+                    style="color:var(--green);border-color:var(--green)">GUARDAR</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: Confirm Delete -->
-    <div class="modal-overlay" id="confirmModal">
+    <div class="modal-overlay" id="confirmModal" onclick="if(event.target===this)closeModal('confirmModal')">
         <div class="modal" style="padding:24px">
             <div class="modal-handle"></div>
             <div class="modal-title" id="confirmTitle">¿ELIMINAR?</div>
@@ -2269,6 +2851,12 @@
         function setSavings(arr) { localStorage.setItem('ft_savings', JSON.stringify(arr)) }
         function getIcon(key) { return SVG_ICONS[key] || SVG_ICONS.otros_gasto; }
 
+        function parseAmount(val) {
+            if (!val) return NaN;
+            // Reemplazar coma por punto y limpiar caracteres no numéricos
+            return parseFloat(String(val).replace(/,/g, '.').replace(/[^\d.\-]/g, ''));
+        }
+
         function genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5) }
         function getToday() { const d = new Date(); return d.toISOString().split('T')[0] }
 
@@ -2302,7 +2890,7 @@
             parent.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
             el.classList.add('active');
 
-            ['resumen', 'historial', 'graficos'].forEach(t => {
+            ['resumen', 'historial', 'graficos', 'presupuestos'].forEach(t => {
                 const div = document.getElementById(section + '-' + t);
                 if (div) div.style.display = t === tab ? 'block' : 'none';
             });
@@ -2314,6 +2902,9 @@
             if (tab === 'graficos') {
                 if (section === 'gastos') renderGastosChart();
                 if (section === 'ingresos') renderIngresosChart();
+            }
+            if (tab === 'presupuestos') {
+                renderBudgets();
             }
             vib();
         }
@@ -2410,7 +3001,7 @@
         }
 
         function submitTransaction() {
-            const amount = parseFloat(document.getElementById('regAmount').value);
+            const amount = parseAmount(document.getElementById('regAmount').value);
             const date = document.getElementById('regDate').value;
             const note = document.getElementById('regNote').value.trim();
 
@@ -2442,6 +3033,9 @@
             const cats = regType === 'expense' ? EXPENSE_CATS : INCOME_CATS;
             const catName = cats.find(c => c.id === tx.category)?.name || tx.category;
             toast(`${regType === 'expense' ? 'Gasto' : 'Ingreso'} registrado: ${tx.currency} ${tx.amount.toLocaleString()}`);
+
+            // Check budget alerts after registering expense
+            setTimeout(() => checkBudgetAlerts(tx), 2600); // After first toast disappears
             vib();
         }
 
@@ -2674,7 +3268,7 @@
 
         function saveEdit() {
             const id = document.getElementById('editId').value;
-            const amount = parseFloat(document.getElementById('editAmount').value);
+            const amount = parseAmount(document.getElementById('editAmount').value);
             const date = document.getElementById('editDate').value;
             const note = document.getElementById('editNote').value.trim();
 
@@ -2732,7 +3326,7 @@
                         const txs = getTx().filter(t => t.type === txType);
                         const filtered = filterByPeriod(txs, period);
                         const chartType = canvas.id.includes('Donut') ? 'donut' : canvas.id.includes('Bar') ? 'bar' : 'line';
-                        renderChart(canvas.id, filtered, chartType, txType, () => { });
+                        setTimeout(() => renderChart(canvas.id, filtered, chartType, txType, () => { }), 100);
                     }
                 }
             }
@@ -2742,13 +3336,13 @@
         function renderGastosChart() {
             const txs = getTx().filter(t => t.type === 'expense');
             const filtered = filterByPeriod(txs, gastosChartTimePeriod);
-            // Solo renderizar charts que están expandidos
+            // Renderizar todos los charts expandidos
             document.querySelectorAll('#gastos-graficos .chart-section').forEach(section => {
                 const body = section.querySelector('.chart-body');
                 const canvas = body.querySelector('canvas');
                 if (!body.classList.contains('collapsed') && canvas) {
                     const type = canvas.id.includes('Donut') ? 'donut' : canvas.id.includes('Bar') ? 'bar' : 'line';
-                    renderChart(canvas.id, filtered, type, 'expense', () => { });
+                    setTimeout(() => renderChart(canvas.id, filtered, type, 'expense', () => { }), 50);
                 }
             });
             document.querySelectorAll('#gastos-graficos .toggle-arrow').forEach(el => { el.innerHTML = getIcon('chevron_down') });
@@ -2762,7 +3356,7 @@
                 const canvas = body.querySelector('canvas');
                 if (!body.classList.contains('collapsed') && canvas) {
                     const type = canvas.id.includes('Donut') ? 'donut' : canvas.id.includes('Bar') ? 'bar' : 'line';
-                    renderChart(canvas.id, filtered, type, 'income', () => { });
+                    setTimeout(() => renderChart(canvas.id, filtered, type, 'income', () => { }), 50);
                 }
             });
             document.querySelectorAll('#ingresos-graficos .toggle-arrow').forEach(el => { el.innerHTML = getIcon('chevron_down') });
@@ -2914,8 +3508,16 @@
             // Hero
             document.getElementById('balanceHero').innerHTML = `
         <div class="balance-hero-label">Balance neto del período</div>
-        <div class="balance-hero-value ${ars.balance >= 0 ? 'balance-pos' : 'balance-neg'}">ARS $${ars.balance.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</div>
-        <div class="balance-hero-value ${usd.balance >= 0 ? 'balance-pos' : 'balance-neg'}" style="font-size:28px;margin-top:4px">USD $${usd.balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+        <div class="balance-hero-row">
+            <div class="balance-hero-card ars">
+                <div class="balance-hero-currency">ARS</div>
+                <div class="balance-hero-value ${ars.balance >= 0 ? 'balance-pos' : 'balance-neg'}">$${ars.balance.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</div>
+            </div>
+            <div class="balance-hero-card usd">
+                <div class="balance-hero-currency">USD</div>
+                <div class="balance-hero-value ${usd.balance >= 0 ? 'balance-pos' : 'balance-neg'}">US$${usd.balance.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+            </div>
+        </div>
       `;
 
             // Summary cards
@@ -2973,6 +3575,9 @@
           </div>`;
                 }).join('') :
                 `<div class="empty-state"><div class="empty-state-icon">${getIcon('balance_nav')}</div><div class="empty-state-text">Sin datos de balance</div></div>`;
+
+            // Render income yield config
+            renderIncomeYieldConfig();
         }
 
         // ═══════════════════════════════════════════
@@ -2996,6 +3601,36 @@
         </div>
       `;
 
+            // Yield summary for savings
+            const yieldSavings = savings.filter(s => s.yieldRate && s.yieldFreq);
+            if (yieldSavings.length) {
+                let dailyYieldARS = 0, dailyYieldUSD = 0;
+                yieldSavings.forEach(s => {
+                    const dailyRate = s.yieldFreq === 'daily'
+                        ? s.yieldRate / 100 / 365
+                        : s.yieldRate / 100 / 12 / 30;
+                    const dailyAmount = s.amount * dailyRate;
+                    if (s.currency === 'ARS') dailyYieldARS += dailyAmount;
+                    else dailyYieldUSD += dailyAmount;
+                });
+
+                document.getElementById('ahorrosSummary').insertAdjacentHTML('afterend', `
+                    <div class="yield-summary" id="yieldSummaryCards">
+                        ${dailyYieldARS > 0 ? `<div class="yield-summary-card">
+                            <div class="yield-summary-label">Rend. diario ARS</div>
+                            <div class="yield-summary-val">+$${dailyYieldARS.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                        </div>` : ''}
+                        ${dailyYieldUSD > 0 ? `<div class="yield-summary-card">
+                            <div class="yield-summary-label">Rend. diario USD</div>
+                            <div class="yield-summary-val">+US$${dailyYieldUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</div>
+                        </div>` : ''}
+                    </div>
+                `);
+            } else {
+                const existingSummary = document.getElementById('yieldSummaryCards');
+                if (existingSummary) existingSummary.remove();
+            }
+
             const list = document.getElementById('ahorrosList');
             if (!savings.length) {
                 list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">${getIcon('banco')}</div><div class="empty-state-text">Agregá tus activos para ver tu patrimonio</div></div>`;
@@ -3005,13 +3640,33 @@
             list.innerHTML = savings.map(s => {
                 const icon = getIcon(SAVING_ICONS[s.category] || 'otros_saving');
                 const prefix = s.currency === 'USD' ? 'US$' : '$';
+                const yieldInfo = s.yieldRate && s.yieldFreq
+                    ? `<div class="yield-info">${s.yieldRate}% TNA \u00b7 ${s.yieldFreq === 'daily' ? 'Diario' : 'Mensual'}</div>`
+                    : '';
+                const cryptoInfo = s.cryptoId && s.cryptoQty
+                    ? `<div style="font-size:10px;color:var(--yellow);margin-top:1px">${s.cryptoQty} ${(s.cryptoId || '').toUpperCase().replace(/-.*/, '')}</div>`
+                    : '';
+                // Conversion display for savings
+                let convertedInfo = '';
+                if (s.currency === 'ARS' && s.amount > 0) {
+                    const { result } = convert(s.amount, 'ARS', 'USD');
+                    if (result != null) convertedInfo = `<div class="saving-converted">\u2248 US$${result.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>`;
+                } else if (s.currency === 'USD' && s.amount > 0 && !s.cryptoId) {
+                    const { result } = convert(s.amount, 'USD', 'ARS');
+                    if (result != null) convertedInfo = `<div class="saving-converted">\u2248 $${result.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} ARS</div>`;
+                }
                 return `<div class="saving-item" onclick="openEditSaving('${s.id}')">
           <div class="saving-icon">${icon}</div>
           <div class="saving-info">
-            <div class="saving-name">${s.name}</div>
-            <div class="saving-cat">${s.category.charAt(0).toUpperCase() + s.category.slice(1)}${s.note ? ' · ' + s.note : ''}</div>
+            <div class="saving-name">${s.name} ${s.yieldRate && s.yieldFreq ? '<span class="yield-badge">RINDE</span>' : ''}</div>
+            <div class="saving-cat">${s.category.charAt(0).toUpperCase() + s.category.slice(1)}${s.note ? ' \u00b7 ' + s.note : ''}</div>
+            ${cryptoInfo}
+            ${yieldInfo}
           </div>
-          <div class="saving-amount">${prefix}${s.amount.toLocaleString(s.currency === 'USD' ? 'en-US' : 'es-AR', { minimumFractionDigits: 2 })}</div>
+          <div style="text-align:right">
+            <div class="saving-amount">${prefix}${s.amount.toLocaleString(s.currency === 'USD' ? 'en-US' : 'es-AR', { minimumFractionDigits: 2 })}</div>
+            ${convertedInfo}
+          </div>
         </div>`;
             }).join('');
 
@@ -3028,6 +3683,18 @@
             document.getElementById('savingAmount').value = saving?.amount || '';
             document.getElementById('savingCategory').value = saving?.category || 'efectivo';
             document.getElementById('savingNote').value = saving?.note || '';
+            document.getElementById('savingYieldRate').value = saving?.yieldRate || '';
+            document.getElementById('savingYieldFreq').value = saving?.yieldFreq || '';
+
+            // Crypto fields
+            document.getElementById('savingCategory').value = saving?.category || 'efectivo';
+            toggleCryptoFields();
+            if (saving?.cryptoId) {
+                setTimeout(() => {
+                    document.getElementById('savingCryptoId').value = saving.cryptoId;
+                    document.getElementById('savingCryptoQty').value = saving.cryptoQty || '';
+                }, 50);
+            }
 
             savingCurrency = saving?.currency || 'ARS';
             document.getElementById('savCurARS').className = 'currency-btn' + (savingCurrency === 'ARS' ? ' active' : '');
@@ -3062,9 +3729,13 @@
         function saveSaving() {
             const editId = document.getElementById('savingEditId').value;
             const name = document.getElementById('savingName').value.trim();
-            const amount = parseFloat(document.getElementById('savingAmount').value);
+            const amount = parseAmount(document.getElementById('savingAmount').value);
             const category = document.getElementById('savingCategory').value;
             const note = document.getElementById('savingNote').value.trim();
+            const yieldRate = parseAmount(document.getElementById('savingYieldRate').value) || 0;
+            const yieldFreq = document.getElementById('savingYieldFreq').value || '';
+            const cryptoId = document.getElementById('savingCategory').value === 'crypto' ? document.getElementById('savingCryptoId').value : '';
+            const cryptoQty = document.getElementById('savingCategory').value === 'crypto' ? (parseAmount(document.getElementById('savingCryptoQty').value) || 0) : 0;
 
             if (!name) { toast('Ingresá un nombre'); return }
             if (!amount || amount <= 0) { toast('Ingresá un monto válido'); return }
@@ -3074,7 +3745,17 @@
             if (editId) {
                 const idx = savings.findIndex(s => s.id === editId);
                 if (idx !== -1) {
-                    savings[idx] = { ...savings[idx], name, amount, currency: savingCurrency, category, note, updatedAt: new Date().toISOString() };
+                    // Reset yieldLastCalc if rate/freq changed to avoid retroactive calculation
+                    const oldYield = savings[idx].yieldRate + '|' + savings[idx].yieldFreq;
+                    const newYield = yieldRate + '|' + yieldFreq;
+                    const resetYieldCalc = oldYield !== newYield;
+                    savings[idx] = {
+                        ...savings[idx],
+                        name, amount, currency: savingCurrency, category, note,
+                        yieldRate, yieldFreq, cryptoId, cryptoQty,
+                        yieldLastCalc: resetYieldCalc ? new Date().toISOString() : savings[idx].yieldLastCalc,
+                        updatedAt: new Date().toISOString()
+                    };
                 }
             } else {
                 savings.push({
@@ -3084,6 +3765,11 @@
                     currency: savingCurrency,
                     category,
                     note,
+                    yieldRate,
+                    yieldFreq,
+                    cryptoId,
+                    cryptoQty,
+                    yieldLastCalc: new Date().toISOString(),
                     updatedAt: new Date().toISOString()
                 });
             }
@@ -3109,6 +3795,543 @@
         }
 
         // ═══════════════════════════════════════════
+        // PRESUPUESTOS
+        // ═══════════════════════════════════════════
+
+        const BUDGETS_KEY = 'ft_budgets';
+        let budgetCurrency = 'ARS';
+
+        function getBudgets() { try { return JSON.parse(localStorage.getItem(BUDGETS_KEY) || '[]') } catch { return [] } }
+        function setBudgets(arr) { localStorage.setItem(BUDGETS_KEY, JSON.stringify(arr)) }
+
+        function getCurrentMonthExpenses() {
+            const now = new Date();
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+            return getTx().filter(t => t.type === 'expense' && t.date >= monthStart);
+        }
+
+        function getBudgetStatus(budget) {
+            const expenses = getCurrentMonthExpenses();
+            const spent = expenses
+                .filter(t => t.category === budget.categoryId && t.currency === budget.currency)
+                .reduce((s, t) => s + t.amount, 0);
+            const pct = budget.limit > 0 ? (spent / budget.limit) * 100 : 0;
+            const status = pct >= 100 ? 'over' : pct >= 80 ? 'warn' : 'ok';
+            return { spent, pct, status };
+        }
+
+        function renderBudgets() {
+            const budgets = getBudgets();
+            const container = document.getElementById('budgetList');
+
+            if (!budgets.length) {
+                container.innerHTML = `<div class="empty-state">
+                    <div class="empty-state-icon">${getIcon('inversiones')}</div>
+                    <div class="empty-state-text">Sin presupuestos definidos.<br>Agregá uno para controlar tus gastos.</div>
+                </div>`;
+                return;
+            }
+
+            container.innerHTML = budgets.map(b => {
+                const cat = EXPENSE_CATS.find(c => c.id === b.categoryId);
+                const { spent, pct, status } = getBudgetStatus(b);
+                const prefix = b.currency === 'USD' ? 'US$' : '$';
+                const locale = b.currency === 'USD' ? 'en-US' : 'es-AR';
+                const cappedPct = Math.min(pct, 100);
+
+                return `<div class="budget-card" onclick="openBudgetModal('${b.id}')">
+                    <div class="budget-top">
+                        <div class="budget-top-left">
+                            <div class="budget-cat-icon">${getIcon(cat?.icon || 'otros_gasto')}</div>
+                            <span class="budget-cat-name">${cat?.name || b.categoryId}</span>
+                        </div>
+                        <div class="budget-amounts">
+                            <strong>${prefix}${spent.toLocaleString(locale, { minimumFractionDigits: 0 })}</strong>
+                            / ${prefix}${b.limit.toLocaleString(locale, { minimumFractionDigits: 0 })}
+                        </div>
+                    </div>
+                    <div class="budget-bar-wrap">
+                        <div class="budget-bar-inner ${status}" style="width:${cappedPct}%"></div>
+                    </div>
+                    <div class="budget-pct ${status}">${pct.toFixed(0)}% usado</div>
+                </div>`;
+            }).join('');
+        }
+
+        function openBudgetModal(editId) {
+            const budgets = getBudgets();
+            const budget = editId ? budgets.find(b => b.id === editId) : null;
+
+            document.getElementById('budgetModalTitle').textContent = budget ? 'EDITAR PRESUPUESTO' : 'AGREGAR PRESUPUESTO';
+            document.getElementById('budgetEditId').value = editId || '';
+            document.getElementById('budgetLimit').value = budget?.limit || '';
+
+            budgetCurrency = budget?.currency || 'ARS';
+            document.getElementById('budCurARS').className = 'currency-btn' + (budgetCurrency === 'ARS' ? ' active' : '');
+            document.getElementById('budCurUSD').className = 'currency-btn' + (budgetCurrency === 'USD' ? ' active' : '');
+
+            // Populate category dropdown — only show cats without existing budgets (unless editing)
+            const usedCats = budgets.filter(b => b.id !== editId).map(b => b.categoryId);
+            const availableCats = EXPENSE_CATS.filter(c => !usedCats.includes(c.id));
+            const select = document.getElementById('budgetCategory');
+            select.innerHTML = availableCats.map(c =>
+                `<option value="${c.id}" ${budget?.categoryId === c.id ? 'selected' : ''}>${c.name}</option>`
+            ).join('');
+
+            if (budget) {
+                // Make sure the current category is in the dropdown even if "used"
+                if (!availableCats.find(c => c.id === budget.categoryId)) {
+                    const cat = EXPENSE_CATS.find(c => c.id === budget.categoryId);
+                    if (cat) select.insertAdjacentHTML('afterbegin', `<option value="${cat.id}" selected>${cat.name}</option>`);
+                }
+                select.value = budget.categoryId;
+            }
+
+            // Add/remove delete button
+            const actionsDiv = document.getElementById('budgetActions');
+            const existingDel = actionsDiv.querySelector('.delete');
+            if (existingDel) existingDel.remove();
+
+            if (budget) {
+                const delBtn = document.createElement('button');
+                delBtn.className = 'tx-action-btn delete';
+                delBtn.textContent = 'ELIMINAR';
+                delBtn.onclick = () => deleteBudget(editId);
+                actionsDiv.appendChild(delBtn);
+            }
+
+            document.getElementById('budgetModal').classList.add('show');
+            vib();
+        }
+
+        function setBudgetCurrency(cur) {
+            budgetCurrency = cur;
+            document.getElementById('budCurARS').className = 'currency-btn' + (cur === 'ARS' ? ' active' : '');
+            document.getElementById('budCurUSD').className = 'currency-btn' + (cur === 'USD' ? ' active' : '');
+            vib();
+        }
+
+        function saveBudget() {
+            const editId = document.getElementById('budgetEditId').value;
+            const categoryId = document.getElementById('budgetCategory').value;
+            const limit = parseAmount(document.getElementById('budgetLimit').value);
+
+            if (!categoryId) { toast('Elegí una categoría'); return }
+            if (!limit || limit <= 0) { toast('Ingresá un límite válido'); return }
+
+            let budgets = getBudgets();
+
+            if (editId) {
+                const idx = budgets.findIndex(b => b.id === editId);
+                if (idx !== -1) {
+                    budgets[idx] = { ...budgets[idx], categoryId, limit, currency: budgetCurrency };
+                }
+            } else {
+                budgets.push({
+                    id: genId(),
+                    categoryId,
+                    limit,
+                    currency: budgetCurrency
+                });
+            }
+
+            setBudgets(budgets);
+            closeModal('budgetModal');
+            toast(`Presupuesto ${editId ? 'actualizado' : 'creado'}`);
+            renderBudgets();
+        }
+
+        function deleteBudget(id) {
+            document.getElementById('confirmTitle').textContent = '¿ELIMINAR PRESUPUESTO?';
+            document.getElementById('confirmText').textContent = 'Se eliminará este presupuesto.';
+            document.getElementById('confirmAction').onclick = () => {
+                let budgets = getBudgets().filter(b => b.id !== id);
+                setBudgets(budgets);
+                closeModal('confirmModal');
+                closeModal('budgetModal');
+                toast('Presupuesto eliminado');
+                renderBudgets();
+            };
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        // Alert check — called after registering expense
+        function checkBudgetAlerts(tx) {
+            if (tx.type !== 'expense') return;
+            const budgets = getBudgets();
+            const budget = budgets.find(b => b.categoryId === tx.category && b.currency === tx.currency);
+            if (!budget) return;
+
+            const { pct, status } = getBudgetStatus(budget);
+            const cat = EXPENSE_CATS.find(c => c.id === tx.category);
+            const catName = cat?.name || tx.category;
+
+            if (status === 'over') {
+                toast(`${catName}: superaste el presupuesto (${pct.toFixed(0)}%)`);
+            } else if (status === 'warn') {
+                toast(`${catName}: ${pct.toFixed(0)}% del presupuesto usado`);
+            }
+        }
+
+        // Home alerts render
+        function renderHomeAlerts() {
+            const container = document.getElementById('homeAlerts');
+            if (!container) return;
+
+            const budgets = getBudgets();
+            if (!budgets.length) { container.innerHTML = ''; return }
+
+            const alerts = [];
+            budgets.forEach(b => {
+                const { pct, status, spent } = getBudgetStatus(b);
+                if (status === 'ok') return;
+
+                const cat = EXPENSE_CATS.find(c => c.id === b.categoryId);
+                const catName = cat?.name || b.categoryId;
+                const prefix = b.currency === 'USD' ? 'US$' : '$';
+                const locale = b.currency === 'USD' ? 'en-US' : 'es-AR';
+
+                alerts.push({
+                    status,
+                    html: `<div class="alert-card ${status}">
+                        <div class="alert-icon">${status === 'over' ? '!' : '⚠'}</div>
+                        <div class="alert-text">
+                            <strong>${catName}:</strong> ${prefix}${spent.toLocaleString(locale, { minimumFractionDigits: 0 })} / ${prefix}${b.limit.toLocaleString(locale, { minimumFractionDigits: 0 })} (${pct.toFixed(0)}%)
+                        </div>
+                    </div>`
+                });
+            });
+
+            // Show 'over' first, then 'warn'
+            alerts.sort((a, b) => a.status === 'over' ? -1 : 1);
+            container.innerHTML = alerts.length
+                ? `<div class="stitle">ALERTAS DE PRESUPUESTO</div>${alerts.map(a => a.html).join('')}`
+                : '';
+        }
+
+        // ═══════════════════════════════════════════
+        // CONVERSIONES Y CRYPTO SAVINGS
+        // ═══════════════════════════════════════════
+
+        function getCachedRates() {
+            const cached = getCachedQuotes();
+            if (!cached) return null;
+            const rates = { dolarBlue: null, btc: null, eth: null };
+            if (cached.dolar) {
+                const blue = cached.dolar.find(d => d.casa === 'blue');
+                if (blue) rates.dolarBlue = { compra: blue.compra, venta: blue.venta };
+            }
+            if (cached.crypto) {
+                const btc = cached.crypto.find(c => c.symbol === 'BTC');
+                const eth = cached.crypto.find(c => c.symbol === 'ETH');
+                if (btc) rates.btc = btc.usd;
+                if (eth) rates.eth = eth.usd;
+            }
+            return rates;
+        }
+
+        function convert(amount, from, to) {
+            if (!amount || from === to) return { result: amount, rateUsed: '1:1' };
+            const rates = getCachedRates();
+            if (!rates) return { result: null, rateUsed: 'Sin datos' };
+            const blueVenta = rates.dolarBlue?.venta || 0;
+            const blueCompra = rates.dolarBlue?.compra || 0;
+            const btcUsd = rates.btc || 0;
+            const ethUsd = rates.eth || 0;
+            let result = null;
+            let rateUsed = '';
+            if (from === 'USD' && to === 'ARS') {
+                if (blueVenta) { result = amount * blueVenta; rateUsed = `1 USD = $${blueVenta.toLocaleString('es-AR')} ARS (blue)` }
+            } else if (from === 'ARS' && to === 'USD') {
+                if (blueCompra) { result = amount / blueCompra; rateUsed = `1 USD = $${blueCompra.toLocaleString('es-AR')} ARS (blue)` }
+            } else if (from === 'BTC' && to === 'USD') {
+                if (btcUsd) { result = amount * btcUsd; rateUsed = `1 BTC = US$${btcUsd.toLocaleString('en-US')}` }
+            } else if (from === 'USD' && to === 'BTC') {
+                if (btcUsd) { result = amount / btcUsd; rateUsed = `1 BTC = US$${btcUsd.toLocaleString('en-US')}` }
+            } else if (from === 'ETH' && to === 'USD') {
+                if (ethUsd) { result = amount * ethUsd; rateUsed = `1 ETH = US$${ethUsd.toLocaleString('en-US')}` }
+            } else if (from === 'USD' && to === 'ETH') {
+                if (ethUsd) { result = amount / ethUsd; rateUsed = `1 ETH = US$${ethUsd.toLocaleString('en-US')}` }
+            } else if (from === 'BTC' && to === 'ARS') {
+                if (btcUsd && blueVenta) { result = amount * btcUsd * blueVenta; rateUsed = `BTC\u2192USD\u2192ARS (blue)` }
+            } else if (from === 'ARS' && to === 'BTC') {
+                if (btcUsd && blueCompra) { result = amount / blueCompra / btcUsd; rateUsed = `ARS\u2192USD\u2192BTC (blue)` }
+            } else if (from === 'ETH' && to === 'ARS') {
+                if (ethUsd && blueVenta) { result = amount * ethUsd * blueVenta; rateUsed = `ETH\u2192USD\u2192ARS (blue)` }
+            } else if (from === 'ARS' && to === 'ETH') {
+                if (ethUsd && blueCompra) { result = amount / blueCompra / ethUsd; rateUsed = `ARS\u2192USD\u2192ETH (blue)` }
+            } else if (from === 'BTC' && to === 'ETH') {
+                if (btcUsd && ethUsd) { result = amount * btcUsd / ethUsd; rateUsed = `BTC\u2192USD\u2192ETH` }
+            } else if (from === 'ETH' && to === 'BTC') {
+                if (ethUsd && btcUsd) { result = amount * ethUsd / btcUsd; rateUsed = `ETH\u2192USD\u2192BTC` }
+            }
+            return { result, rateUsed };
+        }
+
+        function runConversion() {
+            const amount = parseAmount(document.getElementById('convAmount').value);
+            const from = document.getElementById('convFrom').value;
+            const to = document.getElementById('convTo').value;
+            const resultEl = document.getElementById('convResult');
+            if (!amount || amount <= 0) { resultEl.innerHTML = '\u2014'; return }
+            const { result, rateUsed } = convert(amount, from, to);
+            if (result != null) {
+                const isCrypto = ['BTC', 'ETH'].includes(to);
+                const isARS = to === 'ARS';
+                const decimals = isCrypto ? 8 : 2;
+                const prefix = to === 'ARS' ? '$' : to === 'USD' ? 'US$' : '';
+                const suffix = isCrypto ? ` ${to}` : '';
+                const formatted = result.toLocaleString(isARS ? 'es-AR' : 'en-US', { minimumFractionDigits: 2, maximumFractionDigits: decimals });
+                resultEl.innerHTML = `${prefix}${formatted}${suffix}<br><span class="converter-result-sub">${rateUsed}</span>`;
+            } else {
+                resultEl.innerHTML = `Sin cotizaci\u00f3n<br><span class="converter-result-sub">Actualiz\u00e1 las cotizaciones primero</span>`;
+            }
+        }
+
+        function toggleCryptoFields() {
+            const cat = document.getElementById('savingCategory').value;
+            const fields = document.getElementById('cryptoSavingFields');
+            if (cat === 'crypto') {
+                fields.style.display = 'block';
+                const cryptos = getCryptoWatchlist();
+                const select = document.getElementById('savingCryptoId');
+                select.innerHTML = '<option value="">Seleccionar...</option>' +
+                    cryptos.map(c => `<option value="${c.id}" data-symbol="${c.symbol}">${c.symbol} \u2014 ${c.name}</option>`).join('') +
+                    POPULAR_CRYPTOS.filter(p => !cryptos.find(c => c.id === p.id))
+                        .map(c => `<option value="${c.id}" data-symbol="${c.symbol}">${c.symbol} \u2014 ${c.name}</option>`).join('');
+            } else {
+                fields.style.display = 'none';
+            }
+        }
+
+        async function calcCryptoSavingValue() {
+            const cryptoId = document.getElementById('savingCryptoId').value;
+            const qty = parseAmount(document.getElementById('savingCryptoQty').value);
+            if (!cryptoId || !qty) { toast('Seleccion\u00e1 una crypto y cantidad'); return }
+            const cached = getCachedQuotes();
+            let price = null;
+            if (cached?.crypto) {
+                const found = cached.crypto.find(c => c.id === cryptoId);
+                if (found) price = found.usd;
+            }
+            if (price == null) {
+                try {
+                    const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cryptoId}&vs_currencies=usd`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data[cryptoId]) price = data[cryptoId].usd;
+                    }
+                } catch (e) { console.warn('Crypto price fetch error:', e) }
+            }
+            if (price != null) {
+                const total = qty * price;
+                document.getElementById('savingAmount').value = total.toFixed(2);
+                setSavingCurrency('USD');
+                toast(`${qty} \u00d7 US$${price.toLocaleString('en-US')} = US$${total.toFixed(2)}`);
+            } else {
+                toast('No se pudo obtener el precio');
+            }
+        }
+
+        // ═══════════════════════════════════════════
+        // RENDIMIENTOS (YIELD ENGINE)
+        // ═══════════════════════════════════════════
+
+        const INCOME_YIELDS_KEY = 'ft_income_yields';
+        const YIELD_LAST_RUN_KEY = 'ft_yield_last_run';
+
+        function getIncomeYields() { try { return JSON.parse(localStorage.getItem(INCOME_YIELDS_KEY) || '[]') } catch { return [] } }
+        function setIncomeYields(arr) { localStorage.setItem(INCOME_YIELDS_KEY, JSON.stringify(arr)) }
+
+        function compoundInterest(capital, annualRate, frequency, days) {
+            if (!capital || !annualRate || !days || days <= 0) return { newCapital: capital, earned: 0 };
+            if (frequency === 'daily') {
+                const r = annualRate / 100 / 365;
+                const newCapital = capital * Math.pow(1 + r, days);
+                return { newCapital, earned: newCapital - capital };
+            } else if (frequency === 'monthly') {
+                const months = days / 30.44;
+                const r = annualRate / 100 / 12;
+                const newCapital = capital * Math.pow(1 + r, months);
+                return { newCapital, earned: newCapital - capital };
+            }
+            return { newCapital: capital, earned: 0 };
+        }
+
+        function daysBetween(dateStr1, dateStr2) {
+            const d1 = new Date(dateStr1);
+            const d2 = new Date(dateStr2);
+            return Math.floor((d2 - d1) / (1000 * 60 * 60 * 24));
+        }
+
+        function processYields() {
+            const now = new Date().toISOString();
+            const today = getToday();
+            const lastRun = localStorage.getItem(YIELD_LAST_RUN_KEY);
+            if (lastRun === today) return;
+
+            let anyUpdate = false;
+
+            // === SAVINGS YIELDS ===
+            let savings = getSavings();
+            savings.forEach((s, idx) => {
+                if (!s.yieldRate || !s.yieldFreq) return;
+                const lastCalc = s.yieldLastCalc || s.updatedAt || now;
+                const days = daysBetween(lastCalc, now);
+                if (days < 1) return;
+                const { newCapital, earned } = compoundInterest(s.amount, s.yieldRate, s.yieldFreq, days);
+                if (earned > 0.01) {
+                    savings[idx].amount = Math.round(newCapital * 100) / 100;
+                    savings[idx].yieldLastCalc = now;
+                    savings[idx].updatedAt = now;
+                    anyUpdate = true;
+                }
+            });
+            if (anyUpdate) setSavings(savings);
+
+            // === INCOME YIELDS ===
+            const incomeYields = getIncomeYields();
+            incomeYields.forEach(iy => {
+                if (!iy.active || !iy.rate || !iy.capital) return;
+                const lastCalc = iy.lastCalc || iy.createdAt || now;
+                const days = daysBetween(lastCalc, now);
+                if (days < 1) return;
+                const { earned } = compoundInterest(iy.capital, iy.rate, iy.frequency, days);
+                if (earned > 0.01) {
+                    const tx = {
+                        id: genId(),
+                        type: 'income',
+                        amount: Math.round(earned * 100) / 100,
+                        currency: iy.currency,
+                        category: 'inversiones',
+                        note: `Rendimiento auto: ${iy.name} (${iy.rate}% TNA)`,
+                        date: today,
+                        createdAt: now
+                    };
+                    const txs = getTx();
+                    txs.push(tx);
+                    setTx(txs);
+                    iy.lastCalc = now;
+                    iy.totalEarned = (iy.totalEarned || 0) + earned;
+                }
+            });
+            setIncomeYields(incomeYields);
+            localStorage.setItem(YIELD_LAST_RUN_KEY, today);
+        }
+
+        function renderIncomeYieldConfig() {
+            const container = document.getElementById('incomeYieldConfig');
+            if (!container) return;
+            const yields = getIncomeYields();
+            let html = '';
+            if (yields.length) {
+                html += yields.map(iy => {
+                    const prefix = iy.currency === 'USD' ? 'US$' : '$';
+                    const locale = iy.currency === 'USD' ? 'en-US' : 'es-AR';
+                    const totalEarned = iy.totalEarned || 0;
+                    return `<div class="income-yield-card" onclick="openIncomeYieldModal('${iy.id}')">
+                        <div class="income-yield-header">
+                            <div>
+                                <div class="income-yield-title">${iy.name}</div>
+                                <div style="font-size:10px;color:var(--ink3)">${prefix}${iy.capital.toLocaleString(locale)} \u00b7 ${iy.rate}% TNA \u00b7 ${iy.frequency === 'daily' ? 'Diario' : 'Mensual'}</div>
+                            </div>
+                            <button class="income-yield-toggle ${iy.active ? 'active' : ''}" onclick="event.stopPropagation();toggleIncomeYield('${iy.id}')">
+                                ${iy.active ? 'ACTIVO' : 'PAUSADO'}
+                            </button>
+                        </div>
+                        ${totalEarned > 0 ? `<div style="font-size:11px;color:var(--green)">Total generado: ${prefix}${totalEarned.toLocaleString(locale, { minimumFractionDigits: 2 })}</div>` : ''}
+                    </div>`;
+                }).join('');
+            } else {
+                html += `<div class="empty-state" style="padding:30px 16px">
+                    <div class="empty-state-icon">${getIcon('inversiones')}</div>
+                    <div class="empty-state-text">Configur\u00e1 rendimientos para generar ingresos autom\u00e1ticos</div>
+                </div>`;
+            }
+            html += `<button class="btn-submit" style="background:var(--green);box-shadow:0 4px 16px var(--green-dim);margin-top:8px" onclick="openIncomeYieldModal()">
+                AGREGAR RENDIMIENTO
+            </button>`;
+            container.innerHTML = html;
+        }
+
+        function toggleIncomeYield(id) {
+            let yields = getIncomeYields();
+            const idx = yields.findIndex(y => y.id === id);
+            if (idx !== -1) {
+                yields[idx].active = !yields[idx].active;
+                setIncomeYields(yields);
+                renderIncomeYieldConfig();
+                toast(yields[idx].active ? 'Rendimiento activado' : 'Rendimiento pausado');
+            }
+            vib();
+        }
+
+        function openIncomeYieldModal(editId) {
+            const yields = getIncomeYields();
+            const iy = editId ? yields.find(y => y.id === editId) : null;
+            document.getElementById('iyModalTitle').textContent = iy ? 'EDITAR RENDIMIENTO' : 'AGREGAR RENDIMIENTO';
+            document.getElementById('iyEditId').value = editId || '';
+            document.getElementById('iyName').value = iy?.name || '';
+            document.getElementById('iyCapital').value = iy?.capital || '';
+            document.getElementById('iyRate').value = iy?.rate || '';
+            document.getElementById('iyFreq').value = iy?.frequency || 'daily';
+            const cur = iy?.currency || 'ARS';
+            document.getElementById('iyCurARS').className = 'currency-btn' + (cur === 'ARS' ? ' active' : '');
+            document.getElementById('iyCurUSD').className = 'currency-btn' + (cur === 'USD' ? ' active' : '');
+            window._iyCurrency = cur;
+            const actionsDiv = document.getElementById('iyActions');
+            const existingDel = actionsDiv.querySelector('.delete');
+            if (existingDel) existingDel.remove();
+            if (iy) {
+                const delBtn = document.createElement('button');
+                delBtn.className = 'tx-action-btn delete';
+                delBtn.textContent = 'ELIMINAR';
+                delBtn.onclick = () => {
+                    let y = getIncomeYields().filter(x => x.id !== editId);
+                    setIncomeYields(y);
+                    closeModal('iyModal');
+                    toast('Rendimiento eliminado');
+                    renderIncomeYieldConfig();
+                };
+                actionsDiv.appendChild(delBtn);
+            }
+            document.getElementById('iyModal').classList.add('show');
+            vib();
+        }
+
+        function saveIncomeYield() {
+            const editId = document.getElementById('iyEditId').value;
+            const name = document.getElementById('iyName').value.trim();
+            const capital = parseAmount(document.getElementById('iyCapital').value);
+            const rate = parseAmount(document.getElementById('iyRate').value);
+            const frequency = document.getElementById('iyFreq').value;
+            const currency = window._iyCurrency || 'ARS';
+            if (!name) { toast('Ingres\u00e1 un nombre'); return }
+            if (!capital || capital <= 0) { toast('Ingres\u00e1 un capital v\u00e1lido'); return }
+            if (!rate || rate <= 0) { toast('Ingres\u00e1 una tasa v\u00e1lida'); return }
+            let yields = getIncomeYields();
+            if (editId) {
+                const idx = yields.findIndex(y => y.id === editId);
+                if (idx !== -1) {
+                    yields[idx] = { ...yields[idx], name, capital, rate, frequency, currency };
+                }
+            } else {
+                yields.push({
+                    id: genId(),
+                    name, capital, rate, frequency, currency,
+                    active: true,
+                    totalEarned: 0,
+                    lastCalc: new Date().toISOString(),
+                    createdAt: new Date().toISOString()
+                });
+            }
+            setIncomeYields(yields);
+            closeModal('iyModal');
+            toast(`Rendimiento ${editId ? 'actualizado' : 'creado'}`);
+            renderIncomeYieldConfig();
+        }
+
+        // ═══════════════════════════════════════════
         // UTILITIES
         // ═══════════════════════════════════════════
 
@@ -3128,7 +4351,7 @@
         // ═══════════════════════════════════════════
 
         const QUOTES_CACHE_KEY = 'ft_quotes_cache';
-        const QUOTES_CACHE_TTL = 5 * 60 * 1000;
+        const QUOTES_CACHE_TTL = 10 * 60 * 1000; // 10 minutos
         const CRYPTO_LIST_KEY = 'ft_crypto_watchlist';
         const STOCKS_KEY = 'ft_stocks_watchlist';
 
@@ -3198,6 +4421,13 @@
                 if (cached) { renderWatchlist('homeWatchlist', cached); renderWatchlist('ahorrosWatchlist', cached); return }
             }
 
+            // Show loading state
+            const loadingHtml = '<div class="wl-loading">Cargando cotizaciones...</div>';
+            const hw = document.getElementById('homeWatchlist');
+            const aw = document.getElementById('ahorrosWatchlist');
+            if (hw && !hw.innerHTML) hw.innerHTML = loadingHtml;
+            if (aw && !aw.innerHTML) aw.innerHTML = loadingHtml;
+
             const data = { dolar: [], crypto: [], fetchedAt: new Date().toISOString() };
 
             // Fetch dólar
@@ -3213,27 +4443,43 @@
                 }
             } catch (e) { console.warn('DolarAPI error:', e) }
 
-            // Fetch crypto
+            // Fetch crypto con retry
             const cryptoList = getCryptoWatchlist();
             if (cryptoList.length) {
-                try {
-                    const ids = cryptoList.map(c => c.id).join(',');
-                    const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`);
-                    if (res.ok) {
-                        const prices = await res.json();
-                        cryptoList.forEach(c => {
-                            if (prices[c.id]) {
-                                data.crypto.push({
-                                    id: c.id,
-                                    symbol: c.symbol,
-                                    name: c.name,
-                                    usd: prices[c.id].usd,
-                                    change24h: prices[c.id].usd_24h_change
-                                });
-                            }
-                        });
-                    }
-                } catch (e) { console.warn('CoinGecko error:', e) }
+                const ids = cryptoList.map(c => c.id).join(',');
+                let cryptoSuccess = false;
+
+                // Intentar hasta 2 veces
+                for (let attempt = 0; attempt < 2 && !cryptoSuccess; attempt++) {
+                    try {
+                        if (attempt > 0) await new Promise(r => setTimeout(r, 1500)); // Wait before retry
+                        const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`);
+                        if (res.ok) {
+                            const prices = await res.json();
+                            cryptoList.forEach(c => {
+                                if (prices[c.id]) {
+                                    data.crypto.push({
+                                        id: c.id,
+                                        symbol: c.symbol,
+                                        name: c.name,
+                                        usd: prices[c.id].usd,
+                                        change24h: prices[c.id].usd_24h_change
+                                    });
+                                }
+                            });
+                            cryptoSuccess = true;
+                        } else if (res.status === 429) {
+                            console.warn('CoinGecko rate limited, attempt', attempt + 1);
+                        }
+                    } catch (e) { console.warn('CoinGecko error, attempt', attempt + 1, e) }
+                }
+
+                // Si falló, mostrar las monedas sin precio
+                if (!cryptoSuccess) {
+                    cryptoList.forEach(c => {
+                        data.crypto.push({ id: c.id, symbol: c.symbol, name: c.name, usd: null, change24h: null });
+                    });
+                }
             }
 
             setCachedQuotes(data);
@@ -3307,6 +4553,13 @@
                     const ch = c.change24h ? c.change24h.toFixed(1) : '0';
                     const cls = parseFloat(ch) >= 0 ? 'up' : 'down';
                     const sign = parseFloat(ch) >= 0 ? '+' : '';
+                    const priceStr = c.usd != null
+                        ? `US$${c.usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: c.usd < 1 ? 6 : 2 })}`
+                        : 'Cargando...';
+                    const changeHtml = c.change24h != null
+                        ? `<span class="wl-row-change ${cls}">${sign}${ch}%</span>`
+                        : '<span class="wl-row-change neutral">--</span>';
+
                     html += `<div class="wl-row">
                         <div class="wl-row-left">
                             <span class="wl-row-symbol">${c.symbol}</span>
@@ -3314,8 +4567,8 @@
                         </div>
                         <div class="wl-row-right" style="flex-direction:row;gap:8px;align-items:center">
                             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px">
-                                <span class="wl-row-price" style="color:var(--yellow)">US$${c.usd?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: c.usd < 1 ? 6 : 2 }) || '—'}</span>
-                                <span class="wl-row-change ${cls}">${sign}${ch}%</span>
+                                <span class="wl-row-price" style="color:var(--yellow)">${priceStr}</span>
+                                ${changeHtml}
                             </div>
                             <button class="wl-row-remove" onclick="event.stopPropagation();removeCrypto('${c.id}')" title="Quitar">${getIcon('close')}</button>
                         </div>
@@ -3458,8 +4711,8 @@
         function saveStock() {
             const editId = document.getElementById('stockEditId').value;
             const ticker = document.getElementById('stockTicker').value.trim().toUpperCase();
-            const price = parseFloat(document.getElementById('stockPrice').value);
-            const change = parseFloat(document.getElementById('stockChange').value) || 0;
+            const price = parseAmount(document.getElementById('stockPrice').value);
+            const change = parseAmount(document.getElementById('stockChange').value) || 0;
 
             if (!ticker) { toast('Ingresá un ticker'); return }
             if (!price || price <= 0) { toast('Ingresá un precio válido'); return }
@@ -3541,6 +4794,9 @@
             document.querySelectorAll('.home-card-icon').forEach((el, i) => {
                 el.innerHTML = getIcon(homeIcons[i]);
             });
+
+            // Render budget alerts
+            renderHomeAlerts();
 
             // Fetch cotizaciones
             fetchWatchlistData();
@@ -3627,6 +4883,9 @@
                 localStorage.removeItem('ft_transactions');
                 localStorage.removeItem('ft_savings');
                 localStorage.removeItem(QUOTES_CACHE_KEY);
+                localStorage.removeItem(BUDGETS_KEY);
+                localStorage.removeItem(INCOME_YIELDS_KEY);
+                localStorage.removeItem(YIELD_LAST_RUN_KEY);
                 localStorage.removeItem(CRYPTO_LIST_KEY);
                 localStorage.removeItem(STOCKS_KEY);
                 toast('Todos los datos eliminados');
@@ -3675,6 +4934,9 @@
 
         // Render menu icons
         renderMenuIcons();
+
+        // Process pending yields (compound interest)
+        processYields();
 
         // Render initial page
         renderHome();
