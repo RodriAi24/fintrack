@@ -2072,6 +2072,7 @@
             <div class="side-menu-title">MENÚ</div>
             <button class="side-menu-close" onclick="toggleMenu()"></button>
         </div>
+        <button class="side-menu-item" onclick="toggleMenu();goPage('convertidor')">Convertidor</button>
         <button class="side-menu-item" onclick="toggleMenu();goPage('settings')">Configuración</button>
         <div class="side-menu-divider"></div>
         <button class="side-menu-item" onclick="toggleMenu();exportData('json')">Exportar JSON</button>
@@ -2099,39 +2100,6 @@
             <div class="stitle">BALANCE RÁPIDO</div>
             <div class="home-balance" id="homeBalance"></div>
 
-            <div class="stitle">COTIZACIONES</div>
-            <div class="watchlist" id="homeWatchlist"></div>
-
-            <div class="stitle">CONVERTIR</div>
-            <div class="converter-widget" id="converterWidget">
-                <div class="converter-row">
-                    <div class="form-group">
-                        <label class="form-label">Monto</label>
-                        <input type="text" class="form-input" id="convAmount" placeholder="1000" inputmode="decimal"
-                            oninput="runConversion()">
-                    </div>
-                    <div class="form-group" style="flex:0.8">
-                        <label class="form-label">De</label>
-                        <select class="form-input" id="convFrom" onchange="runConversion()">
-                            <option value="USD">USD</option>
-                            <option value="ARS">ARS</option>
-                            <option value="BTC">BTC</option>
-                            <option value="ETH">ETH</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="flex:0.8">
-                        <label class="form-label">A</label>
-                        <select class="form-input" id="convTo" onchange="runConversion()">
-                            <option value="ARS">ARS</option>
-                            <option value="USD">USD</option>
-                            <option value="BTC">BTC</option>
-                            <option value="ETH">ETH</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="converter-result" id="convResult">—</div>
-            </div>
-
             <div class="stitle">SECCIONES</div>
             <div class="home-grid">
                 <div class="home-card" onclick="goPage('gastos')">
@@ -2154,9 +2122,13 @@
                     <div class="home-card-name">AHORROS</div>
                     <div class="home-card-sub" id="homeAhorrosSub">Tu patrimonio y activos</div>
                 </div>
+                <div class="home-card" onclick="goPage('cotizaciones')">
+                    <div class="home-card-icon"></div>
+                    <div class="home-card-name">COTIZACIONES</div>
+                    <div class="home-card-sub">Dólar, crypto y acciones</div>
+                </div>
             </div>
         </div>
-
         <!-- PAGE: GASTOS -->
         <div class="page" id="page-gastos">
             <div class="back-row">
@@ -2415,6 +2387,57 @@
             <button class="btn-submit income-btn" style="margin-top:8px" onclick="openSavingsModal()">
                 AGREGAR ACTIVO
             </button>
+        </div>
+
+        <!-- PAGE: COTIZACIONES -->
+        <div class="page" id="page-cotizaciones">
+            <div class="back-row">
+                <button class="back-btn" onclick="goPage('home')">←</button>
+                <div class="back-title">COTIZA<span style="color:var(--accent)">CIONES</span></div>
+            </div>
+            <div class="watchlist" id="cotizacionesWatchlist"></div>
+        </div>
+
+        <!-- PAGE: CONVERTIDOR -->
+        <div class="page" id="page-convertidor">
+            <div class="back-row">
+                <button class="back-btn" onclick="goPage('home')">←</button>
+                <div class="back-title">CONVER<span style="color:var(--accent)">TIDOR</span></div>
+            </div>
+
+            <div class="converter-widget" style="margin-top:8px">
+                <div class="converter-row">
+                    <div class="form-group">
+                        <label class="form-label">Monto</label>
+                        <input type="text" class="form-input" id="convAmount" placeholder="1000" inputmode="decimal"
+                            oninput="runConversion()">
+                    </div>
+                    <div class="form-group" style="flex:0.8">
+                        <label class="form-label">De</label>
+                        <select class="form-input" id="convFrom" onchange="runConversion()">
+                            <option value="USD">USD</option>
+                            <option value="ARS">ARS</option>
+                            <option value="BTC">BTC</option>
+                            <option value="ETH">ETH</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:0.8">
+                        <label class="form-label">A</label>
+                        <select class="form-input" id="convTo" onchange="runConversion()">
+                            <option value="ARS">ARS</option>
+                            <option value="USD">USD</option>
+                            <option value="BTC">BTC</option>
+                            <option value="ETH">ETH</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="converter-result" id="convResult">—</div>
+            </div>
+
+            <div style="padding:16px;font-size:11px;color:var(--ink3);line-height:1.6">
+                Tipos de cambio: dólar blue via DolarApi.com. Crypto via CoinGecko. Los valores se actualizan cada 10
+                minutos.
+            </div>
         </div>
 
         <!-- PAGE: SETTINGS -->
@@ -2880,6 +2903,8 @@
             if (p === 'registrar') renderRegForm();
             if (p === 'balance') renderBalance();
             if (p === 'ahorros') renderAhorros();
+            if (p === 'cotizaciones') renderCotizaciones();
+            if (p === 'convertidor') fetchWatchlistData(); // Ensure rates are loaded for converter
 
             window.scrollTo(0, 0);
             vib();
@@ -3326,7 +3351,13 @@
                         const txs = getTx().filter(t => t.type === txType);
                         const filtered = filterByPeriod(txs, period);
                         const chartType = canvas.id.includes('Donut') ? 'donut' : canvas.id.includes('Bar') ? 'bar' : 'line';
-                        setTimeout(() => renderChart(canvas.id, filtered, chartType, txType, () => { }), 100);
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => {
+                                if (canvas.offsetHeight > 0) {
+                                    renderChart(canvas.id, filtered, chartType, txType, () => { });
+                                }
+                            });
+                        });
                     }
                 }
             }
@@ -3336,30 +3367,38 @@
         function renderGastosChart() {
             const txs = getTx().filter(t => t.type === 'expense');
             const filtered = filterByPeriod(txs, gastosChartTimePeriod);
-            // Renderizar todos los charts expandidos
-            document.querySelectorAll('#gastos-graficos .chart-section').forEach(section => {
-                const body = section.querySelector('.chart-body');
-                const canvas = body.querySelector('canvas');
-                if (!body.classList.contains('collapsed') && canvas) {
-                    const type = canvas.id.includes('Donut') ? 'donut' : canvas.id.includes('Bar') ? 'bar' : 'line';
-                    setTimeout(() => renderChart(canvas.id, filtered, type, 'expense', () => { }), 50);
-                }
-            });
             document.querySelectorAll('#gastos-graficos .toggle-arrow').forEach(el => { el.innerHTML = getIcon('chevron_down') });
+            // Wait for DOM to settle then render visible charts
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    document.querySelectorAll('#gastos-graficos .chart-section').forEach(section => {
+                        const body = section.querySelector('.chart-body');
+                        const canvas = body.querySelector('canvas');
+                        if (!body.classList.contains('collapsed') && canvas && canvas.offsetHeight > 0) {
+                            const type = canvas.id.includes('Donut') ? 'donut' : canvas.id.includes('Bar') ? 'bar' : 'line';
+                            renderChart(canvas.id, filtered, type, 'expense', () => { });
+                        }
+                    });
+                });
+            });
         }
 
         function renderIngresosChart() {
             const txs = getTx().filter(t => t.type === 'income');
             const filtered = filterByPeriod(txs, ingresosChartTimePeriod);
-            document.querySelectorAll('#ingresos-graficos .chart-section').forEach(section => {
-                const body = section.querySelector('.chart-body');
-                const canvas = body.querySelector('canvas');
-                if (!body.classList.contains('collapsed') && canvas) {
-                    const type = canvas.id.includes('Donut') ? 'donut' : canvas.id.includes('Bar') ? 'bar' : 'line';
-                    setTimeout(() => renderChart(canvas.id, filtered, type, 'income', () => { }), 50);
-                }
-            });
             document.querySelectorAll('#ingresos-graficos .toggle-arrow').forEach(el => { el.innerHTML = getIcon('chevron_down') });
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    document.querySelectorAll('#ingresos-graficos .chart-section').forEach(section => {
+                        const body = section.querySelector('.chart-body');
+                        const canvas = body.querySelector('canvas');
+                        if (!body.classList.contains('collapsed') && canvas && canvas.offsetHeight > 0) {
+                            const type = canvas.id.includes('Donut') ? 'donut' : canvas.id.includes('Bar') ? 'bar' : 'line';
+                            renderChart(canvas.id, filtered, type, 'income', () => { });
+                        }
+                    });
+                });
+            });
         }
 
         function renderChart(canvasId, txs, chartType, txType, setInstance) {
@@ -3670,8 +3709,6 @@
         </div>`;
             }).join('');
 
-            // Fetch cotizaciones
-            fetchWatchlistData();
         }
 
         function openSavingsModal(editId = null) {
@@ -4418,7 +4455,7 @@
         async function fetchWatchlistData(forceRefresh = false) {
             if (!forceRefresh) {
                 const cached = getCachedQuotes();
-                if (cached) { renderWatchlist('homeWatchlist', cached); renderWatchlist('ahorrosWatchlist', cached); return }
+                if (cached) { renderWatchlist('cotizacionesWatchlist', cached); renderWatchlist('ahorrosWatchlist', cached); return }
             }
 
             // Show loading state
@@ -4483,14 +4520,14 @@
             }
 
             setCachedQuotes(data);
-            renderWatchlist('homeWatchlist', data);
+            renderWatchlist('cotizacionesWatchlist', data);
             renderWatchlist('ahorrosWatchlist', data);
         }
 
         function toggleWlSection(section) {
             wlCollapsed[section] = !wlCollapsed[section];
             const cached = getCachedQuotes();
-            if (cached) { renderWatchlist('homeWatchlist', cached); renderWatchlist('ahorrosWatchlist', cached) }
+            if (cached) { renderWatchlist('cotizacionesWatchlist', cached); renderWatchlist('ahorrosWatchlist', cached) }
             vib();
         }
 
@@ -4755,6 +4792,11 @@
         // HOME PAGE
         // ═══════════════════════════════════════════
 
+        function renderCotizaciones() {
+            fetchWatchlistData();
+            // renderWatchlist will be called by fetchWatchlistData for 'cotizacionesWatchlist'
+        }
+
         function renderHome() {
             const txs = getTx();
             const now = new Date();
@@ -4790,7 +4832,7 @@
             document.getElementById('homeAhorrosSub').textContent = savings.length ? `${savings.length} activos` : 'Tu patrimonio';
 
             // Inject SVG icons into home cards
-            const homeIcons = ['expense_nav', 'income_nav', 'balance_nav', 'savings_nav'];
+            const homeIcons = ['expense_nav', 'income_nav', 'balance_nav', 'savings_nav', 'inversiones'];
             document.querySelectorAll('.home-card-icon').forEach((el, i) => {
                 el.innerHTML = getIcon(homeIcons[i]);
             });
@@ -4798,8 +4840,8 @@
             // Render budget alerts
             renderHomeAlerts();
 
-            // Fetch cotizaciones
-            fetchWatchlistData();
+
+
         }
 
         // ═══════════════════════════════════════════
@@ -4821,7 +4863,7 @@
             if (closeBtn) closeBtn.innerHTML = getIcon('close');
             // Menu items
             const items = document.querySelectorAll('.side-menu-item');
-            const menuIcons = ['settings', 'download', 'download', 'upload', 'trash'];
+            const menuIcons = ['efectivo', 'settings', 'download', 'download', 'upload', 'trash'];
             items.forEach((item, i) => {
                 if (menuIcons[i]) item.insertAdjacentHTML('afterbegin', getIcon(menuIcons[i]));
             });
