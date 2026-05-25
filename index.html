@@ -30,33 +30,33 @@
         }
 
         :root {
-            --bg: #0a1218;
-            --bg2: #0d1820;
-            --card: #0f1923;
-            --card2: #142230;
-            --surface: #1a2f3f;
-            --ink: #e0e8ef;
-            --ink2: #8aa8bc;
-            --ink3: #4a6a7f;
-            --ink4: #1a2f3f;
-            --accent: #4fc3f7;
-            --accent2: #29b6f6;
-            --accent-dim: rgba(79, 195, 247, 0.1);
-            --green: #00e676;
-            --green2: #00c853;
-            --green-dim: rgba(0, 230, 118, 0.1);
-            --red: #ff5252;
-            --red2: #ff1744;
-            --red-dim: rgba(255, 82, 82, 0.1);
-            --yellow: #ffd740;
-            --yellow-dim: rgba(255, 215, 64, 0.1);
-            --purple: #b388ff;
-            --purple-dim: rgba(179, 136, 255, 0.1);
-            --orange: #ffab40;
-            --border: #1a2f3f;
-            --radius: 24px;
-            --rsm: 16px;
-            --rxs: 12px;
+            --bg: #0a0f14;
+            --bg2: #0d1318;
+            --card: #131a21;
+            --card2: #1a232b;
+            --surface: #1f2932;
+            --ink: #e8eef3;
+            --ink2: #9aacbb;
+            --ink3: #6a8090;
+            --ink4: #243038;
+            --accent: #00d97e;
+            --accent2: #00b86b;
+            --accent-dim: rgba(0, 217, 126, 0.12);
+            --green: #00d97e;
+            --green2: #00b86b;
+            --green-dim: rgba(0, 217, 126, 0.12);
+            --red: #e74c5e;
+            --red2: #d63a4d;
+            --red-dim: rgba(231, 76, 94, 0.12);
+            --yellow: #f5b942;
+            --yellow-dim: rgba(245, 185, 66, 0.12);
+            --purple: #a684e5;
+            --purple-dim: rgba(166, 132, 229, 0.12);
+            --orange: #ed9445;
+            --border: #243038;
+            --radius: 20px;
+            --rsm: 12px;
+            --rxs: 8px;
             --ease: cubic-bezier(.32, .72, 0, 1);
         }
 
@@ -1888,18 +1888,26 @@
             gap: 6px;
         }
 
-        .ess-btn .ess-ico { display: inline-flex; opacity: .55; }
+        .ess-btn .ess-ico {
+            display: inline-flex;
+            opacity: .55;
+        }
+
         .ess-btn.nec.active {
             background: rgba(0, 230, 118, 0.08);
             border-color: var(--green);
             color: var(--green);
         }
+
         .ess-btn.cap.active {
             background: rgba(255, 82, 82, 0.08);
             border-color: var(--red);
             color: var(--red);
         }
-        .ess-btn.active .ess-ico { opacity: 1; }
+
+        .ess-btn.active .ess-ico {
+            opacity: 1;
+        }
 
         .ess-hint {
             font-size: 10px;
@@ -1978,7 +1986,9 @@
             letter-spacing: 1.5px;
         }
 
-        .qa-modal-amount:focus { outline: none; }
+        .qa-modal-amount:focus {
+            outline: none;
+        }
 
         .qa-modal-info {
             text-align: center;
@@ -2009,7 +2019,9 @@
             justify-content: center;
         }
 
-        .home-score-circle svg { transform: rotate(-90deg); }
+        .home-score-circle svg {
+            transform: rotate(-90deg);
+        }
 
         .home-score-circle .score-text {
             position: absolute;
@@ -2018,7 +2030,11 @@
             letter-spacing: 0.5px;
         }
 
-        .home-score-info { flex: 1; min-width: 0; }
+        .home-score-info {
+            flex: 1;
+            min-width: 0;
+        }
+
         .home-score-label {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 13px;
@@ -2033,7 +2049,10 @@
             line-height: 1.5;
         }
 
-        .home-score-detail strong { color: var(--ink); font-weight: 600; }
+        .home-score-detail strong {
+            color: var(--ink);
+            font-weight: 600;
+        }
 
         /* Daily limit bar */
         .home-daily-card {
@@ -2064,8 +2083,13 @@
             font-weight: 600;
         }
 
-        .home-daily-val.warn { color: var(--yellow); }
-        .home-daily-val.over { color: var(--red); }
+        .home-daily-val.warn {
+            color: var(--yellow);
+        }
+
+        .home-daily-val.over {
+            color: var(--red);
+        }
 
         .home-daily-bar {
             height: 6px;
@@ -2081,8 +2105,13 @@
             transition: width .4s var(--ease);
         }
 
-        .home-daily-bar-inner.warn { background: var(--yellow); }
-        .home-daily-bar-inner.over { background: var(--red); }
+        .home-daily-bar-inner.warn {
+            background: var(--yellow);
+        }
+
+        .home-daily-bar-inner.over {
+            background: var(--red);
+        }
 
         .home-daily-sub {
             font-size: 10px;
@@ -2102,7 +2131,9 @@
             cursor: pointer;
         }
 
-        .home-daily-empty:active { background: var(--surface); }
+        .home-daily-empty:active {
+            background: var(--surface);
+        }
 
         /* Compact home grid for V10 */
         .home-grid-compact {
@@ -2125,8 +2156,15 @@
             transition: all .15s var(--ease);
         }
 
-        .home-card-mini:active { transform: scale(0.96); background: var(--surface); }
-        .home-card-mini .hcm-icon { color: var(--accent); }
+        .home-card-mini:active {
+            transform: scale(0.96);
+            background: var(--surface);
+        }
+
+        .home-card-mini .hcm-icon {
+            color: var(--accent);
+        }
+
         .home-card-mini .hcm-name {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 11px;
@@ -2147,7 +2185,9 @@
             cursor: pointer;
         }
 
-        .recurring-card.disabled { opacity: 0.5; }
+        .recurring-card.disabled {
+            opacity: 0.5;
+        }
 
         .recurring-icon {
             width: 36px;
@@ -2161,9 +2201,23 @@
             flex-shrink: 0;
         }
 
-        .recurring-info { flex: 1; min-width: 0; }
-        .recurring-name { font-size: 13px; font-weight: 600; color: var(--ink); }
-        .recurring-meta { font-size: 10px; color: var(--ink3); margin-top: 2px; }
+        .recurring-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .recurring-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .recurring-meta {
+            font-size: 10px;
+            color: var(--ink3);
+            margin-top: 2px;
+        }
+
         .recurring-amount {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 16px;
@@ -2183,7 +2237,11 @@
             font-family: 'Montserrat', sans-serif;
         }
 
-        .recurring-toggle.on { background: var(--green-dim); color: var(--green); border-color: var(--green-dim); }
+        .recurring-toggle.on {
+            background: var(--green-dim);
+            color: var(--green);
+            border-color: var(--green-dim);
+        }
 
         /* Auto tag on tx list */
         .tx-auto-tag {
@@ -2206,14 +2264,17 @@
             margin-bottom: 12px;
         }
 
-        .edit-ess-toggle .ess-btn { padding: 8px 4px; font-size: 11px; }
+        .edit-ess-toggle .ess-btn {
+            padding: 8px 4px;
+            font-size: 11px;
+        }
 
         /* === V10: Caprichos summary card === */
         .caprichos-card {
             margin: 0 16px 12px;
             padding: 14px 16px;
             border-radius: var(--rsm);
-            background: linear-gradient(135deg, rgba(255,82,82,0.06), rgba(255,82,82,0.02));
+            background: linear-gradient(135deg, rgba(255, 82, 82, 0.06), rgba(255, 82, 82, 0.02));
             border: 1px solid var(--red-dim);
         }
 
@@ -2267,8 +2328,17 @@
             margin-bottom: 10px;
         }
 
-        .ess-breakdown-nec { background: var(--green); height: 100%; transition: width .4s var(--ease); }
-        .ess-breakdown-cap { background: var(--red); height: 100%; transition: width .4s var(--ease); }
+        .ess-breakdown-nec {
+            background: var(--green);
+            height: 100%;
+            transition: width .4s var(--ease);
+        }
+
+        .ess-breakdown-cap {
+            background: var(--red);
+            height: 100%;
+            transition: width .4s var(--ease);
+        }
 
         .ess-breakdown-legend {
             display: flex;
@@ -2284,7 +2354,10 @@
             color: var(--ink2);
         }
 
-        .ess-breakdown-item strong { color: var(--ink); font-weight: 700; }
+        .ess-breakdown-item strong {
+            color: var(--ink);
+            font-weight: 700;
+        }
 
         .ess-breakdown-dot {
             width: 10px;
@@ -2294,8 +2367,13 @@
             flex-shrink: 0;
         }
 
-        .ess-breakdown-dot.nec { background: var(--green); }
-        .ess-breakdown-dot.cap { background: var(--red); }
+        .ess-breakdown-dot.nec {
+            background: var(--green);
+        }
+
+        .ess-breakdown-dot.cap {
+            background: var(--red);
+        }
 
         .ess-breakdown-amt {
             margin-left: auto;
@@ -2483,6 +2561,28 @@
             font-weight: 400;
             letter-spacing: 0
         }
+
+        .note-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 4px 16px 0;
+        }
+
+        .note-suggestion-chip {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 4px 10px;
+            font-size: 11px;
+            color: var(--ink2);
+            cursor: pointer;
+        }
+
+        .note-suggestion-chip:active {
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
     </style>
 </head>
 
@@ -2515,7 +2615,6 @@
             <div class="side-menu-title">MENÚ</div>
             <button class="side-menu-close" onclick="toggleMenu()"></button>
         </div>
-        <button class="side-menu-item" onclick="toggleMenu();goPage('recurrentes')">Recurrentes</button>
         <button class="side-menu-item" onclick="toggleMenu();goPage('convertidor')">Convertidor</button>
         <button class="side-menu-item" onclick="toggleMenu();goPage('settings')">Configuración</button>
         <div class="side-menu-divider"></div>
@@ -2584,9 +2683,9 @@
                     <div class="hcm-icon" data-ico="inversiones"></div>
                     <div class="hcm-name">COTIZ.</div>
                 </div>
-                <div class="home-card-mini" onclick="goPage('recurrentes')">
-                    <div class="hcm-icon" data-ico="refresh"></div>
-                    <div class="hcm-name">RECURR.</div>
+                <div class="home-card-mini" onclick="goPage('analisis')">
+                    <div class="hcm-icon" data-ico="trending_up"></div>
+                    <div class="hcm-name">ANÁLISIS</div>
                 </div>
             </div>
         </div>
@@ -2601,7 +2700,7 @@
                 <button class="sub-tab active" onclick="switchSubTab('gastos','resumen',this)">Resumen</button>
                 <button class="sub-tab" onclick="switchSubTab('gastos','historial',this)">Historial</button>
                 <button class="sub-tab" onclick="switchSubTab('gastos','graficos',this)">Gráficos</button>
-                <button class="sub-tab" onclick="switchSubTab('gastos','presupuestos',this)">Presupuestos</button>
+                <button class="sub-tab" onclick="switchSubTab('gastos','recurrentes',this)">Recurrentes</button>
             </div>
 
             <!-- Gastos Resumen -->
@@ -2623,7 +2722,7 @@
                     <select class="filter-select" id="gastosFilterEss" onchange="renderGastosHistorial()">
                         <option value="all">Todos</option>
                         <option value="essential">Necesarios</option>
-                        <option value="discretionary">🛍️ Caprichos</option>
+                        <option value="discretionary">Caprichos</option>
                     </select>
                     <select class="filter-select" id="gastosSortOrder" onchange="renderGastosHistorial()">
                         <option value="desc">Más recientes</option>
@@ -2680,13 +2779,19 @@
             </div>
 
             <!-- Gastos Presupuestos -->
-            <div id="gastos-presupuestos" style="display:none">
-                <div class="budget-list" id="budgetList"></div>
-                <button class="btn-submit"
-                    style="background:var(--accent);box-shadow:0 4px 16px var(--accent-dim);margin-top:8px"
-                    onclick="openBudgetModal()">
-                    AGREGAR PRESUPUESTO
-                </button>
+            <!-- V11: Recurrentes movido como sub-tab -->
+            <div id="gastos-recurrentes" style="display:none">
+                <div style="padding:0 16px 12px;font-size:11px;color:var(--ink3);line-height:1.6">
+                    Gastos automáticos que se registran solos cada mes (alquiler, suscripciones, etc).
+                    Se agregan al iniciar la app si pasó el día configurado.
+                </div>
+                <div id="recurringList"></div>
+                <div style="padding:12px 16px">
+                    <button class="btn-submit" style="background:var(--accent);color:#000;width:100%"
+                        onclick="openRecurringModal()">
+                        + AGREGAR RECURRENTE
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -2830,7 +2935,11 @@
             <!-- Note -->
             <div class="form-group">
                 <label class="form-label">Nota (opcional)</label>
-                <input type="text" class="form-input" id="regNote" placeholder="Descripción breve..." maxlength="100">
+                <input type="text" class="form-input" id="regNote" placeholder="Descripción breve..." maxlength="100"
+                    oninput="updateNoteSuggestions('reg')">
+                <div id="regNoteSuggestions" class="note-suggestions"></div>
+                <div id="regRuleIndicator"
+                    style="display:none; padding:4px 16px 0; font-size:10px; color:var(--accent);"></div>
             </div>
 
             <!-- Submit -->
@@ -2871,17 +2980,34 @@
                 <div class="back-title">AHOR<span style="color:var(--accent)">ROS</span></div>
             </div>
 
-            <div class="summary-row" id="ahorrosSummary"></div>
+            <div class="sub-tabs" id="ahorrosTabs">
+                <button class="sub-tab active" onclick="switchSubTab('ahorros','resumen',this)">Resumen</button>
+                <button class="sub-tab" onclick="switchSubTab('ahorros','metas',this)">Metas</button>
+            </div>
 
-            <div class="stitle">COTIZACIONES</div>
-            <div class="watchlist" id="ahorrosWatchlist"></div>
+            <div id="ahorros-resumen">
+                <div class="summary-row" id="ahorrosSummary"></div>
 
-            <div class="stitle">MIS ACTIVOS</div>
-            <div id="ahorrosList"></div>
+                <div class="stitle">COTIZACIONES</div>
+                <div class="watchlist" id="ahorrosWatchlist"></div>
 
-            <button class="btn-submit income-btn" style="margin-top:8px" onclick="openSavingsModal()">
-                AGREGAR ACTIVO
-            </button>
+                <div class="stitle">MIS ACTIVOS</div>
+                <div id="ahorrosList"></div>
+
+                <button class="btn-submit income-btn" style="margin-top:8px" onclick="openSavingsModal()">
+                    AGREGAR ACTIVO
+                </button>
+            </div>
+
+            <div id="ahorros-metas" style="display:none">
+                <div id="ahorrosMetasList" style="padding:0 16px"></div>
+                <div style="padding:12px 16px">
+                    <button class="btn-submit" style="background:var(--accent);color:#000;width:100%"
+                        onclick="openGoalModal()">
+                        + NUEVA META
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- PAGE: COTIZACIONES -->
@@ -2943,15 +3069,17 @@
             </div>
 
             <!-- V10: Daily limit -->
-            <div class="stitle">LÍMITE DIARIO DE CAPRICHOS</div>
+            <div class="stitle">LÍMITE DIARIO DECAPRICHOS</div>
             <div style="padding:0 16px 8px">
                 <div class="ft-card" id="dailyLimitCard" style="cursor:pointer" onclick="openDailyLimitModal()">
                     <div style="display:flex;justify-content:space-between;align-items:center">
                         <div>
-                            <div style="font-size:13px;color:var(--ink);font-weight:600" id="dlConfigVal">Sin definir</div>
+                            <div style="font-size:13px;color:var(--ink);font-weight:600" id="dlConfigVal">Sin definir
+                            </div>
                             <div style="font-size:10px;color:var(--ink3);margin-top:2px">Tocá para configurar</div>
                         </div>
-                        <div style="color:var(--accent)">›</div>
+                        <div style="color:var(--accent)"><span class="ess-ico" data-ico="chevron_right"
+                                style="display:inline-block;width:14px;height:14px;margin-top:2px;"></span></div>
                     </div>
                 </div>
             </div>
@@ -2964,10 +3092,17 @@
                     onclick="goPage('quickadd-config')">EDITAR QUICK-ADD</button>
             </div>
 
+            <!-- V11: Auto-categorization rules -->
+            <div class="stitle">REGLAS DE AUTO-CATEGORIZACIÓN</div>
+            <div style="padding:0 16px 8px">
+                <button class="btn-submit" style="background:var(--surface);border:1px solid var(--border);width:100%"
+                    onclick="goPage('rules')">GESTIONAR REGLAS</button>
+            </div>
+
             <div class="stitle">DATOS</div>
             <div style="padding:0 16px 8px">
                 <button class="btn-submit"
-                    style="background:var(--accent);box-shadow:0 4px 16px var(--accent-dim);margin:0 0 8px;width:100%"
+                    style="background:var(--accent);border: 1px solid var(--accent-dim);margin:0 0 8px;width:100%"
                     onclick="exportData('json')">EXPORTAR BACKUP (JSON)</button>
                 <button class="btn-submit"
                     style="background:var(--surface);box-shadow:none;border:1px solid var(--border);margin:0 0 8px;width:100%"
@@ -2997,27 +3132,6 @@
             </div>
         </div>
 
-        <!-- V10 PAGE: RECURRENTES -->
-        <div class="page" id="page-recurrentes">
-            <div class="back-row">
-                <button class="back-btn" onclick="goPage('home')">←</button>
-                <div class="back-title">RECUR<span style="color:var(--accent)">RENTES</span></div>
-            </div>
-
-            <div style="padding:0 16px 12px;font-size:11px;color:var(--ink3);line-height:1.6">
-                Gastos automáticos que se registran solos cada mes (alquiler, suscripciones, etc).
-                Se agregan al iniciar la app si pasó el día configurado.
-            </div>
-
-            <div id="recurringList"></div>
-
-            <div style="padding:12px 16px">
-                <button class="btn-submit" style="background:var(--accent);color:#000;width:100%" onclick="openRecurringModal()">
-                    + AGREGAR RECURRENTE
-                </button>
-            </div>
-        </div>
-
         <!-- V10.1 PAGE: QUICK-ADD CONFIG -->
         <div class="page" id="page-quickadd-config">
             <div class="back-row">
@@ -3026,10 +3140,58 @@
             </div>
 
             <div style="padding:0 16px 12px;font-size:11px;color:var(--ink3);line-height:1.6">
-                Personalizá los 4 botones de registro rápido del home. Cada uno guarda label, categoría, moneda default y tipo (necesario/capricho).
+                Personalizá los 4 botones de registro rápido del home. Cada uno guarda label, categoría, moneda default
+                y tipo (necesario/capricho).
             </div>
 
             <div class="tx-list" id="qaConfigList" style="padding:0 16px"></div>
+        </div>
+
+        <!-- V11 PAGE: RULES -->
+        <div class="page" id="page-rules">
+            <div class="back-row">
+                <button class="back-btn" onclick="goPage('settings')">←</button>
+                <div class="back-title">REG<span style="color:var(--accent)">LAS</span></div>
+            </div>
+            <div style="padding:0 16px 12px;font-size:11px;color:var(--ink3);line-height:1.6">
+                Creá reglas para asignar automáticamente la categoría y el tipo de gasto cuando la nota coincida con un
+                texto.
+            </div>
+            <div class="tx-list" id="rulesList" style="padding:0 16px"></div>
+            <div style="padding:12px 16px">
+                <button class="btn-submit" style="background:var(--accent);color:#000;width:100%"
+                    onclick="openRuleModal()">
+                    + AGREGAR REGLA
+                </button>
+            </div>
+        </div>
+
+        <!-- V11: PAGE ANÁLISIS -->
+        <div class="page" id="page-analisis">
+            <div class="back-row">
+                <button class="back-btn" onclick="goPage('home')">←</button>
+                <div class="back-title">ANÁ<span style="color:var(--accent)">LISIS</span></div>
+            </div>
+            <div class="sub-tabs" id="analisisTabs">
+                <button class="sub-tab active" onclick="switchSubTab('analisis','mes-a-mes',this)">Mes a Mes</button>
+                <button class="sub-tab" onclick="switchSubTab('analisis','este-mes',this)">Este Mes</button>
+                <button class="sub-tab" onclick="switchSubTab('analisis','presupuestos',this)">Presupuestos</button>
+            </div>
+            <div id="analisis-mes-a-mes"></div>
+            <div id="analisis-este-mes" style="display:none"></div>
+            <!-- V11: Presupuestos movido desde Gastos -->
+            <div id="analisis-presupuestos" style="display:none">
+                <div style="padding:0 16px 12px;font-size:11px;color:var(--ink3);line-height:1.6">
+                    Definí un límite mensual por categoría. La app te avisa al 80% y 100% del presupuesto.
+                </div>
+                <div class="budget-list" id="budgetList"></div>
+                <div style="padding:12px 16px">
+                    <button class="btn-submit" style="background:var(--accent);color:#000;width:100%"
+                        onclick="openBudgetModal()">
+                        + AGREGAR PRESUPUESTO
+                    </button>
+                </div>
+            </div>
         </div>
 
     </div><!-- /app -->
@@ -3098,7 +3260,11 @@
 
             <div class="form-group">
                 <label class="form-label">Nota</label>
-                <input type="text" class="form-input" id="editNote" maxlength="100">
+                <input type="text" class="form-input" id="editNote" maxlength="100"
+                    oninput="updateNoteSuggestions('edit')">
+                <div id="editNoteSuggestions" class="note-suggestions"></div>
+                <div id="editRuleIndicator"
+                    style="display:none; padding:4px 16px 0; font-size:10px; color:var(--accent);"></div>
             </div>
 
             <div class="tx-actions">
@@ -3350,14 +3516,70 @@
             <div class="modal-handle"></div>
             <div class="modal-title" id="qaTitle">GASTO RÁPIDO</div>
             <div class="qa-modal-info" id="qaInfo">—</div>
-            <input type="text" class="qa-modal-amount" id="qaAmount" placeholder="$ 0" inputmode="decimal" autocomplete="off">
+            <input type="text" class="qa-modal-amount" id="qaAmount" placeholder="$ 0" inputmode="decimal"
+                autocomplete="off">
             <div style="display:flex;gap:10px;padding:8px 16px 4px">
-                <button class="currency-btn" id="qaCurARS" style="flex:1;padding:10px" onclick="qaSetCurrency('ARS')">ARS</button>
-                <button class="currency-btn" id="qaCurUSD" style="flex:1;padding:10px" onclick="qaSetCurrency('USD')">USD</button>
+                <button class="currency-btn" id="qaCurARS" style="flex:1;padding:10px"
+                    onclick="qaSetCurrency('ARS')">ARS</button>
+                <button class="currency-btn" id="qaCurUSD" style="flex:1;padding:10px"
+                    onclick="qaSetCurrency('USD')">USD</button>
             </div>
             <div class="tx-actions" style="margin-top:8px">
                 <button class="tx-action-btn" onclick="closeModal('quickAddModal')">CANCELAR</button>
-                <button class="tx-action-btn" style="background:var(--accent);color:#000;font-weight:700" onclick="submitQuickAdd()">REGISTRAR</button>
+                <button class="tx-action-btn" style="background:var(--accent);color:#000;font-weight:700"
+                    onclick="submitQuickAdd()">REGISTRAR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Rule -->
+    <div class="modal-overlay" id="ruleModal" onclick="if(event.target===this)closeModal('ruleModal')">
+        <div class="modal" style="padding-bottom:10px;">
+            <div class="modal-handle"></div>
+            <div class="modal-title" id="ruleModalTitle">AGREGAR REGLA</div>
+            <input type="hidden" id="ruleEditId">
+
+            <div class="form-group">
+                <label class="form-label">Nombre de regla</label>
+                <input type="text" class="form-input" id="ruleName" placeholder="Ej: Supermercado Coto">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Si la nota</label>
+                <select class="form-input" id="ruleMatchType">
+                    <option value="contains">Contiene</option>
+                    <option value="exact">Es exactamente</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">El texto</label>
+                <input type="text" class="form-input" id="ruleMatchText" placeholder="Ej: coto">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Asignar categoría</label>
+                <select class="form-input" id="ruleCategory"></select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" style="padding:0;margin-bottom:6px">TIPO DE GASTO</label>
+                <div class="ess-toggle edit-ess-toggle">
+                    <button class="ess-btn nec" id="ruleEssNec" onclick="setRuleEssential(true)">
+                        <span class="ess-ico" data-ico="lock"></span>NECESARIO
+                    </button>
+                    <button class="ess-btn cap" id="ruleEssCap" onclick="setRuleEssential(false)">
+                        <span class="ess-ico" data-ico="sparkle"></span>CAPRICHO
+                    </button>
+                </div>
+            </div>
+
+            <div class="tx-actions">
+                <button class="tx-action-btn" onclick="closeModal('ruleModal')">CANCELAR</button>
+                <button class="tx-action-btn" onclick="saveRule()"
+                    style="color:var(--accent);border-color:var(--accent)">GUARDAR</button>
+                <button class="tx-action-btn delete" id="ruleDeleteBtn" onclick="deleteRule()"
+                    style="display:none">ELIMINAR</button>
             </div>
         </div>
     </div>
@@ -3367,14 +3589,16 @@
         <div class="modal" style="padding:20px">
             <div class="modal-handle"></div>
             <div class="modal-title">LÍMITE DIARIO</div>
-            <p style="color:var(--ink3);font-size:11px;padding:0 4px 16px;line-height:1.5">Monto máximo de gastos discrecionales (caprichos) por día. Te avisamos si lo superás.</p>
+            <p style="color:var(--ink3);font-size:11px;padding:0 4px 16px;line-height:1.5">Monto máximo de gastos
+                discrecionales (caprichos) por día. Te avisamos si lo superás.</p>
             <div class="form-group" style="padding:0">
                 <label class="form-label" style="padding:0">Monto (ARS)</label>
                 <input type="text" class="form-input" id="dlAmount" placeholder="5000" inputmode="decimal">
             </div>
             <div class="tx-actions" style="margin-top:12px">
                 <button class="tx-action-btn" onclick="clearDailyLimit()">QUITAR</button>
-                <button class="tx-action-btn" style="background:var(--accent);color:#000;font-weight:700" onclick="saveDailyLimit()">GUARDAR</button>
+                <button class="tx-action-btn" style="background:var(--accent);color:#000;font-weight:700"
+                    onclick="saveDailyLimit()">GUARDAR</button>
             </div>
         </div>
     </div>
@@ -3386,7 +3610,8 @@
             <div class="modal-title" id="recTitle">NUEVO RECURRENTE</div>
             <div class="form-group" style="padding:0">
                 <label class="form-label" style="padding:0">Nombre</label>
-                <input type="text" class="form-input" id="recName" placeholder="Ej: Netflix, Alquiler..." maxlength="40">
+                <input type="text" class="form-input" id="recName" placeholder="Ej: Netflix, Alquiler..."
+                    maxlength="40">
             </div>
             <div class="form-row" style="padding:0">
                 <div class="form-group" style="flex:2;padding:0">
@@ -3410,15 +3635,18 @@
                 <select class="form-input" id="recCategory"></select>
             </div>
             <div class="tx-actions" style="margin-top:12px">
-                <button class="tx-action-btn delete" id="recDeleteBtn" style="display:none" onclick="deleteRecurring()">ELIMINAR</button>
+                <button class="tx-action-btn delete" id="recDeleteBtn" style="display:none"
+                    onclick="deleteRecurring()">ELIMINAR</button>
                 <button class="tx-action-btn" onclick="closeModal('recurringModal')">CANCELAR</button>
-                <button class="tx-action-btn" style="background:var(--accent);color:#000;font-weight:700" onclick="saveRecurring()">GUARDAR</button>
+                <button class="tx-action-btn" style="background:var(--accent);color:#000;font-weight:700"
+                    onclick="saveRecurring()">GUARDAR</button>
             </div>
         </div>
     </div>
 
     <!-- V10.1: Quick-Add Config Modal -->
-    <div class="modal-overlay" id="quickAddConfigModal" onclick="if(event.target===this)closeModal('quickAddConfigModal')">
+    <div class="modal-overlay" id="quickAddConfigModal"
+        onclick="if(event.target===this)closeModal('quickAddConfigModal')">
         <div class="modal" style="padding:20px;max-height:90vh;overflow-y:auto">
             <div class="modal-handle"></div>
             <div class="modal-title">EDITAR QUICK-ADD</div>
@@ -3433,7 +3661,8 @@
             <div class="form-group" style="padding:0">
                 <label class="form-label" style="padding:0">Moneda default</label>
                 <div class="currency-toggle">
-                    <button class="currency-btn active" id="qaConfCurARS" onclick="qaConfSetCurrency('ARS')">ARS</button>
+                    <button class="currency-btn active" id="qaConfCurARS"
+                        onclick="qaConfSetCurrency('ARS')">ARS</button>
                     <button class="currency-btn" id="qaConfCurUSD" onclick="qaConfSetCurrency('USD')">USD</button>
                 </div>
             </div>
@@ -3450,7 +3679,8 @@
             </div>
             <div class="tx-actions" style="margin-top:12px">
                 <button class="tx-action-btn" onclick="closeModal('quickAddConfigModal')">CANCELAR</button>
-                <button class="tx-action-btn" style="background:var(--accent);color:#000;font-weight:700" onclick="saveQAConfig()">GUARDAR</button>
+                <button class="tx-action-btn" style="background:var(--accent);color:#000;font-weight:700"
+                    onclick="saveQAConfig()">GUARDAR</button>
             </div>
         </div>
     </div>
@@ -3461,53 +3691,59 @@
         // ═══════════════════════════════════════════
 
         const SVG_ICONS = {
-            alquiler: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
-            comida: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>',
-            transporte: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
-            suscripciones: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
-            entretenimiento: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>',
-            salud: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',
-            educacion: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>',
-            ropa: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2 12 5 8 2 3.62 3.46a2 2 0 00-1.34 1.89v1.7L7 9V22h10V9l4.72-2v-1.7a2 2 0 00-1.34-1.84z"/></svg>',
-            servicios: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
-            otros_gasto: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>',
-            trabajo: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>',
-            freelance: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
-            proyectos: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/></svg>',
-            inversiones: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
-            apuestas: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 8v8"/><path d="M8 12h8"/><circle cx="7" cy="8" r="0.5" fill="currentColor"/><circle cx="17" cy="16" r="0.5" fill="currentColor"/></svg>',
-            otros_ingreso: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>',
+            alert_triangle: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+            tag: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>',
+            chevron_right: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
+            arrow_right: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
+            arrow_left: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>',
+            trending_up: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+            alquiler: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+            comida: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>',
+            transporte: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
+            suscripciones: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
+            entretenimiento: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>',
+            salud: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',
+            educacion: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>',
+            ropa: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2 12 5 8 2 3.62 3.46a2 2 0 00-1.34 1.89v1.7L7 9V22h10V9l4.72-2v-1.7a2 2 0 00-1.34-1.84z"/></svg>',
+            servicios: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+            otros_gasto: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>',
+            trabajo: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>',
+            freelance: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+            proyectos: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/></svg>',
+            inversiones: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
+            apuestas: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 8v8"/><path d="M8 12h8"/><circle cx="7" cy="8" r="0.5" fill="currentColor"/><circle cx="17" cy="16" r="0.5" fill="currentColor"/></svg>',
+            otros_ingreso: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>',
             // Savings icons
-            efectivo: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',
-            banco: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22h18"/><path d="M3 10h18"/><path d="M12 2L2 10h20L12 2z"/><line x1="6" y1="10" x2="6" y2="22"/><line x1="10" y1="10" x2="10" y2="22"/><line x1="14" y1="10" x2="14" y2="22"/><line x1="18" y1="10" x2="18" y2="22"/></svg>',
-            crypto: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894L5.86 18.047m5.908 1.042l-.347 1.97m1.563-8.864c4.924.869 6.14-6.025 1.215-6.893m-1.215 6.893l-3.94-.694m5.155-6.2L8.29 4.26m5.908 1.042l.348-1.97M7.48 20.364l3.126-17.727"/></svg>',
-            inversion: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
-            otros_saving: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>',
+            efectivo: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',
+            banco: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22h18"/><path d="M3 10h18"/><path d="M12 2L2 10h20L12 2z"/><line x1="6" y1="10" x2="6" y2="22"/><line x1="10" y1="10" x2="10" y2="22"/><line x1="14" y1="10" x2="14" y2="22"/><line x1="18" y1="10" x2="18" y2="22"/></svg>',
+            crypto: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.767 19.089c4.924.868 6.14-6.025 1.216-6.894m-1.216 6.894L5.86 18.047m5.908 1.042l-.347 1.97m1.563-8.864c4.924.869 6.14-6.025 1.215-6.893m-1.215 6.893l-3.94-.694m5.155-6.2L8.29 4.26m5.908 1.042l.348-1.97M7.48 20.364l3.126-17.727"/></svg>',
+            inversion: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>',
+            otros_saving: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>',
             // Nav & UI icons
-            home: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
-            expense_nav: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
-            income_nav: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="4"/><polyline points="6 10 12 4 18 10"/></svg>',
-            balance_nav: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>',
-            savings_nav: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2"/><circle cx="16.5" cy="9.5" r=".5" fill="currentColor"/></svg>',
+            home: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+            expense_nav: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+            income_nav: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="4"/><polyline points="6 10 12 4 18 10"/></svg>',
+            balance_nav: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>',
+            savings_nav: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2"/><circle cx="16.5" cy="9.5" r=".5" fill="currentColor"/></svg>',
             dollar: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',
-            menu: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>',
-            settings: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
-            download: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
-            upload: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>',
-            trash: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>',
+            menu: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>',
+            settings: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
+            download: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+            upload: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>',
+            trash: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>',
             chevron_down: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
             chevron_right: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
             close: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
             // NEW V10 ICONS
-            super: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>',
-            delivery: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>',
-            salidas: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8m-4-4v4M6 3h12l-1 9a5 5 0 01-10 0L6 3z"/></svg>',
-            impulsos: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>',
-            cafe: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>',
-            zap: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
-            refresh: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>',
-            plus_circle: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
-            target: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+            super: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>',
+            delivery: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>',
+            salidas: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8m-4-4v4M6 3h12l-1 9a5 5 0 01-10 0L6 3z"/></svg>',
+            impulsos: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>',
+            cafe: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>',
+            zap: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+            refresh: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>',
+            plus_circle: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
+            target: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
             lock: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>',
             sparkle: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2z"/></svg>',
         };
@@ -3550,7 +3786,7 @@
 
         const SAVING_ICONS = { efectivo: 'efectivo', banco: 'banco', crypto: 'crypto', inversion: 'inversion', otros: 'otros_saving' };
 
-        const CHART_COLORS = ['#4fc3f7', '#00e676', '#ff5252', '#ffd740', '#b388ff', '#ffab40', '#f06292', '#4dd0e1', '#aed581', '#ff8a65'];
+        const CHART_COLORS = ['#00d97e', '#a684e5', '#e74c5e', '#f5b942', '#4fc3f7', '#ed9445', '#f06292', '#4dd0e1', '#aed581', '#ff8a65'];
 
         let currentPage = 'home';
         let regType = 'expense';
@@ -3613,6 +3849,16 @@
         // ═══════════════════════════════════════════
 
         function goPage(p) {
+            // V11: legacy redirect - recurrentes ahora es sub-tab de gastos
+            if (p === 'recurrentes') {
+                goPage('gastos');
+                setTimeout(() => {
+                    const tab = document.querySelector('#gastosTabs button[onclick*="recurrentes"]');
+                    if (tab) tab.click();
+                }, 50);
+                return;
+            }
+
             currentPage = p;
             document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(x => x.classList.remove('active'));
@@ -3629,7 +3875,8 @@
             if (p === 'balance') renderBalance();
             if (p === 'ahorros') renderAhorros();
             if (p === 'cotizaciones') renderCotizaciones();
-            if (p === 'recurrentes') renderRecurring();
+            if (p === 'analisis') renderAnalisisMesAMes();
+            if (p === 'rules') renderRules();
             if (p === 'quickadd-config') renderQuickAddConfig();
             if (p === 'settings') renderSettings();
             if (p === 'convertidor') fetchWatchlistData(); // Ensure rates are loaded for converter
@@ -3643,7 +3890,7 @@
             parent.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
             el.classList.add('active');
 
-            ['resumen', 'historial', 'graficos', 'presupuestos'].forEach(t => {
+            ['resumen', 'historial', 'graficos', 'presupuestos', 'recurrentes', 'mes-a-mes', 'este-mes', 'metas'].forEach(t => {
                 const div = document.getElementById(section + '-' + t);
                 if (div) div.style.display = t === tab ? 'block' : 'none';
             });
@@ -3656,8 +3903,17 @@
                 if (section === 'gastos') renderGastosChart();
                 if (section === 'ingresos') renderIngresosChart();
             }
-            if (tab === 'presupuestos') {
-                renderBudgets();
+            // V11: nuevos sub-tabs
+            if (tab === 'recurrentes' && section === 'gastos') {
+                renderRecurring();
+            }
+            if (section === 'analisis') {
+                if (tab === 'mes-a-mes') renderAnalisisMesAMes();
+                if (tab === 'este-mes') renderAnalisisEsteMes();
+                if (tab === 'presupuestos') renderBudgets();
+            }
+            if (tab === 'metas' && section === 'ahorros') {
+                renderAhorrosMetas();
             }
             vib();
         }
@@ -3828,7 +4084,7 @@
 
             const cats = regType === 'expense' ? EXPENSE_CATS : INCOME_CATS;
             const catName = cats.find(c => c.id === tx.category)?.name || tx.category;
-            const tag = (regType === 'expense' && !tx.essential) ? ' · 🛍️ CAPRICHO' : '';
+            const tag = (regType === 'expense' && !tx.essential) ? ' ·CAPRICHO' : '';
             toast(`${regType === 'expense' ? 'Gasto' : 'Ingreso'} registrado: ${tx.currency} ${tx.amount.toLocaleString()}${tag}`);
 
             // Check budget alerts after registering expense
@@ -3908,12 +4164,12 @@
                                 <div class="ess-breakdown-item">
                                     <span class="ess-breakdown-dot nec"></span>
                                     Necesarios <strong>${necPct.toFixed(0)}%</strong>
-                                    <span class="ess-breakdown-amt">$${necARS.toLocaleString('es-AR', {maximumFractionDigits:0})}${necUSD > 0 ? ` · US$${necUSD.toLocaleString('en-US', {maximumFractionDigits:0})}` : ''}</span>
+                                    <span class="ess-breakdown-amt">$${necARS.toLocaleString('es-AR', { maximumFractionDigits: 0 })}${necUSD > 0 ? ` · US$${necUSD.toLocaleString('en-US', { maximumFractionDigits: 0 })}` : ''}</span>
                                 </div>
                                 <div class="ess-breakdown-item">
                                     <span class="ess-breakdown-dot cap"></span>
-                                    🛍️ Caprichos <strong>${capPct.toFixed(0)}%</strong>
-                                    <span class="ess-breakdown-amt">$${capARS.toLocaleString('es-AR', {maximumFractionDigits:0})}${capUSD > 0 ? ` · US$${capUSD.toLocaleString('en-US', {maximumFractionDigits:0})}` : ''}</span>
+                                    Caprichos <strong>${capPct.toFixed(0)}%</strong>
+                                    <span class="ess-breakdown-amt">$${capARS.toLocaleString('es-AR', { maximumFractionDigits: 0 })}${capUSD > 0 ? ` · US$${capUSD.toLocaleString('en-US', { maximumFractionDigits: 0 })}` : ''}</span>
                                 </div>
                             </div>
                         </div>
@@ -4023,7 +4279,7 @@
                 const prefix = t.currency === 'USD' ? 'US$' : '$';
                 const clickAttr = `onclick="openEditModal('${t.id}')"`;
                 // V10: badges
-                const capTag = (t.type === 'expense' && t.essential === false) ? '<span class="tx-cap-tag">🛍️ CAPRICHO</span>' : '';
+                const capTag = (t.type === 'expense' && t.essential === false) ? '<span class="tx-cap-tag"><span class="ess-ico" data-ico="sparkle"></span>CAPRICHO</span>' : '';
                 const autoTag = t.auto ? '<span class="tx-auto-tag">AUTO</span>' : '';
 
                 return `<div class="tx-item" ${clickAttr}>
@@ -4043,6 +4299,20 @@
         function formatDate(d) {
             const parts = d.split('-');
             return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        // V11: helpers usados por Análisis (estaban siendo referenciados sin definirse)
+        function fmt(n) {
+            if (n == null || isNaN(n)) return '0';
+            return Math.round(n).toLocaleString('es-AR');
+        }
+
+        function formatDateStr(d) {
+            // "2025-05-23" → "23 de mayo"
+            const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                            'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+            const parts = d.split('-');
+            return `${parseInt(parts[2])} de ${months[parseInt(parts[1]) - 1]}`;
         }
 
         function populateFilterCats(selectId, type) {
@@ -4267,7 +4537,7 @@
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Necesarios', '🛍️ Caprichos'],
+                    labels: ['Necesarios', 'Caprichos'],
                     datasets: [{
                         data: [nec, cap],
                         backgroundColor: ['#00e676', '#ff5252'],
@@ -4281,10 +4551,10 @@
                         legend: { position: 'bottom', labels: { color: '#8aa8bc', font: { family: 'Montserrat', size: 11 }, padding: 12 } },
                         tooltip: {
                             callbacks: {
-                                label: function(ctx) {
+                                label: function (ctx) {
                                     const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
                                     const pct = total > 0 ? (ctx.parsed / total * 100).toFixed(0) : 0;
-                                    return `${ctx.label}: $${ctx.parsed.toLocaleString('es-AR', {maximumFractionDigits:0})} (${pct}%)`;
+                                    return `${ctx.label}: $${ctx.parsed.toLocaleString('es-AR', { maximumFractionDigits: 0 })} (${pct}%)`;
                                 }
                             }
                         }
@@ -4532,6 +4802,172 @@
         // ═══════════════════════════════════════════
         // AHORROS
         // ═══════════════════════════════════════════
+
+        let currentGoalCur = 'ARS';
+        function setGoalCur(cur) {
+            currentGoalCur = cur;
+            document.getElementById('goalCurARS').className = 'ess-btn nec' + (cur === 'ARS' ? ' active' : '');
+            document.getElementById('goalCurUSD').className = 'ess-btn cap' + (cur === 'USD' ? ' active' : '');
+        }
+
+        function getGoals() { return JSON.parse(localStorage.getItem('ft_goals') || '[]'); }
+        function setGoals(g) { localStorage.setItem('ft_goals', JSON.stringify(g)); }
+
+        function renderAhorrosMetas() {
+            const el = document.getElementById('ahorrosMetasList');
+            const goals = getGoals();
+            if (!goals || goals.length === 0) {
+                el.innerHTML = '<div style="text-align:center;padding:24px 0;color:var(--ink3);font-size:12px">No hay metas activas.</div>';
+                return;
+            }
+            const now = new Date();
+            let html = '';
+            goals.forEach(g => {
+                if (g.enabled === false) return;
+                const total = (g.contributions || []).reduce((sum, c) => sum + c.amount, 0);
+                const pct = g.targetAmount > 0 ? (total / g.targetAmount) * 100 : 0;
+
+                let monthsRemaining = 0;
+                let daysRemaining = 0;
+                if (g.deadline) {
+                    const dl = new Date(g.deadline + 'T00:00:00');
+                    const diffTime = dl - now;
+                    daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    monthsRemaining = daysRemaining > 0 ? daysRemaining / 30 : 0;
+                }
+
+                const neededPerMonth = monthsRemaining > 0 ? (g.targetAmount - total) / monthsRemaining : 0;
+
+                html += `
+                    <div class="ft-card" style="margin-top:12px;padding:16px" onclick="openGoalModal('${g.id}')">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+                            <div style="font-size:14px;font-weight:700;color:var(--ink)">${g.name}</div>
+                            <div style="font-size:14px;color:var(--ink);font-family:'Bebas Neue'">${g.currency === 'USD' ? 'U$S' : '$'}${fmt(g.targetAmount)}</div>
+                        </div>
+                        <div style="background:var(--surface);height:8px;border-radius:4px;margin-bottom:8px;overflow:hidden">
+                            <div style="background:var(--accent);height:100%;width:${Math.min(100, pct)}%"></div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-bottom:16px">
+                            <div>${pct.toFixed(1)}% (${g.currency === 'USD' ? 'U$S' : '$'}${fmt(total)})</div>
+                            ${daysRemaining > 0 ? `<div>Faltan ${daysRemaining} días</div>` : `<div>Vencida</div>`}
+                        </div>
+                        ${neededPerMonth > 0 ? `<div style="font-size:11px;color:var(--ink2);margin-bottom:12px">Requerido: ${g.currency === 'USD' ? 'U$S' : '$'}${fmt(neededPerMonth)} / mes</div>` : ''}
+                        
+                        <button class="btn-submit" style="background:var(--surface);border:1px solid var(--border);width:100%;font-size:11px" onclick="event.stopPropagation(); openContribModal('${g.id}')">
+                            + APORTAR
+                        </button>
+                    </div>
+                `;
+            });
+            el.innerHTML = html;
+        }
+
+        function openGoalModal(id) {
+            document.getElementById('goalEditId').value = id || '';
+            if (id) {
+                const g = getGoals().find(x => x.id === id);
+                document.getElementById('goalModalTitle').innerText = 'EDITAR META';
+                document.getElementById('goalName').value = g.name;
+                document.getElementById('goalTarget').value = g.targetAmount;
+                setGoalCur(g.currency);
+                document.getElementById('goalDeadline').value = g.deadline || '';
+                document.getElementById('goalDeleteBtn').style.display = 'block';
+            } else {
+                document.getElementById('goalModalTitle').innerText = 'NUEVA META';
+                document.getElementById('goalName').value = '';
+                document.getElementById('goalTarget').value = '';
+                setGoalCur('ARS');
+                document.getElementById('goalDeadline').value = '';
+                document.getElementById('goalDeleteBtn').style.display = 'none';
+            }
+            document.getElementById('goalModal').classList.add('show');
+        }
+
+        function saveGoal() {
+            const id = document.getElementById('goalEditId').value;
+            const name = document.getElementById('goalName').value.trim();
+            const targetAmount = parseFloat(document.getElementById('goalTarget').value);
+            const deadline = document.getElementById('goalDeadline').value;
+
+            if (!name || !targetAmount || targetAmount <= 0) { toast('Datos inválidos'); return; }
+
+            let goals = getGoals();
+            if (id) {
+                const idx = goals.findIndex(x => x.id === id);
+                if (idx >= 0) {
+                    goals[idx].name = name;
+                    goals[idx].targetAmount = targetAmount;
+                    goals[idx].currency = currentGoalCur;
+                    goals[idx].deadline = deadline;
+                }
+            } else {
+                goals.push({
+                    id: 'goal_' + Date.now(),
+                    name, targetAmount, currency: currentGoalCur, deadline,
+                    createdAt: new Date().toISOString(),
+                    enabled: true,
+                    contributions: []
+                });
+            }
+            setGoals(goals);
+            closeModal('goalModal');
+            renderAhorrosMetas();
+        }
+
+        function deleteGoal() {
+            const id = document.getElementById('goalEditId').value;
+            if (!id) return;
+            let goals = getGoals();
+            goals = goals.filter(x => x.id !== id);
+            setGoals(goals);
+            closeModal('goalModal');
+            renderAhorrosMetas();
+            toast('Meta eliminada');
+        }
+
+        function openContribModal(id) {
+            document.getElementById('contribGoalId').value = id;
+            document.getElementById('contribAmount').value = '';
+            document.getElementById('contribDate').value = getToday();
+            document.getElementById('contribNote').value = '';
+            document.getElementById('contribMakeSaving').checked = true;
+            document.getElementById('contribModal').classList.add('show');
+            setTimeout(() => document.getElementById('contribAmount').focus(), 100);
+        }
+
+        function saveContribution() {
+            const id = document.getElementById('contribGoalId').value;
+            const amount = parseFloat(document.getElementById('contribAmount').value);
+            const date = document.getElementById('contribDate').value;
+            const note = document.getElementById('contribNote').value.trim();
+            const makeSaving = document.getElementById('contribMakeSaving').checked;
+
+            if (!amount || amount <= 0 || !date) { toast('Datos inválidos'); return; }
+
+            let goals = getGoals();
+            const g = goals.find(x => x.id === id);
+            if (!g) return;
+
+            if (!g.contributions) g.contributions = [];
+            g.contributions.push({ amount, date, note, id: 'contrib_' + Date.now() });
+            setGoals(goals);
+
+            if (makeSaving) {
+                let sav = getSavings();
+                sav.push({
+                    id: 'sav_' + Date.now(),
+                    platform: g.name,
+                    currency: g.currency,
+                    amount: amount
+                });
+                setSavings(sav);
+            }
+
+            closeModal('contribModal');
+            renderAhorrosMetas();
+            renderAhorros();
+            toast('Aporte registrado');
+        }
 
         function renderAhorros() {
             const savings = getSavings();
@@ -5026,6 +5462,411 @@
             if (el) {
                 el.textContent = dl > 0 ? `$${dl.toLocaleString('es-AR')} ARS/día` : 'Sin definir';
             }
+        }
+
+        function getMonthData(monthsAgo) {
+            const now = new Date();
+            const target = new Date(now.getFullYear(), now.getMonth() - monthsAgo, 1);
+            const monthKey = `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}`;
+            return getTx().filter(t => t.date.startsWith(monthKey));
+        }
+
+        function getMonthDataUpToDay(monthsAgo, dayLimit) {
+            return getMonthData(monthsAgo).filter(t => {
+                const day = parseInt(t.date.split('-')[2]);
+                return day <= dayLimit;
+            });
+        }
+
+        function renderAnalisisMesAMes() {
+            const el = document.getElementById('analisis-mes-a-mes');
+            const now = new Date();
+            const currentDay = now.getDate();
+            const thisMonth = getMonthDataUpToDay(0, currentDay).filter(t => t.type === 'expense');
+            const lastMonth = getMonthDataUpToDay(1, currentDay).filter(t => t.type === 'expense');
+
+            const sumThis = thisMonth.reduce((a, b) => a + (b.currency === 'USD' ? b.amount * (window.currentUSD || 1) : b.amount), 0);
+            const sumLast = lastMonth.reduce((a, b) => a + (b.currency === 'USD' ? b.amount * (window.currentUSD || 1) : b.amount), 0);
+            const diff = sumThis - sumLast;
+            const pct = sumLast === 0 ? 100 : (diff / sumLast) * 100;
+
+            const capThis = thisMonth.filter(t => !t.essential).reduce((a, b) => a + (b.currency === 'USD' ? b.amount * (window.currentUSD || 1) : b.amount), 0);
+            const capLast = lastMonth.filter(t => !t.essential).reduce((a, b) => a + (b.currency === 'USD' ? b.amount * (window.currentUSD || 1) : b.amount), 0);
+            const capThisPct = sumThis === 0 ? 0 : (capThis / sumThis) * 100;
+            const capLastPct = sumLast === 0 ? 0 : (capLast / sumLast) * 100;
+
+            let html = `
+                <div class="ft-card" style="margin: 16px;">
+                    <div style="font-size:11px;color:var(--ink3);margin-bottom:8px">VS MES PASADO (AL DÍA ${currentDay})</div>
+                    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px">
+                        <div style="font-family:'Bebas Neue';font-size:24px;color:var(--ink)">$${fmt(sumThis)}</div>
+                        <div style="font-size:13px;color:${diff <= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">${diff > 0 ? '+' : ''}${fmt(diff)} (${diff > 0 ? '+' : ''}${pct.toFixed(1)}%)</div>
+                    </div>
+                    <div style="font-size:11px;color:var(--ink3);">Caprichos: ${capThisPct.toFixed(1)}% este mes vs ${capLastPct.toFixed(1)}% mes pasado</div>
+                </div>
+                
+                <div class="ft-card" style="margin: 16px;">
+                    <div style="font-size:11px;color:var(--ink3);margin-bottom:8px">EVOLUCIÓN 12 MESES</div>
+                    <canvas id="analisisEvolChart" height="150"></canvas>
+                </div>
+            `;
+
+            // Categorias que crecieron
+            const catsThis = {};
+            const catsLast = {};
+            thisMonth.forEach(t => { catsThis[t.category] = (catsThis[t.category] || 0) + (t.currency === 'USD' ? t.amount * (window.currentUSD || 1) : t.amount); });
+            lastMonth.forEach(t => { catsLast[t.category] = (catsLast[t.category] || 0) + (t.currency === 'USD' ? t.amount * (window.currentUSD || 1) : t.amount); });
+
+            const growths = [];
+            for (let c in catsThis) {
+                const t = catsThis[c];
+                const l = catsLast[c] || 0;
+                if (t > l && l > 0) growths.push({ cat: c, diff: t - l, pct: ((t - l) / l) * 100 });
+            }
+            growths.sort((a, b) => b.pct - a.pct);
+            const top3 = growths.slice(0, 3);
+
+            if (top3.length > 0) {
+                html += `<div class="stitle" style="margin-top:16px">TOP CATEGORÍAS QUE CRECIERON</div>`;
+                top3.forEach(g => {
+                    html += `
+                        <div class="tx-item">
+                            <div class="tx-icon">${getIcon(EXPENSE_CATS[g.cat]?.icon || 'otros_gasto')}</div>
+                            <div class="tx-info">
+                                <div class="tx-cat">${EXPENSE_CATS[g.cat]?.label || g.cat}</div>
+                                <div class="tx-note">+${g.pct.toFixed(1)}% vs mes pasado</div>
+                            </div>
+                            <div class="tx-amount" style="color:var(--red)">+$${fmt(g.diff)}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            el.innerHTML = html;
+
+            setTimeout(() => {
+                const ctx = document.getElementById('analisisEvolChart');
+                if (!ctx) return;
+                const labels = [];
+                const dataExp = [];
+                const dataInc = [];
+                for (let i = 11; i >= 0; i--) {
+                    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                    const monthKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                    const mData = getTx().filter(t => t.date.startsWith(monthKey));
+                    labels.push(d.toLocaleString('es-ES', { month: 'short', year: '2-digit' }));
+
+                    const exp = mData.filter(t => t.type === 'expense').reduce((a, b) => a + (b.currency === 'USD' ? b.amount * (window.currentUSD || 1) : b.amount), 0);
+                    const inc = mData.filter(t => t.type === 'income').reduce((a, b) => a + (b.currency === 'USD' ? b.amount * (window.currentUSD || 1) : b.amount), 0);
+                    dataExp.push(exp);
+                    dataInc.push(inc);
+                }
+                if (window._evolChart) window._evolChart.destroy();
+                window._evolChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Gastos', data: dataExp, borderColor: '#FF5252', backgroundColor: 'rgba(255,82,82,0.1)', fill: true, tension: 0.3, borderWidth: 2, pointRadius: 2 },
+                            { label: 'Ingresos', data: dataInc, borderColor: '#4CAF50', backgroundColor: 'rgba(76,175,80,0.1)', fill: true, tension: 0.3, borderWidth: 2, pointRadius: 2 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) { return '$' + fmt(context.parsed.y); }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: { ticks: { font: { size: 9, family: 'Montserrat' }, callback: v => '$' + (v >= 1000 ? v / 1000 + 'k' : v) } },
+                            x: { ticks: { font: { size: 9, family: 'Montserrat' } } }
+                        }
+                    }
+                });
+            }, 50);
+        }
+
+        function renderAnalisisEsteMes() {
+            const el = document.getElementById('analisis-este-mes');
+            const thisMonth = getMonthData(0).filter(t => t.type === 'expense');
+
+            if (thisMonth.length === 0) {
+                el.innerHTML = '<div style="padding:24px 16px;text-align:center;color:var(--ink3);font-size:12px">No hay gastos este mes.</div>';
+                return;
+            }
+
+            const sorted = [...thisMonth].sort((a, b) => {
+                const vA = a.currency === 'USD' ? a.amount * (window.currentUSD || 1) : a.amount;
+                const vB = b.currency === 'USD' ? b.amount * (window.currentUSD || 1) : b.amount;
+                return vB - vA;
+            });
+            const top3 = sorted.slice(0, 3);
+
+            let html = `<div class="stitle">TOP 3 GASTOS</div>`;
+            top3.forEach(t => {
+                html += `
+                    <div class="tx-item" onclick="openEditModal('${t.id}')">
+                        <div class="tx-icon">${getIcon(EXPENSE_CATS[t.category]?.icon || 'otros_gasto')}</div>
+                        <div class="tx-info">
+                            <div class="tx-cat">${EXPENSE_CATS[t.category]?.label || t.category}</div>
+                            <div class="tx-note">${t.note || ''} • ${formatDateStr(t.date)}</div>
+                        </div>
+                        <div class="tx-amount">${t.currency === 'USD' ? 'U$S' : '$'}${fmt(t.amount)}</div>
+                    </div>
+                `;
+            });
+
+            const days = {};
+            thisMonth.forEach(t => {
+                const v = t.currency === 'USD' ? t.amount * (window.currentUSD || 1) : t.amount;
+                days[t.date] = (days[t.date] || 0) + v;
+            });
+            const maxDay = Object.keys(days).reduce((a, b) => days[a] > days[b] ? a : b);
+
+            html += `
+                <div class="ft-card" style="margin: 16px;">
+                    <div style="font-size:11px;color:var(--ink3);margin-bottom:4px">TU DÍA MÁS CARO</div>
+                    <div style="font-size:13px;color:var(--ink2)">El ${formatDateStr(maxDay)} gastaste <strong>$${fmt(days[maxDay])}</strong></div>
+                </div>
+            `;
+
+            const maxDayTxs = thisMonth.filter(t => t.date === maxDay);
+            maxDayTxs.forEach(t => {
+                html += `
+                    <div class="tx-item" onclick="openEditModal('${t.id}')">
+                        <div class="tx-icon">${getIcon(EXPENSE_CATS[t.category]?.icon || 'otros_gasto')}</div>
+                        <div class="tx-info">
+                            <div class="tx-cat">${EXPENSE_CATS[t.category]?.label || t.category}</div>
+                            <div class="tx-note">${t.note || ''}</div>
+                        </div>
+                        <div class="tx-amount" style="font-size:12px">${t.currency === 'USD' ? 'U$S' : '$'}${fmt(t.amount)}</div>
+                    </div>
+                `;
+            });
+
+            const allDays = [...new Set(thisMonth.map(t => t.date))].sort();
+            let currentStreak = 0;
+            const last7Days = [];
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(); d.setDate(d.getDate() - i);
+                last7Days.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`);
+            }
+            for (let d of last7Days) {
+                const hasCapricho = thisMonth.some(t => t.date === d && !t.essential);
+                if (!hasCapricho && days[d] !== undefined) currentStreak++;
+                else break;
+            }
+
+            let bestDay = Object.keys(days).reduce((a, b) => {
+                const cA = thisMonth.filter(t => t.date === a && !t.essential).reduce((x, y) => x + (y.currency === 'USD' ? y.amount * (window.currentUSD || 1) : y.amount), 0);
+                const cB = thisMonth.filter(t => t.date === b && !t.essential).reduce((x, y) => x + (y.currency === 'USD' ? y.amount * (window.currentUSD || 1) : y.amount), 0);
+                return cA < cB ? a : b;
+            }, allDays[0]);
+
+            html += `
+                <div class="ft-card" style="margin: 16px;">
+                    <div style="font-size:11px;color:var(--ink3);margin-bottom:8px">RACHAS Y PATRONES</div>
+                    ${currentStreak > 0 ? `<div style="font-size:12px;color:var(--ink2);margin-bottom:4px">Llevás ${currentStreak} días seguidos sin registrar caprichos.</div>` : ''}
+                    <div style="font-size:12px;color:var(--ink2);">Tu mejor día fue el ${formatDateStr(bestDay)} (menos caprichos).</div>
+                </div>
+            `;
+
+            const catsThis = {};
+            const sumThis = thisMonth.reduce((a, b) => a + (b.currency === 'USD' ? b.amount * (window.currentUSD || 1) : b.amount), 0);
+            thisMonth.forEach(t => { catsThis[t.category] = (catsThis[t.category] || 0) + (t.currency === 'USD' ? t.amount * (window.currentUSD || 1) : t.amount); });
+
+            html += `<div class="stitle" style="margin-top:16px">CATEGORÍAS DEL MES</div>`;
+            const sortedCats = Object.entries(catsThis).sort((a, b) => b[1] - a[1]);
+            sortedCats.forEach(([c, val]) => {
+                const pct = sumThis === 0 ? 0 : (val / sumThis) * 100;
+                html += `
+                    <div class="tx-item">
+                        <div class="tx-icon">${getIcon(EXPENSE_CATS[c]?.icon || 'otros_gasto')}</div>
+                        <div class="tx-info">
+                            <div class="tx-cat">${EXPENSE_CATS[c]?.label || c}</div>
+                            <div class="tx-note">${pct.toFixed(1)}% del total</div>
+                        </div>
+                        <div class="tx-amount">$${fmt(val)}</div>
+                    </div>
+                `;
+            });
+
+            el.innerHTML = html;
+        }
+
+        function getRules() { return JSON.parse(localStorage.getItem('ft_rules') || '[]'); }
+        function setRules(r) { localStorage.setItem('ft_rules', JSON.stringify(r)); }
+
+        function getNotesSuggestions(query, type) {
+            if (!query || query.length < 2) return [];
+            const txs = getTx().filter(t => t.type === type && t.note);
+            const notes = {};
+            txs.forEach(t => {
+                const n = t.note.trim();
+                if (n.toLowerCase().includes(query.toLowerCase())) {
+                    notes[n] = (notes[n] || 0) + 1;
+                }
+            });
+            return Object.entries(notes)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(([note]) => note);
+        }
+
+        function updateNoteSuggestions(context) {
+            const inputId = context === 'reg' ? 'regNote' : 'editNote';
+            const type = context === 'reg' ? (document.getElementById('regTypeExpense').classList.contains('active-expense') ? 'expense' : 'income') : (document.getElementById('editTypeExpense').classList.contains('active-expense') ? 'expense' : 'income');
+
+            const input = document.getElementById(inputId);
+            const query = input.value;
+            const suggDiv = document.getElementById(inputId + 'Suggestions');
+            const indDiv = document.getElementById(context === 'reg' ? 'regRuleIndicator' : 'editRuleIndicator');
+
+            const isExpense = context === 'reg' ? document.getElementById('regTypeExpense').classList.contains('active-expense') : document.getElementById('editTypeExpense').classList.contains('active-expense');
+            if (isExpense) {
+                const rules = getRules();
+                let matchedRule = rules.find(r => r.enabled !== false && (r.matchType === 'exact' ? query.toLowerCase() === r.matchText.toLowerCase() : query.toLowerCase().includes(r.matchText.toLowerCase())));
+                if (matchedRule) {
+                    indDiv.innerText = `Auto-categorizado por regla: ${matchedRule.name}`;
+                    indDiv.style.display = 'block';
+                    if (context === 'reg') {
+                        selectCat(matchedRule.category);
+                        setEssential(matchedRule.essential);
+                    } else {
+                        selectEditCat(matchedRule.category);
+                        setEditEssential(matchedRule.essential);
+                    }
+                } else {
+                    indDiv.style.display = 'none';
+                }
+            }
+
+            const suggestions = getNotesSuggestions(query, type);
+            if (suggestions.length === 0) {
+                suggDiv.innerHTML = '';
+                return;
+            }
+
+            suggDiv.innerHTML = suggestions.map(s =>
+                `<div class="note-suggestion-chip" onclick="applyNoteSuggestion('${s.replace(/'/g, "\'")}', '${context}')">${s}</div>`
+            ).join('');
+        }
+
+        function applyNoteSuggestion(note, context) {
+            const inputId = context === 'reg' ? 'regNote' : 'editNote';
+            document.getElementById(inputId).value = note;
+            document.getElementById(inputId + 'Suggestions').innerHTML = '';
+            updateNoteSuggestions(context);
+
+            const txs = getTx().filter(t => t.note && t.note.trim() === note);
+            if (txs.length > 0 && context === 'reg' && document.getElementById('regTypeExpense').classList.contains('active-expense')) {
+                const last = txs[0];
+                selectCat(last.category);
+                if (last.essential !== undefined) setEssential(last.essential);
+            }
+        }
+
+        let ruleEditId = null;
+        let ruleEssential = true;
+
+        function renderRules() {
+            const rules = getRules();
+            const el = document.getElementById('rulesList');
+            if (!rules || rules.length === 0) {
+                el.innerHTML = '<div style="text-align:center;padding:24px 16px;color:var(--ink3);font-size:12px">No hay reglas configuradas.</div>';
+                return;
+            }
+            let html = '';
+            rules.forEach(r => {
+                html += `
+                    <div class="tx-item" onclick="openRuleModal('${r.id}')">
+                        <div class="tx-icon">${getIcon(EXPENSE_CATS[r.category]?.icon || 'otros_gasto')}</div>
+                        <div class="tx-info">
+                            <div class="tx-cat">${r.name} ${r.enabled === false ? '(Deshabilitada)' : ''}</div>
+                            <div class="tx-note">Si nota ${r.matchType === 'exact' ? 'es igual a' : 'contiene'} "${r.matchText}"</div>
+                        </div>
+                        <div class="tx-amount" style="font-size:10px;font-weight:400;color:var(--ink3)">${EXPENSE_CATS[r.category]?.label}</div>
+                    </div>
+                `;
+            });
+            el.innerHTML = html;
+        }
+
+        function openRuleModal(id) {
+            ruleEditId = id || null;
+            const catSelect = document.getElementById('ruleCategory');
+            catSelect.innerHTML = Object.entries(EXPENSE_CATS).map(([k, v]) => `<option value="${k}">${v.label}</option>`).join('');
+
+            if (id) {
+                document.getElementById('ruleModalTitle').innerText = 'EDITAR REGLA';
+                document.getElementById('ruleDeleteBtn').style.display = 'block';
+                const rules = getRules();
+                const r = rules.find(x => x.id === id);
+                if (r) {
+                    document.getElementById('ruleName').value = r.name || '';
+                    document.getElementById('ruleMatchType').value = r.matchType || 'contains';
+                    document.getElementById('ruleMatchText').value = r.matchText || '';
+                    document.getElementById('ruleCategory').value = r.category || 'otros_gasto';
+                    setRuleEssential(r.essential !== false);
+                }
+            } else {
+                document.getElementById('ruleModalTitle').innerText = 'NUEVA REGLA';
+                document.getElementById('ruleDeleteBtn').style.display = 'none';
+                document.getElementById('ruleName').value = '';
+                document.getElementById('ruleMatchType').value = 'contains';
+                document.getElementById('ruleMatchText').value = '';
+                setRuleEssential(true);
+            }
+            document.getElementById('ruleModal').classList.add('show');
+        }
+
+        function setRuleEssential(val) {
+            ruleEssential = val;
+            document.getElementById('ruleEssNec').className = 'ess-btn nec' + (val ? ' active' : '');
+            document.getElementById('ruleEssCap').className = 'ess-btn cap' + (!val ? ' active' : '');
+        }
+
+        function saveRule() {
+            const name = document.getElementById('ruleName').value.trim();
+            const matchType = document.getElementById('ruleMatchType').value;
+            const matchText = document.getElementById('ruleMatchText').value.trim();
+            const category = document.getElementById('ruleCategory').value;
+
+            if (!name || !matchText) {
+                toast('Completá nombre y texto');
+                return;
+            }
+
+            let rules = getRules();
+            if (ruleEditId) {
+                const idx = rules.findIndex(x => x.id === ruleEditId);
+                if (idx >= 0) {
+                    rules[idx] = { ...rules[idx], name, matchType, matchText, category, essential: ruleEssential };
+                }
+            } else {
+                rules.push({
+                    id: 'rule_' + Date.now(),
+                    name, matchType, matchText, category, essential: ruleEssential, enabled: true
+                });
+            }
+            setRules(rules);
+            closeModal('ruleModal');
+            renderRules();
+            toast('Regla guardada');
+        }
+
+        function deleteRule() {
+            if (!ruleEditId) return;
+            let rules = getRules();
+            rules = rules.filter(x => x.id !== ruleEditId);
+            setRules(rules);
+            closeModal('ruleModal');
+            renderRules();
+            toast('Regla eliminada');
         }
 
         function renderRecurring() {
@@ -5935,7 +6776,7 @@
                             <div class="tx-cat">${q.label.toUpperCase()}</div>
                             <div class="tx-note">${catName} · ${q.currency} · ${typeText}</div>
                         </div>
-                        <div class="tx-right" style="color:var(--accent);font-size:20px">›</div>
+                        <div class="tx-right" style="color:var(--accent);display:flex;align-items:center"><span class="ess-ico" data-ico="chevron_right" style="width:18px;height:18px"></span></div>
                     </div>
                 `;
             }).join('');
@@ -6020,7 +6861,7 @@
             if (!qa) return;
             qaState.id = id;
             document.getElementById('qaTitle').textContent = qa.label.toUpperCase();
-            document.getElementById('qaInfo').textContent = `Se registra como gasto · ${qa.essential ? 'NECESARIO' : '🛍️ CAPRICHO'}`;
+            document.getElementById('qaInfo').textContent = `Se registra como gasto · ${qa.essential ? 'NECESARIO' : 'CAPRICHO'}`;
             document.getElementById('qaAmount').value = '';
             qaSetCurrency(qa.currency);
             document.getElementById('quickAddModal').classList.add('show');
@@ -6056,7 +6897,7 @@
             txs.push(tx);
             setTx(txs);
             closeModal('quickAddModal');
-            const tag = !tx.essential ? ' · 🛍️ CAPRICHO' : '';
+            const tag = !tx.essential ? ' ·CAPRICHO' : '';
             toast(`${qa.label}: ${tx.currency} ${tx.amount.toLocaleString()}${tag}`);
             setTimeout(() => checkBudgetAlerts(tx), 2600);
             if (!tx.essential) setTimeout(() => checkDailyDiscretionaryAlert(tx), 2600);
@@ -6125,9 +6966,9 @@
             const spent = getTodayDiscretionary();
             const pct = (spent / limit) * 100;
             if (pct >= 100) {
-                toast(`⚠️ Superaste el límite diario de caprichos ($${limit.toLocaleString('es-AR')})`);
+                toast(`<span class="ess-ico" data-ico="alert_triangle" style="display:inline-block;width:14px;height:14px;margin-right:4px;"></span> Superaste el límite diario de caprichos ($${limit.toLocaleString('es-AR')})`);
             } else if (pct >= 80) {
-                toast(`🟡 ${pct.toFixed(0)}% del límite diario de caprichos usado`);
+                toast(`${pct.toFixed(0)}% del límite diario de caprichos usado`);
             }
         }
 
@@ -6201,8 +7042,8 @@
             // === SCORE CARD ===
             const scoreColor = stats.score >= 70 ? 'var(--green)' : stats.score >= 40 ? 'var(--yellow)' : 'var(--red)';
             const scoreText = stats.score >= 70 ? 'Vas bien este mes' :
-                              stats.score >= 40 ? 'Hay margen de mejora' :
-                              stats.score >= 1 ? 'Cuidado con los caprichos' : 'Aún sin ingresos cargados';
+                stats.score >= 40 ? 'Hay margen de mejora' :
+                    stats.score >= 1 ? 'Cuidado con los caprichos' : 'Aún sin ingresos cargados';
             const circumference = 2 * Math.PI * 28;
             const offset = circumference - (stats.score / 100) * circumference;
 
@@ -6237,13 +7078,13 @@
                 dlWrap.innerHTML = `
                     <div class="home-daily-card" onclick="openDailyLimitModal()">
                         <div class="home-daily-top">
-                            <div class="home-daily-label">HOY · CAPRICHOS</div>
-                            <div class="home-daily-val ${statusClass}">$${spent.toLocaleString('es-AR', {maximumFractionDigits:0})} / $${dl.toLocaleString('es-AR', {maximumFractionDigits:0})}</div>
+                            <div class="home-daily-label">HOY ·CAPRICHOS</div>
+                            <div class="home-daily-val ${statusClass}">$${spent.toLocaleString('es-AR', { maximumFractionDigits: 0 })} / $${dl.toLocaleString('es-AR', { maximumFractionDigits: 0 })}</div>
                         </div>
                         <div class="home-daily-bar">
                             <div class="home-daily-bar-inner ${statusClass}" style="width:${cappedPct}%"></div>
                         </div>
-                        <div class="home-daily-sub">${remaining > 0 ? `Te quedan $${remaining.toLocaleString('es-AR', {maximumFractionDigits:0})} para hoy` : `Pasaste $${Math.abs(remaining).toLocaleString('es-AR', {maximumFractionDigits:0})} del límite`}</div>
+                        <div class="home-daily-sub">${remaining > 0 ? `Te quedan $${remaining.toLocaleString('es-AR', { maximumFractionDigits: 0 })} para hoy` : `Pasaste $${Math.abs(remaining).toLocaleString('es-AR', { maximumFractionDigits: 0 })} del límite`}</div>
                     </div>
                 `;
             } else {
@@ -6254,7 +7095,7 @@
                 `;
             }
 
-            // === CAPRICHOS SUMMARY ===
+            // ===CAPRICHOS SUMMARY ===
             const capWrap = document.getElementById('homeCaprichosWrap');
             if (stats.caprichosARS > 0 || stats.caprichosUSD > 0) {
                 const avgPerDay = stats.dayOfMonth > 0 ? stats.caprichosARS / stats.dayOfMonth : 0;
@@ -6262,11 +7103,11 @@
                 capWrap.innerHTML = `
                     <div class="caprichos-card">
                         <div class="caprichos-top">
-                            <div class="caprichos-label">🛍️ CAPRICHOS DEL MES</div>
+                            <div class="caprichos-label"><span class="ess-ico" data-ico="sparkle"></span>CAPRICHOS DEL MES</div>
                             <div class="caprichos-pct">${stats.caprichosPctOfExp.toFixed(0)}% de tus gastos</div>
                         </div>
-                        <div class="caprichos-amount">$${stats.caprichosARS.toLocaleString('es-AR', {maximumFractionDigits:0})}${stats.caprichosUSD > 0 ? ` <span style="font-size:14px;color:var(--ink3)">+ US$${stats.caprichosUSD.toLocaleString('en-US',{maximumFractionDigits:0})}</span>` : ''}</div>
-                        <div class="caprichos-detail">Promedio $${avgPerDay.toLocaleString('es-AR', {maximumFractionDigits:0})}/día · Proyectado mes: $${projectedMonth.toLocaleString('es-AR', {maximumFractionDigits:0})}</div>
+                        <div class="caprichos-amount">$${stats.caprichosARS.toLocaleString('es-AR', { maximumFractionDigits: 0 })}${stats.caprichosUSD > 0 ? ` <span style="font-size:14px;color:var(--ink3)">+ US$${stats.caprichosUSD.toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>` : ''}</div>
+                        <div class="caprichos-detail">Promedio $${avgPerDay.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/día · Proyectado mes: $${projectedMonth.toLocaleString('es-AR', { maximumFractionDigits: 0 })}</div>
                     </div>
                 `;
             } else {
@@ -6317,7 +7158,7 @@
             if (closeBtn) closeBtn.innerHTML = getIcon('close');
             // Menu items: [Recurrentes, Convertidor, Settings, Export JSON, Export CSV, Import, Reset]
             const items = document.querySelectorAll('.side-menu-item');
-            const menuIcons = ['refresh', 'efectivo', 'settings', 'download', 'download', 'upload', 'trash'];
+            const menuIcons = ['efectivo', 'settings', 'download', 'download', 'upload', 'trash'];
             items.forEach((item, i) => {
                 if (menuIcons[i]) item.insertAdjacentHTML('afterbegin', getIcon(menuIcons[i]));
             });
@@ -6384,6 +7225,8 @@
                     if (typeof data.daily_limit === 'number' && data.daily_limit > 0) setDailyLimitVal(data.daily_limit);
                     if (data.quick_add) localStorage.setItem(QUICK_ADD_KEY, JSON.stringify(data.quick_add));
                     if (data.income_yields) setIncomeYields(data.income_yields);
+                    if (data.ft_rules) setRules(data.ft_rules);
+                    if (data.ft_goals) setGoals(data.ft_goals);
                     toast('Datos importados correctamente');
                     goPage(currentPage);
                 } catch {
