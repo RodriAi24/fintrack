@@ -86,7 +86,7 @@ export async function syncReport(env, db, state) {
 
   // ¿Toca pedir uno nuevo?
   if (!state.report_requested_at || Date.now() - Date.parse(state.report_requested_at) > REPORT_EVERY_MS) {
-    const asked = await requestReport(env, state.report_requested_at ? 35 : 120);
+    const asked = await requestReport(env, 30); // 30 días: es lo que MP acepta (con 120 falla)
     if (!asked.ok) throw new Error(asked.error);
     state.report_requested_at = new Date().toISOString();
     out.requested = true;

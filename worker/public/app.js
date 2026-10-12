@@ -144,6 +144,7 @@ async function api(path, opts = {}) {
     throw new Error('Se cortó la sesión. Volvé a entrar.');
   }
   sessionStorage.removeItem('ft2_rl');
+  if (res.status === 401) { location.reload(); throw new Error('Se cortó la sesión.'); }
   const d = await res.json();
   if (!res.ok || d.ok === false) throw new Error(d.error || `Error ${res.status}`);
   return d;

@@ -12,9 +12,37 @@ test('sin protección configurada no atiende nada', async () => {
   assert.equal((await get('/api/state')).status, 503);
 });
 
-test('con contraseña mala pide credenciales', async () => {
+test('con contraseña mala no entra', async () => {
   const r = await get('/api/state', { authorization: 'Basic ' + btoa('x:mala') }, { FINTRACK_PASSWORD: 'buena' });
   assert.equal(r.status, 401);
+  assert.equal((await r.json()).error, 'login');
+});
+
+test('login: sin sesión muestra el login, con la contraseña deja una cookie que dura y sirve', async () => {
+  const env = { FINTRACK_PASSWORD: 'buena' };
+  const page = await get('/', {}, env);
+  assert.equal(page.status, 401);
+  assert.match(await page.text(), /<form method="post" action="\/login">/);
+  const post = pass => worker.fetch(new Request('https://x.workers.dev/login', { method: 'POST', body: new URLSearchParams({ password: pass }) }), env);
+  const bad = await post('mala');
+  assert.equal(bad.status, 401);
+  assert.equal(bad.headers.get('set-cookie'), null);
+  const ok = await post('buena');
+  assert.equal(ok.status, 303);
+  const cookie = ok.headers.get('set-cookie');
+  assert.match(cookie, /ft_s=\d+\.[\w-]+; Path=\/; Max-Age=31536000; HttpOnly; Secure; SameSite=Lax/);
+  const session = cookie.split(';')[0];
+  // Con la cookie pasa la protección (sin base, la API responde 500 de "falta DB": no 401)
+  assert.notEqual((await get('/api/state', { cookie: session }, env)).status, 401);
+  // Cookie adulterada o firmada con otra contraseña: afuera
+  assert.equal((await get('/api/state', { cookie: session.replace(/.$/, 'x') }, env)).status, 401);
+  assert.equal((await get('/api/state', { cookie: session }, { FINTRACK_PASSWORD: 'otra' })).status, 401);
+});
+
+test('los íconos y el manifest son públicos (iOS los pide sin sesión)', async () => {
+  const env = { FINTRACK_PASSWORD: 'buena' };
+  for (const p of ['/icon-180.png', '/icon.svg', '/manifest.webmanifest']) assert.notEqual((await get(p, {}, env)).status, 401);
+  assert.equal((await get('/app.js', {}, env)).status, 401);
 });
 
 test('parseCsv: comillas, separador y saltos de línea', () => {

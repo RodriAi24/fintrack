@@ -31,7 +31,7 @@ Rodrigo no usaba la app vieja: **no hay datos guardados que migrar**. Se arranca
 ## Seguridad
 - **El token de Mercado Pago (`MP_ACCESS_TOKEN`) nunca va al frontend, al repo ni a un log.** Vive solo como secret de Cloudflare.
 - Solo lectura: nada que cree pagos, reembolsos ni transferencias. La única escritura permitida es pedir reportes de MP.
-- La API nunca atiende sin protección (falla cerrado). Hoy: contraseña propia por Basic Auth (secret `FINTRACK_PASSWORD`). Cuando la app se mude a Cloudflare: todo detrás de Cloudflare Access (solo el email de Rodrigo) y la API valida el JWT (`Cf-Access-Jwt-Assertion`); `worker/src/auth.js` ya soporta los dos modos.
+- La API nunca atiende sin protección (falla cerrado). Hoy: login con la contraseña `FINTRACK_PASSWORD` y cookie de sesión de 1 año (también acepta Basic Auth para scripts). Cuando la app se mude a Cloudflare: todo detrás de Cloudflare Access (solo el email de Rodrigo) y la API valida el JWT (`Cf-Access-Jwt-Assertion`); `worker/src/auth.js` ya soporta los dos modos.
 - No subas al repo `.dev.vars`, backups JSON ni CSV de movimientos reales (están en `.gitignore`).
 
 ## Estética
@@ -82,7 +82,7 @@ Cómo está pensada la lógica de la app (`public/app.js`):
 - Recurrentes: mismo comercio (o mismo monto en transferencias a otros bancos) en 2 de los últimos 3 meses, monto ±20%, día parecido.
 
 Pendiente:
-- Cloudflare Access para entrar desde el iPhone con el email (la contraseña Basic Auth funciona pero en la app instalada la pide seguido). `auth.js` ya valida el JWT si se cargan `ACCESS_TEAM_DOMAIN` y `ACCESS_AUD`.
+- Login propio: pantalla de contraseña → cookie firmada de 1 año (la app instalada en iOS no recuerda Basic Auth). Íconos y manifest son públicos para que iOS muestre el logo al instalar. Cloudflare Access sigue soportado en `auth.js` si algún día se configura.
 
 ## Probar en la compu
 - `worker/.dev.vars` (no se sube) con `FINTRACK_PASSWORD=...` y `DEV_NO_AUTH=1`. **`DEV_NO_AUTH` nunca se carga en el panel de Cloudflare**: saltea la protección.
