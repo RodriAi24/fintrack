@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "fintrack-local",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "wrangler@4", "dev", "-c", "worker/wrangler.jsonc", "--port", "8787", "--persist-to", "worker/.wrangler/state", "--test-scheduled"],
+      "port": 8787
+    }
+  ]
+}

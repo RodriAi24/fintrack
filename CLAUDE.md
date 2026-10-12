@@ -7,11 +7,10 @@ Rodrigo no usaba la app vieja: **no hay datos guardados que migrar**. Se arranca
 ## Cómo está armada
 - Todo vive en `worker/`: un solo Cloudflare Worker (`fintrack-api`) que sirve la app (`worker/public/`), la API (`/api/*`) y sincroniza con Mercado Pago por cron. Dirección: https://fintrack-api.rodricingolani1.workers.dev
 - Frontend: `worker/public/index.html` (HTML + CSS con los tokens del diseño) y `worker/public/app.js` (JS vanilla, sin framework ni build). Gráficos en SVG propio, animados.
-- `worker/public/sw.js` (cuando exista) es el service worker. **Cada vez que cambies un archivo de `public/`, subí la versión de `CACHE` en `sw.js`.** Si no, el iPhone sigue mostrando la versión vieja.
+- `worker/public/sw.js` es el service worker. **Cada vez que cambies un archivo de `public/`, subí la versión de `CACHE` en `sw.js`.** Si no, el iPhone sigue mostrando la versión vieja.
 - El manifest **no lleva `start_url`**: con ella iOS puede dar 404 al abrir desde la pantalla de inicio (mismo problema que en GymBrain).
 - Actualizá `APP_VERSION` cuando haya un cambio visible.
 - El frontend nunca habla directo con Mercado Pago. Sí puede llamar a DolarApi (público).
-- Los archivos de la raíz (`index.html`, `sw.js`, `manifest.json`, `favicon.png`, `avatar.png`) son la app vieja de GitHub Pages: Rodrigo no la usa, se borran cuando la nueva esté lista.
 
 ## Datos (lo más delicado)
 - La fuente de verdad va a ser el backend (D1), alimentado por las sincronizaciones. El frontend guarda una copia para andar offline.
@@ -72,21 +71,20 @@ Rodrigo no usaba la app vieja: **no hay datos guardados que migrar**. Se arranca
 4. Si un cambio puede romper datos guardados, avisá antes de hacerlo.
 5. Al terminar, resumí en 2-3 líneas qué cambió y qué tiene que mirar Rodrigo en el celu.
 
-## Estado actual (12/10/2026) y próximos pasos
-Hecho y desplegado:
-- Etapa 0: probado contra la cuenta real qué da Mercado Pago (ver "Infra").
-- Backend completo de sincronización: D1, cron cada 2 h, clasificación con reglas, aprendizaje al corregir, export/import validado. La app provisoria (`public/app.js`) muestra el estado de la sincronización y un botón para sincronizar.
+## Estado actual (12/10/2026)
+Hecho y desplegado: sincronización con Mercado Pago (cron cada 2 h + reporte diario), D1, clasificación y reglas que aprenden, y la app completa en `public/` con las pantallas del diseño (Inicio, Movimientos, detalle/edición, Cargar, Análisis, Presupuestos, Ahorros y bolsillos, metas, Cotizaciones, Recurrentes, Tu progreso, Reglas, Avisos, Resumen mensual, Ajustes con backup). La app vieja de GitHub Pages se borró.
 
-Falta (en este orden):
-1. **App completa en `public/app.js`** siguiendo las 10 pantallas del diseño (Inicio, Inicio scroll con progreso, Registrar, Movimientos, Análisis, Ahorros y metas, Cotizaciones, Recurrentes, Tu progreso, Reglas MP) + Ajustes, detalle/edición de movimiento, alertas y resumen mensual. Ya están los estilos en `index.html`. Pantallas y lógica pensadas:
-   - Router con stacks por pestaña (inicio, movs, analisis, ahorros) + `popstate` como GymBrain; "Cargar" se abre desde el botón central.
-   - Bolsillos en `kv.pockets` con ancla `{amount, ts}`: saldo = ancla + movimientos del bolsillo posteriores. MP disponible y reserva se actualizan solos; inversiones MP, dólares MP, Binance (USDC), Cocos, ICBC y efectivo son manuales (actualizar valor = nueva ancla + snapshot para ver cuánto rindió).
-   - Totales del mes: gastos = `kind gasto` (+ `reintegro` vinculado resta del gasto y su categoría); ingresos = `kind ingreso`; `interno` y `descartado` no cuentan. USD/USDC se pasan a pesos con la cotización elegida (blue por defecto, DolarApi).
-   - Hormiga: gasto capricho de menos de $10.000 (configurable). Racha = días seguidos sin hormiga.
-   - XP derivada de los datos (determinística): +5 por movimiento revisado o cargado a mano, +15 por día sin hormiga desde `game.start`, misiones semanales (ahorro de la semana, finde sin delivery, todo revisado, 3 días sin hormiga, menos salidas que la semana pasada, cargar ingresos extra), mes bajo presupuesto, mes en verde, metas y logros. Nivel: XP para llegar al nivel L = 50·L·(L−1). `kv.game` guarda solo lo ya celebrado (para disparar cinemáticas una vez).
-   - Recurrentes: mismo comercio (o mismo monto en transferencias a otros bancos) en 2 de los últimos 3 meses, con monto ±20% y día ±5 → próximo cobro y aviso 3 días antes.
-   - Pasamanos (mismo monto entra y sale el mismo día) y gasto compartido (ingreso de una persona vinculado a un gasto) se resuelven desde "Para revisar".
-   - Sueldo: aviso el 2.º día hábil del mes para cargarlo (ICBC no tiene API).
-2. Service worker, manifest e íconos PNG (180/192/512) del logo del diseño.
-3. Cloudflare Access para entrar desde el iPhone (la contraseña Basic Auth anda mal en la app instalada). `auth.js` ya valida el JWT si se cargan `ACCESS_TEAM_DOMAIN`, `ACCESS_AUD` y `ALLOWED_EMAIL`.
-4. Borrar la app vieja de la raíz y actualizar `worker/README.md`.
+Cómo está pensada la lógica de la app (`public/app.js`):
+- Router con stacks por pestaña (inicio, movs, analisis, ahorros) + `popstate`. "Cargar" se abre desde el botón central. La animación de entrada es solo al cambiar de pantalla.
+- Bolsillos en `kv.pockets` con ancla `{amount, ts}`: saldo = ancla + movimientos del bolsillo posteriores. MP disponible y reserva se actualizan solos; el resto es manual (actualizar valor = nueva ancla + snapshot).
+- Totales: gastos = `kind gasto` (+ `reintegro` vinculado resta del gasto y su categoría); ingresos = `kind ingreso`; `interno` y `descartado` no cuentan. USD/USDC se pasan a pesos con la cotización elegida (blue por defecto, DolarApi).
+- Hormiga: capricho de menos de $10.000 (configurable). XP derivada de los datos; `kv.game` guarda solo lo ya celebrado para disparar cada cinemática una vez. Nivel L requiere 50·L·(L−1) XP.
+- Recurrentes: mismo comercio (o mismo monto en transferencias a otros bancos) en 2 de los últimos 3 meses, monto ±20%, día parecido.
+
+Pendiente:
+- Cloudflare Access para entrar desde el iPhone con el email (la contraseña Basic Auth funciona pero en la app instalada la pide seguido). `auth.js` ya valida el JWT si se cargan `ACCESS_TEAM_DOMAIN` y `ACCESS_AUD`.
+
+## Probar en la compu
+- `worker/.dev.vars` (no se sube) con `FINTRACK_PASSWORD=...` y `DEV_NO_AUTH=1`. **`DEV_NO_AUTH` nunca se carga en el panel de Cloudflare**: saltea la protección.
+- Base local con datos inventados: generarlos y cargarlos con `npx wrangler d1 execute fintrack --local --file=<seed.sql>` desde `worker/`.
+- Levantar: `npx wrangler dev -c worker/wrangler.jsonc --port 8787 --persist-to worker/.wrangler/state` (también está en `.claude/launch.json`). Probar en viewport 390×844.

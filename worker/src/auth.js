@@ -6,6 +6,9 @@
 const enc = new TextEncoder();
 
 export async function authorize(request, env) {
+  // Solo para probar en la compu: DEV_NO_AUTH vive en worker/.dev.vars, que wrangler nunca sube.
+  // NUNCA cargarla en el panel de Cloudflare.
+  if (String(env.DEV_NO_AUTH ?? '').trim() === '1') return null;
   if (env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD) {
     return (await checkAccess(request, env)) ? null : deny(403, 'Acceso denegado.');
   }
