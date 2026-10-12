@@ -122,7 +122,7 @@ for (const k of ['gasto', 'ingreso']) for (const g of GROUPS[k]) { g.def ||= g.i
 const CATS = () => GROUPS;
 const gid = id => G_OF[id]?.id || 'otros';
 const inKind = (id, kind) => GROUPS[kind].includes(G_OF[id]);
-const catName = id => G_OF[id]?.name || 'Sin categoría';
+const catName = id => (id === 'propias' ? 'Desde tus cuentas' : G_OF[id]?.name || 'Sin categoría');
 const catEssential = id => G_OF[id]?.ess ?? true;
 const catIcon = id => G_OF[id]?.icon || 'dots';
 // Sugerencias al cargar a mano (subconjunto de las reglas de fábrica del Worker)
@@ -244,23 +244,23 @@ function catOf(m) {
   if (m.kind === 'descartado') return { icon: 'ban', name: 'Ignorado' };
   return { icon: catIcon(m.category), name: catName(m.category) };
 }
+// Entró = suma de lo positivo. Salió = suma de lo negativo. Diferencia = entró − salió.
+// Cuenta todo lo que movió alguna de tus cuentas (los movimientos sin cuenta o cancelados no existen).
+// Las categorías solo reparten lo que salió (o entró): no cambian ningún total.
+const counts = m => live(m) && m.pocket != null;
 function rangeStats(from, to) {
   return memo(`rs${from}${to}`, () => {
     let gas = 0, ing = 0, nec = 0, cap = 0;
     const cats = {}, inc = {};
     for (const x of MOVS) {
-      if (x.day < from || x.day > to || !live(x)) continue;
+      if (x.day < from || x.day > to || !counts(x)) continue;
       const v = arsOf(x);
-      if (x.kind === 'gasto') {
-        const c = gid(x.category);
+      if (v < 0) {
+        const c = inKind(x.category, 'gasto') ? gid(x.category) : 'otros';
         gas -= v; cats[c] = (cats[c] || 0) - v;
         if (x.essential === 0) cap -= v; else nec -= v;
-      } else if (x.kind === 'reintegro') {
-        const l = BYID[x.linked_id]; const c = gid(l?.category);
-        gas -= v; cats[c] = (cats[c] || 0) - v;
-        if (l?.essential === 0) cap -= v; else nec -= v;
-      } else if (x.kind === 'ingreso') {
-        const c = G_OF[x.category] ? gid(x.category) : 'otros_ingreso';
+      } else {
+        const c = inKind(x.category, 'ingreso') ? gid(x.category) : x.kind === 'interno' ? 'propias' : 'otros_ingreso';
         ing += v; inc[c] = (inc[c] || 0) + v;
       }
     }
@@ -676,7 +676,7 @@ function groupedList(list, limit = 300) {
   for (const m of list.slice(0, limit)) {
     if (m.day !== last) {
       last = m.day;
-      const tot = list.filter(x => x.day === m.day && live(x) && (x.kind === 'gasto' || x.kind === 'ingreso' || x.kind === 'reintegro')).reduce((s, x) => s + arsOf(x), 0);
+      const tot = list.filter(x => x.day === m.day && counts(x)).reduce((s, x) => s + arsOf(x), 0);
       out.push(`<div class="day-h"><span>${dayLabel(m.day)}</span><span>${tot ? money(tot, 'ARS', { sign: true, dec: false }) : ''}</span></div>`);
     }
     out.push(movRow(m));
@@ -747,7 +747,7 @@ function scrInicio() {
     <div class="trio">
       <div><span>Entró</span><b class="pos">${mS(st.ing)}</b></div>
       <div><span>Salió</span><b>${mS(st.gas)}</b></div>
-      <div><span>Te queda</span><b class="${st.ahorro >= 0 ? 'pos' : 'red'}">${mS(st.ahorro)}</b></div>
+      <div><span>Diferencia</span><b class="${st.ahorro >= 0 ? 'pos' : 'red'}">${mS(st.ahorro)}</b></div>
     </div>
     ${dGas != null ? `<p class="note">${dGas <= 0 ? `En el día a día vas gastando <b class="pos">${-dGas}% menos</b> que en ${monthName(prevM)} a esta altura. Bien ahí.` : `En el día a día vas gastando <b class="red">${dGas}% más</b> que en ${monthName(prevM)} a esta altura.`}</p>` : ''}
     ${b ? `<div style="margin-top:16px">${bar(st.gas / b, st.gas > b ? 'r' : '')}</div>
@@ -777,11 +777,11 @@ function scrMovs() {
   const prevM = addMonths(m, -1);
   const prevSt = isCur ? rangeStats(`${prevM}-01`, `${prevM}-${String(Math.min(+t.slice(8), dim(prevM))).padStart(2, '0')}`) : monthStats(prevM);
   let list = MOVS.filter(x => x.day.startsWith(m));
-  if (MV.t === 'gastos') list = list.filter(x => (x.kind === 'gasto' || x.kind === 'reintegro'));
-  if (MV.t === 'ingresos') list = list.filter(x => x.kind === 'ingreso');
-  if (MV.t !== 'todo') list = list.filter(live);
-  if (MV.f === 'nec') list = list.filter(x => x.kind === 'gasto' && x.essential !== 0);
-  if (MV.f === 'cap') list = list.filter(x => x.kind === 'gasto' && x.essential === 0);
+  list = list.filter(counts);
+  if (MV.t === 'gastos') list = list.filter(x => x.amount < 0);
+  if (MV.t === 'ingresos') list = list.filter(x => x.amount > 0);
+  if (MV.f === 'nec') list = list.filter(x => x.amount < 0 && x.essential !== 0);
+  if (MV.f === 'cap') list = list.filter(x => x.amount < 0 && x.essential === 0);
   if (MV.f === 'rev') list = list.filter(needsReview);
   if (MV.c) list = list.filter(x => gid(x.category) === MV.c);
   if (MV.q) { const q = normalizeText(MV.q).trim(); list = list.filter(x => normalizeText(title(x), x.description, x.note, catName(x.category)).includes(q)); }
@@ -789,7 +789,7 @@ function scrMovs() {
   if (MV.t === 'gastos') {
     let d = prevSt.gas ? ((st.gas - prevSt.gas) / prevSt.gas) * 100 : null;
     if (d != null && Math.abs(d) > 300) d = null;
-    summary = `<div class="lbl" style="display:flex;justify-content:space-between"><span>GASTADO · ${monthName(m).toUpperCase()}</span>${d != null ? `<span class="${d <= 0 ? 'pos' : 'red'}">${d <= 0 ? '▼' : '▲'} ${Math.abs(Math.round(d))}% VS ${MES3[+prevM.slice(5, 7) - 1]}</span>` : ''}</div>
+    summary = `<div class="lbl" style="display:flex;justify-content:space-between"><span>SALIÓ · ${monthName(m).toUpperCase()}</span>${d != null ? `<span class="${d <= 0 ? 'pos' : 'red'}">${d <= 0 ? '▼' : '▲'} ${Math.abs(Math.round(d))}% VS ${MES3[+prevM.slice(5, 7) - 1]}</span>` : ''}</div>
       <div class="big" style="font-size:52px;margin:10px 0 16px">${m0(st.gas)}</div>
       <div style="display:flex;height:6px;gap:2px"><i style="flex:${Math.max(st.nec, 0) || 0.001};background:var(--ink)"></i><i style="flex:${Math.max(st.cap, 0) || 0.001};background:var(--gold)"></i></div>
       <div class="mono" style="display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:10.5px;letter-spacing:1px"><span>NECESARIOS ${pct(st.nec, st.gas)}%<br><span class="mute2">${m0(st.nec)}</span></span><span class="gold" style="text-align:right">CAPRICHOS ${pct(st.cap, st.gas)}%<br><span class="mute2">${m0(st.cap)}</span></span></div>`;
@@ -802,7 +802,7 @@ function scrMovs() {
   }
   const catsUsed = [...new Set(MOVS.filter(x => x.day.startsWith(m) && x.category && live(x)).map(x => gid(x.category)))];
   return `${header('Movimientos', `<button class="iconbtn" data-a="go:reglas" aria-label="Reglas">${ic('gear', 17)}</button>`, true)}
-  <div class="seg">${['gastos', 'ingresos', 'todo'].map(k => `<button class="${MV.t === k ? 'on' : ''}" data-a="mv:t:${k}">${cap1(k)}</button>`).join('')}</div>
+  <div class="seg">${[['gastos', 'Salió'], ['ingresos', 'Entró'], ['todo', 'Todo']].map(([k, l]) => `<button class="${MV.t === k ? 'on' : ''}" data-a="mv:t:${k}">${l}</button>`).join('')}</div>
   <div class="pad" style="display:flex;align-items:center;justify-content:space-between;margin:18px 0 14px">
     <button class="iconbtn" data-a="mv:m:-1" aria-label="Mes anterior">${ic('back', 16)}</button>
     <span class="mono" style="font-size:12px;letter-spacing:2px">${monthName(m).toUpperCase()} ${m.slice(0, 4)}</span>
@@ -937,7 +937,7 @@ function anEste() {
   let insight = '';
   const ups = cats.map(([c, v]) => [c, v, prev.cats[c] || 0]).filter(([, v, p]) => p > 0 && v > p * 1.1).sort((a, b) => (b[1] - b[2]) - (a[1] - a[2]));
   if (ups[0]) { const [c, v, p] = ups[0]; insight = `${catName(c)} subió ${Math.round(((v - p) / p) * 100)}% contra ${monthName(addMonths(m, -1))}. ${['salidas', 'compras'].includes(c) ? 'Bajalo a la mitad y la misión de ahorro sale sola.' : 'Fijate si es algo puntual.'}`; }
-  const gastos = MOVS.filter(x => x.day.startsWith(m) && x.kind === 'gasto' && live(x));
+  const gastos = MOVS.filter(x => x.day.startsWith(m) && x.amount < 0 && counts(x));
   const top = gastos.slice().sort((a, b) => arsOf(a) - arsOf(b)).slice(0, 3);
   const byDay = {};
   for (const x of gastos) byDay[x.day] = (byDay[x.day] || 0) - arsOf(x);

@@ -82,7 +82,7 @@ Hecho y desplegado: sincronización con Mercado Pago (cron cada 2 h + reporte di
 Cómo está pensada la lógica de la app (`public/app.js`):
 - Router con stacks por pestaña (inicio, movs, analisis, ahorros) + `popstate`. "Cargar" se abre desde el botón central. La animación de entrada es solo al cambiar de pantalla.
 - Bolsillos en `kv.pockets` con ancla `{amount, ts}`: saldo = ancla + movimientos del bolsillo posteriores. MP disponible y reserva se actualizan solos; el resto es manual (actualizar valor = nueva ancla + snapshot).
-- Totales: gastos = `kind gasto` (+ `reintegro` vinculado resta del gasto y su categoría); ingresos = `kind ingreso`; `interno` y `descartado` no cuentan. USD/USDC se pasan a pesos con la cotización elegida (blue por defecto, DolarApi).
+- **Totales = suma y resta, nada más** (pedido explícito de Rodrigo): Entró = suma de los montos positivos, Salió = suma de los negativos, Diferencia = entró − salió. Cuenta todo movimiento con cuenta (`pocket`) que no esté cancelado; el `kind` no cambia ningún total. Las categorías solo reparten lo que salió/entró (sumadas dan exactamente el total). Lo que entra desde una cuenta propia (DEBIN de ICBC) suma en Entró como "Desde tus cuentas". USD/USDC se pasan a pesos con la cotización elegida (blue por defecto, DolarApi). Nunca agregar reglas que saquen o metan plata de los totales.
 - Hormiga: capricho de menos de $10.000 (configurable). XP derivada de los datos; `kv.game` guarda solo lo ya celebrado para disparar cada cinemática una vez. Nivel L requiere 50·L·(L−1) XP.
 - Recurrentes: mismo comercio (o mismo monto en transferencias a otros bancos) en 2 de los últimos 3 meses, monto ±20%, día parecido.
 
