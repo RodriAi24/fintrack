@@ -36,7 +36,9 @@ Rodrigo no usaba la app vieja: **no hay datos guardados que migrar**. Se arranca
 
 ## Estética
 - Base: el diseño de las 10 pantallas que hizo Design (FinTrack · App). Oscura, editorial y precisa: nunca fondo blanco ni diseño plano o genérico.
-- Tokens: `--bg #0B0C0F`, líneas `#23252D` / `#2E313A`, texto `#EEEAE2`, texto 2 `#C9C5BD`, apagado `#85868E` / `#6C6D75`, acento cobalto `#4157FF`, verde `#8FC79A`, rojo `#E07A86`.
+- Tokens: `--bg #0B0C0F`, líneas `#23252D` / `#2E313A`, texto `#EEEAE2`, texto 2 `#D4D0C8`, apagado `#A9A9B0` / `#9A9AA2` / `#7C7D85` (más claros que el diseño original: Rodrigo pidió más legibilidad), acento cobalto `#4157FF`, verde `#8FC79A`, rojo `#E07A86`.
+- **Poco y claro** (pedido de Rodrigo): el inicio tiene solo 4 bloques (Toda tu plata, el mes con entró/salió/te queda, En qué se fue, Tu juego). Letra de 16 px, subtítulos en minúscula, nada de mayúsculas grises chiquitas para info importante.
+- Categorías: el Worker clasifica fino, pero la app muestra 10 grupos (`GROUPS` en `app.js`): Súper, Comida afuera, Transporte, Casa y servicios, Suscripciones, Salud, Compras y gustos, Tarjeta, A personas, Otros.
 - Tipografías: Newsreader (cifras grandes), Geist (texto), Geist Mono (etiquetas en mayúsculas con tracking). Bordes rectos (radio 3 px).
 - Íconos y logo: SVG propios (trazo 1.5, `stroke-linecap: square`), en un objeto central. Nada de emojis como íconos.
 - Lo que tiene "alma" (cinemáticas de nivel y meta cumplida, XP flotante, confeti, gráficos animados) no se borra ni se simplifica.

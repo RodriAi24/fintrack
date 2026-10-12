@@ -42,6 +42,8 @@ function money(n, cur = 'ARS', o = {}) {
   return sign + PREFIX[cur] + (dec ? nf2.format(a) : nf0.format(Math.round(a)));
 }
 const m0 = (n, cur = 'ARS') => money(n, cur, { dec: false });
+// Corto para espacios chicos: millones abreviados ($2,55 M)
+const mS = n => (Math.abs(n) >= 1e6 ? `${n < 0 ? '−' : ''}$${nf2.format(Math.abs(n) / 1e6)} M` : m0(n));
 function parseAmt(s) {
   s = String(s || '').trim().replace(/[^\d.,]/g, '');
   if (!s) return NaN;
@@ -92,18 +94,37 @@ const ic = (k, s = 20, w = 1.5) => `<svg width="${s}" height="${s}" viewBox="0 0
 const LOGO = (s = 30) => `<svg width="${s}" height="${s}" viewBox="0 0 30 30" fill="none" role="img" aria-label="FinTrack"><rect width="30" height="30" rx="3" fill="#4157FF"/><path d="M9 23V7h12M9 14.5h8" stroke="#EEEAE2" stroke-width="2.6" stroke-linecap="square"/><path d="M13 23l5-5 2.5 2.5L25 15" stroke="#EEEAE2" stroke-width="1.6" stroke-linecap="square"/></svg>`;
 
 /* ═══ Categorías ═══════════════════════════════════════════ */
-const CAT_ICON = {
-  super: 'cart', delivery: 'bike', salidas: 'glass', transporte: 'car', servicios: 'bolt', suscripciones: 'repeat', hogar: 'house',
-  tarjeta: 'card', salud: 'heart', compras: 'bag', ropa: 'shirt', educacion: 'book', entretenimiento: 'game', impuestos: 'tax',
-  regalos: 'gift', transferencias: 'arrows', otros: 'dots', sueldo: 'brief', extra: 'coin', rendimientos: 'percent', recibidas: 'arrows', otros_ingreso: 'dots',
+// Lo que ve Rodrigo: 10 categorías claras. El Worker clasifica más fino (delivery, salidas, ropa...)
+// y acá se agrupan. Al elegir un grupo se guarda su id "def".
+const GROUPS = {
+  gasto: [
+    { id: 'super', name: 'Súper', icon: 'cart', ids: ['super'], ess: true },
+    { id: 'salidas', name: 'Comida afuera', icon: 'glass', ids: ['salidas', 'delivery'], ess: false },
+    { id: 'transporte', name: 'Transporte', icon: 'car', ids: ['transporte'], ess: true },
+    { id: 'casa', name: 'Casa y servicios', icon: 'house', ids: ['hogar', 'servicios', 'impuestos'], ess: true, def: 'servicios' },
+    { id: 'suscripciones', name: 'Suscripciones', icon: 'repeat', ids: ['suscripciones'], ess: false },
+    { id: 'salud', name: 'Salud', icon: 'heart', ids: ['salud', 'educacion'], ess: true },
+    { id: 'compras', name: 'Compras y gustos', icon: 'bag', ids: ['compras', 'ropa', 'entretenimiento', 'regalos'], ess: false },
+    { id: 'tarjeta', name: 'Tarjeta', icon: 'card', ids: ['tarjeta'], ess: true },
+    { id: 'personas', name: 'A personas', icon: 'arrows', ids: ['transferencias'], ess: true, def: 'transferencias' },
+    { id: 'otros', name: 'Otros', icon: 'dots', ids: ['otros'], ess: true },
+  ],
+  ingreso: [
+    { id: 'sueldo', name: 'Sueldo', icon: 'brief', ids: ['sueldo'] },
+    { id: 'extra', name: 'Ingresos extra', icon: 'coin', ids: ['extra'] },
+    { id: 'rendimientos', name: 'Rendimientos', icon: 'percent', ids: ['rendimientos'] },
+    { id: 'recibidas', name: 'De otras personas', icon: 'arrows', ids: ['recibidas'] },
+    { id: 'otros_ingreso', name: 'Otros', icon: 'dots', ids: ['otros_ingreso'] },
+  ],
 };
-const DEFAULT_CATS = {
-  gasto: [['super', 'Súper', 1], ['delivery', 'Delivery', 0], ['salidas', 'Salidas', 0], ['transporte', 'Transporte', 1], ['servicios', 'Servicios', 1], ['suscripciones', 'Suscripciones', 0], ['hogar', 'Hogar', 1], ['tarjeta', 'Tarjeta', 1], ['salud', 'Salud', 1], ['compras', 'Compras', 0], ['ropa', 'Ropa', 0], ['educacion', 'Educación', 1], ['entretenimiento', 'Entretenimiento', 0], ['impuestos', 'Impuestos', 1], ['regalos', 'Regalos', 0], ['transferencias', 'Transferencias', 1], ['otros', 'Otros', 1]].map(([id, name, e]) => ({ id, name, essential: !!e })),
-  ingreso: [['sueldo', 'Sueldo'], ['extra', 'Ingresos extra'], ['rendimientos', 'Rendimientos'], ['recibidas', 'Transferencias recibidas'], ['otros_ingreso', 'Otros']].map(([id, name]) => ({ id, name })),
-};
-const CATS = () => S.data?.categories || DEFAULT_CATS;
-const catName = id => [...CATS().gasto, ...CATS().ingreso].find(c => c.id === id)?.name || 'Sin categoría';
-const catEssential = id => CATS().gasto.find(c => c.id === id)?.essential ?? true;
+const G_OF = {};
+for (const k of ['gasto', 'ingreso']) for (const g of GROUPS[k]) { g.def ||= g.ids[0]; G_OF[g.id] = g; for (const id of g.ids) G_OF[id] = g; }
+const CATS = () => GROUPS;
+const gid = id => G_OF[id]?.id || 'otros';
+const inKind = (id, kind) => GROUPS[kind].includes(G_OF[id]);
+const catName = id => G_OF[id]?.name || 'Sin categoría';
+const catEssential = id => G_OF[id]?.ess ?? true;
+const catIcon = id => G_OF[id]?.icon || 'dots';
 // Sugerencias al cargar a mano (subconjunto de las reglas de fábrica del Worker)
 const SUGGEST = [['delivery', 'pedidosya rappi delivery'], ['transporte', 'uber cabify didi sube nafta ypf shell axion peaje taxi'], ['super', 'super carrefour coto dia jumbo disco chino almacen verduleria kiosco'], ['salidas', 'bar cerveza resto birra cena almuerzo cafe pizza boliche cine'], ['servicios', 'luz gas agua internet celular edenor metrogas personal movistar claro'], ['suscripciones', 'netflix spotify disney hbo youtube icloud chatgpt'], ['salud', 'farmacia medico gimnasio gym osde'], ['hogar', 'alquiler expensas'], ['compras', 'mercadolibre amazon compra'], ['ropa', 'ropa zapatillas remera'], ['regalos', 'regalo cumple']];
 function suggestCat(text, kind) {
@@ -221,7 +242,7 @@ function catOf(m) {
   if (m.kind === 'interno') return { icon: 'swap', name: 'Movimiento interno' };
   if (m.kind === 'reintegro') return { icon: 'ret', name: 'Devolución' };
   if (m.kind === 'descartado') return { icon: 'ban', name: 'Ignorado' };
-  return { icon: CAT_ICON[m.category] || 'dots', name: catName(m.category) };
+  return { icon: catIcon(m.category), name: catName(m.category) };
 }
 function rangeStats(from, to) {
   return memo(`rs${from}${to}`, () => {
@@ -231,14 +252,16 @@ function rangeStats(from, to) {
       if (x.day < from || x.day > to || !live(x)) continue;
       const v = arsOf(x);
       if (x.kind === 'gasto') {
-        gas -= v; cats[x.category || 'otros'] = (cats[x.category || 'otros'] || 0) - v;
+        const c = gid(x.category);
+        gas -= v; cats[c] = (cats[c] || 0) - v;
         if (x.essential === 0) cap -= v; else nec -= v;
       } else if (x.kind === 'reintegro') {
-        const l = BYID[x.linked_id]; const c = l?.category || 'otros';
+        const l = BYID[x.linked_id]; const c = gid(l?.category);
         gas -= v; cats[c] = (cats[c] || 0) - v;
         if (l?.essential === 0) cap -= v; else nec -= v;
       } else if (x.kind === 'ingreso') {
-        ing += v; inc[x.category || 'otros_ingreso'] = (inc[x.category || 'otros_ingreso'] || 0) + v;
+        const c = G_OF[x.category] ? gid(x.category) : 'otros_ingreso';
+        ing += v; inc[c] = (inc[c] || 0) + v;
       }
     }
     return { gas, ing, nec, cap, cats, inc, ahorro: ing - gas };
@@ -431,8 +454,8 @@ function missions(w) {
       },
       salidas: () => {
         const prev = rangeStats(addDays(w, -7), addDays(w, -1));
-        const a = (st.cats.salidas || 0) + (st.cats.delivery || 0), b = (prev.cats.salidas || 0) + (prev.cats.delivery || 0);
-        return { id: 'salidas', title: 'Menos salidas y delivery que la semana pasada', xp: 120, p: b ? clamp((b - a) / b) : a ? 0 : 1, done: end < t && a < b, failed: b > 0 && a >= b, sub: `${m0(a)} VS ${m0(b)}` };
+        const a = st.cats.salidas || 0, b = prev.cats.salidas || 0;
+        return { id: 'salidas', title: 'Menos comida afuera que la semana pasada', xp: 120, p: b ? clamp((b - a) / b) : a ? 0 : 1, done: end < t && a < b, failed: b > 0 && a >= b, sub: `${m0(a)} VS ${m0(b)}` };
       },
       extra: () => {
         const n = MOVS.filter(m => m.source === 'manual' && m.kind === 'ingreso' && m.day >= w && m.day <= end).length;
@@ -625,12 +648,12 @@ function topBar() {
 const header = (t, right = '', noBack = false) => `<div class="head">${noBack ? '' : `<button class="iconbtn" data-a="back" aria-label="Volver">${ic('back', 16, 1.6)}</button>`}<h1>${esc(t)}</h1>${right}</div>`;
 const bar = (p, cls = '') => `<div class="bar"><i class="${cls}" data-w="${Math.round(clamp(p) * 100)}"></i></div>`;
 function rowSub(m) {
-  const tm = m.source === 'manual' ? 'A MANO' : hhmm(m.ts);
-  if (needsReview(m)) return `PARA REVISAR · ${catOf(m).name} · ${tm}`;
-  if (m.kind === 'gasto') return `${catName(m.category)} · ${m.essential === 0 ? 'CAPRICHO' : 'NECESARIO'} · ${tm}`;
-  if (m.kind === 'reintegro') { const l = BYID[m.linked_id]; return `DEVOLUCIÓN${l ? ` · ${title(l)}` : ''} · ${tm}`; }
-  if (m.kind === 'interno') return `MOVIMIENTO INTERNO · ${tm}`;
-  if (m.kind === 'descartado') return `IGNORADO · ${tm}`;
+  const tm = m.source === 'manual' ? 'a mano' : hhmm(m.ts);
+  if (needsReview(m)) return `Para revisar · ${catOf(m).name} · ${tm}`;
+  if (m.kind === 'gasto') return `${catName(m.category)} · ${m.essential === 0 ? 'capricho' : 'necesario'} · ${tm}`;
+  if (m.kind === 'reintegro') { const l = BYID[m.linked_id]; return `Devolución${l ? ` de ${title(l)}` : ''} · ${tm}`; }
+  if (m.kind === 'interno') return `Movimiento entre tus cuentas · ${tm}`;
+  if (m.kind === 'descartado') return `Ignorado · ${tm}`;
   return `${catName(m.category)} · ${tm}`;
 }
 function movRow(m) {
@@ -687,63 +710,59 @@ function syncLine() {
 function scrInicio() {
   if (!MOVS.length) {
     const errs = K.sync?.last_errors || [];
-    return `${topBar()}<div class="pad"><div class="lbl">PRIMER ARRANQUE</div>
-      <p class="serif" style="font-size:30px;line-height:1.2;margin:12px 0 18px">${S.syncing ? 'Estoy trayendo tus movimientos de Mercado Pago…' : 'Todavía no hay movimientos.'}</p>
+    return `${topBar()}<div class="pad"><p class="serif" style="font-size:30px;line-height:1.2;margin:12px 0 18px">${S.syncing ? 'Estoy trayendo tus movimientos de Mercado Pago…' : 'Todavía no hay movimientos.'}</p>
       ${errs.map(e => `<div class="alert bad" style="margin:0 0 8px;width:100%">${esc(e)}</div>`).join('')}
       <button class="btn" data-a="sync" ${S.syncing ? 'disabled' : ''}>${ic('sync', 18)} Sincronizar ahora</button></div>`;
   }
   const name = (K.me?.name || '').split(' ')[0];
   const h = hourNow();
   const hola = h < 6 || h >= 20 ? 'Buenas noches' : h < 13 ? 'Buen día' : 'Buenas tardes';
-  const pat = patrimony(), t = today(), m = ymOf(t);
-  const [ip, dp] = nf2.format(Math.abs(pat.ars)).split(',');
-  const fxd = k => { const v = fxDelta(k); return v == null ? '' : `<span class="${v >= 0 ? 'pos' : 'red'}">${v >= 0 ? '▲' : '▼'}${nf2.format(Math.abs(v)).replace(/,?0+$/, '').replace(/,$/, '') || '0'}</span>`; };
-  const st = monthStats(m), b = K.budgets?.total, dayN = +t.slice(8), dmax = dim(m);
-  const proj = dayN ? (st.gas / dayN) * dmax : 0;
-  const G = game(), lv = G.lv, sk = streak();
-  const mis = missions(weekStart(t))[0];
-  const al = alerts().slice(0, 2);
-  const rec = recurrents().slice(0, 2);
+  const pat = patrimony(), t = today(), m = ymOf(t), prevM = addMonths(m, -1);
+  const st = monthStats(m), dayN = +t.slice(8), dmax = dim(m);
+  const prevSame = rangeStats(`${prevM}-01`, `${prevM}-${String(Math.min(dayN, dim(prevM))).padStart(2, '0')}`);
+  const dGas = prevSame.gas > 0 ? Math.round(((st.gas - prevSame.gas) / prevSame.gas) * 100) : null;
+  const b = K.budgets?.total, proj = dayN ? (st.gas / dayN) * dmax : 0;
+  const top = Object.entries(st.cats).filter(([, v]) => v > 0).sort((x, y) => y[1] - x[1]).slice(0, 4);
+  const lvlOrder = { bad: 0, warn: 1, info: 2 };
+  const al = alerts().slice().sort((x, y) => lvlOrder[x.lvl] - lvlOrder[y.lvl])[0];
+  const G = game(), sk = streak(), mis = missions(weekStart(t))[0];
+  const noSueldo = !MOVS.some(x => x.category === 'sueldo' && ymOf(x.day) === m);
   return `${topBar()}
-  <section class="pad">
-    <div style="font-size:15px;color:var(--mute)">${hola}${name ? `, ${esc(name)}` : ''}</div>
-    ${pat.any ? `<div class="lbl" style="margin-top:18px">PATRIMONIO · ARS</div>
-    <div class="money" style="margin-top:4px"><span class="cur">${pat.ars < 0 ? '−' : ''}$</span><span class="n">${ip}</span><span class="dec">,${dp}</span></div>
-    <div class="mono" style="display:flex;gap:14px;align-items:center;margin-top:6px;font-size:13px"><span>${m0(pat.usd, 'USD')}</span>${pat.change != null ? `<span style="width:1px;height:12px;background:var(--line2)"></span><span class="${pat.change >= 0 ? 'pos' : 'red'}">${pat.change >= 0 ? '▲' : '▼'} ${nf2.format(Math.abs(pat.change))}% · 30D</span>` : ''}</div>`
-    : `<button class="card" style="margin:18px 0 0;width:100%;text-align:left" data-a="go:bolsillo:mp"><div class="lbl">ARRANCÁ ACÁ</div><div class="serif" style="font-size:24px;margin:8px 0 6px">Cargá tu saldo de Mercado Pago</div><div class="mute" style="font-size:13.5px;line-height:1.5">Una sola vez: después lo actualizo solo con cada movimiento. Sumá también Binance, Cocos y lo que tengas en Ahorros.</div></button>`}
+  <div class="pad hola">${hola}${name ? `, ${esc(name)}` : ''}</div>
+  ${al ? `<button class="alert ${al.lvl === 'bad' ? 'bad' : al.lvl === 'warn' ? 'warn' : ''}" style="margin-top:16px" data-a="${esc(al.a)}">${esc(al.text)}</button>` : ''}
+
+  <section class="pad block">
+    <div class="h2">Toda tu plata</div>
+    ${pat.any ? `<button style="text-align:left;width:100%" data-a="tab:ahorros"><div class="big" style="font-size:50px;margin-top:6px">${m0(pat.ars)}</div>
+      <div class="sub">${m0(pat.usd, 'USD')}${pat.change != null ? ` · <span class="${pat.change >= 0 ? 'pos' : 'red'}">${pat.change >= 0 ? '▲' : '▼'} ${nf2.format(Math.abs(pat.change))}% en 30 días</span>` : ''}</div></button>`
+    : `<button class="card" style="margin:10px 0 0;width:100%;text-align:left" data-a="tab:ahorros"><div class="serif" style="font-size:22px">Cargá tus saldos una vez</div><div class="sub" style="margin-top:6px">Mercado Pago, la reserva, Binance, Cocos e ICBC. Después se suma solo.</div></button>`}
   </section>
-  ${pat.any ? sparkline(balanceSeries(30)) : ''}
-  <button class="fx" data-a="go:cotiz" style="margin-top:${pat.any ? 14 : 24}px">
-    <span><em>${RATES[rateKey()].toUpperCase()}</em><b>${S.fx ? nf0.format(rate()) : '—'} ${fxd(rateKey())}</b></span>
-    <span><em>${rateKey() === 'bolsa' ? 'BLUE' : 'MEP'}</em><b>${S.fx ? nf0.format(rate(rateKey() === 'bolsa' ? 'blue' : 'bolsa')) : '—'} ${fxd(rateKey() === 'bolsa' ? 'blue' : 'bolsa')}</b></span>
-    <span><em>ACT.</em><b style="display:flex;align-items:center;gap:6px">${S.fx ? `<i style="width:5px;height:5px;background:var(--green)"></i>${hhmm(S.fx.at)}` : '—'}</b></span></button>
-  <nav class="quick" style="margin-top:16px" aria-label="Accesos rápidos">
-    <button class="main" data-a="cargar">${ic('plus', 16, 2)}Cargar</button>
-    <button data-a="go:cotiz">${ic('swap', 16, 1.6)}Convertir</button>
-    <button data-a="tab:analisis">${ic('chart', 16, 1.6)}Análisis</button>
-    <button data-a="go:recur">${ic('cal', 16, 1.6)}Fijos</button></nav>
-  ${al.length ? `<div class="sec" style="margin-top:20px">${al.map(a => `<button class="alert ${a.lvl === 'bad' ? 'bad' : a.lvl === 'warn' ? 'warn' : ''}" data-a="${esc(a.a)}">${esc(a.text)}</button>`).join('')}</div>` : ''}
-  <section class="sec pad">
-    <div style="display:flex;justify-content:space-between" class="lbl"><span>PRESUPUESTO · ${monthName(m).toUpperCase()}</span><span>DÍA ${dayN}/${dmax}</span></div>
-    ${b ? `<div style="display:flex;align-items:baseline;gap:8px;margin-top:12px"><span class="serif" style="font-size:34px;letter-spacing:-.5px;line-height:1">${m0(st.gas)}</span><span class="serif mute3" style="font-size:18px">de ${m0(b)}</span></div>
-    <div style="position:relative;height:22px;margin-top:12px">
-      <div style="position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;height:8px">${Array.from({ length: dmax }, () => '<span style="width:1px;background:var(--line3)"></span>').join('')}</div>
-      <div style="position:absolute;left:0;right:0;top:12px">${bar(st.gas / b, st.gas > b ? 'r' : '')}</div>
-      <div style="position:absolute;left:${((dayN - 0.5) / dmax) * 100}%;top:-2px;width:2px;height:24px;background:var(--ink)"></div></div>
-    <p style="margin:12px 0 0;font-size:14px;line-height:1.5;color:var(--ink2)">${proj <= b ? `<span style="color:var(--ink);font-weight:500">${st.gas / b < (dayN / dmax) * 0.85 ? 'Vas bárbaro.' : 'Vas bien.'}</span> A este ritmo te sobran <span class="serif pos" style="font-size:17px">${m0(b - proj)}</span> a fin de mes.` : `<span style="color:var(--ink);font-weight:500">Ojo.</span> A este ritmo te pasás por <span class="serif red" style="font-size:17px">${m0(proj - b)}</span>. Frená los caprichos.`}</p>`
-    : `<button class="card" style="margin:12px 0 0;width:100%;text-align:left" data-a="go:analisis:pres"><div class="serif" style="font-size:22px">Gastaste ${m0(st.gas)} este mes</div><div class="mute" style="font-size:13.5px;margin-top:6px">Definí un presupuesto y te aviso si vas a pasarte.</div></button>`}
+
+  <section class="pad block">
+    <div class="h2">${cap1(monthName(m))}</div>
+    <div class="trio">
+      <div><span>Entró</span><b class="pos">${mS(st.ing)}</b></div>
+      <div><span>Salió</span><b>${mS(st.gas)}</b></div>
+      <div><span>Te queda</span><b class="${st.ahorro >= 0 ? 'pos' : 'red'}">${mS(st.ahorro)}</b></div>
+    </div>
+    ${dGas != null ? `<p class="note">${dGas <= 0 ? `Vas gastando <b class="pos">${-dGas}% menos</b> que en ${monthName(prevM)} a esta altura. Bien ahí.` : `Vas gastando <b class="red">${dGas}% más</b> que en ${monthName(prevM)} a esta altura.`}</p>` : ''}
+    ${b ? `<div style="margin-top:16px">${bar(st.gas / b, st.gas > b ? 'r' : '')}</div>
+      <p class="note" style="margin-top:8px">${proj <= b ? `De tu presupuesto de ${m0(b)}, a este ritmo te sobran <b class="pos">${m0(b - proj)}</b>.` : `A este ritmo te pasás <b class="red">${m0(proj - b)}</b> de tu presupuesto de ${m0(b)}.`}</p>`
+    : `<button class="link" data-a="go:analisis:pres">Poné un presupuesto mensual →</button>`}
+    ${noSueldo ? `<button class="link" data-a="cargar:sueldo">Sumá el sueldo de ${monthName(m)} para ver lo que te queda de verdad →</button>` : ''}
   </section>
-  <section class="sec">
-    <div class="sec-h"><span class="lbl">TU PROGRESO</span><button data-a="go:progreso">LOGROS →</button></div>
-    <button class="row" data-a="go:progreso"><div class="tx"><div class="lbl">NIVEL ${lv.L} · ${esc(lv.name.toUpperCase())}</div><div style="margin-top:8px">${bar((G.xp - lv.from) / (lv.to - lv.from))}</div></div><div class="am">${nf0.format(G.xp)}<small>/ ${nf0.format(lv.to)} XP</small></div></button>
-    <button class="row" data-a="go:progreso"><div class="ic" style="color:var(--gold)">${ic('flame', 18)}</div><div class="tx"><div class="t1">${sk.cur} día${sk.cur === 1 ? '' : 's'} sin gastos hormiga</div><div class="t2">RÉCORD ${sk.best} DÍAS</div></div></button>
-    <button class="row" data-a="go:progreso"><div class="ic">${ic('target', 18)}</div><div class="tx"><div class="t1">${esc(mis.title)}</div><div class="t2">${esc(mis.sub)}</div><div style="margin-top:8px">${bar(mis.p, mis.done ? 'g' : '')}</div></div><div class="am acc">+${mis.xp} XP</div></button>
-    <div class="list-end"></div></section>
-  <section class="sec">
-    <div class="sec-h"><span class="lbl">${syncLine()}</span><button data-a="tab:movs">VER TODOS →</button></div>
-    ${MOVS.filter(live).slice(0, 5).map(movRow).join('')}<div class="list-end"></div></section>
-  ${rec.length ? `<section class="sec"><div class="sec-h"><span class="lbl">PRÓXIMOS COBROS</span><button data-a="go:recur">VER →</button></div>
-    ${rec.map(r => `<button class="row" data-a="go:recur"><div class="ic mono" style="font-size:10px;flex-direction:column;line-height:1.1">${+r.next.slice(8)}<span style="font-size:8px;color:var(--mute2)">${MES3[+r.next.slice(5, 7) - 1]}</span></div><div class="tx"><div class="t1">${esc(r.name)}</div><div class="t2">${r.inDays === 0 ? 'HOY' : r.inDays === 1 ? 'MAÑANA' : `EN ${r.inDays} DÍAS`}</div></div><div class="am">${m0(r.amount)}</div></button>`).join('')}<div class="list-end"></div></section>` : ''}`;
+
+  ${top.length ? `<section class="block">
+    <div class="sec-h"><span class="h2">En qué se fue</span><button class="link" style="margin:0" data-a="go:analisis:este">Ver todo →</button></div>
+    ${top.map(([c, v]) => `<button class="catrow" data-a="catMovs:${c}"><div class="cr1"><span class="ic">${ic(catIcon(c), 18)}</span><span class="cn">${esc(catName(c))}</span><span class="cv">${m0(v)}</span></div>${bar(v / top[0][1], catEssential(c) ? 'w' : 'y')}</button>`).join('')}
+  </section>` : ''}
+
+  <section class="block">
+    <div class="sec-h"><span class="h2">Tu juego</span><button class="link" style="margin:0" data-a="go:progreso">Ver todo →</button></div>
+    <button class="row" data-a="go:progreso"><div class="ic" style="color:var(--gold)">${ic('flame', 18)}</div><div class="tx"><div class="t1">${sk.cur} día${sk.cur === 1 ? '' : 's'} sin gastos hormiga</div><div class="t2">Nivel ${G.lv.L} · ${esc(G.lv.name)} · récord ${sk.best} días</div></div></button>
+    <button class="row" data-a="go:progreso"><div class="ic">${ic('target', 18)}</div><div class="tx"><div class="t1">${esc(mis.title)}</div><div style="margin-top:8px">${bar(mis.p, mis.done ? 'g' : '')}</div></div><div class="am acc">+${mis.xp}</div></button>
+    <div class="list-end"></div>
+  </section>`;
 }
 
 const MV = { t: 'gastos', m: null, f: 'todos', c: '', q: '' };
@@ -760,7 +779,7 @@ function scrMovs() {
   if (MV.f === 'nec') list = list.filter(x => x.kind === 'gasto' && x.essential !== 0);
   if (MV.f === 'cap') list = list.filter(x => x.kind === 'gasto' && x.essential === 0);
   if (MV.f === 'rev') list = list.filter(needsReview);
-  if (MV.c) list = list.filter(x => x.category === MV.c);
+  if (MV.c) list = list.filter(x => gid(x.category) === MV.c);
   if (MV.q) { const q = normalizeText(MV.q).trim(); list = list.filter(x => normalizeText(title(x), x.description, x.note, catName(x.category)).includes(q)); }
   let summary;
   if (MV.t === 'gastos') {
@@ -776,7 +795,7 @@ function scrMovs() {
     summary = `<div class="lbl">BALANCE · ${monthName(m).toUpperCase()}</div><div class="big ${st.ahorro >= 0 ? 'pos' : 'red'}" style="font-size:52px;margin:10px 0 12px">${money(st.ahorro, 'ARS', { sign: true, dec: false })}</div>
       <div class="kv"><span class="mute">Entró</span><b class="mono" style="font-weight:400">${m0(st.ing)}</b></div><div class="kv"><span class="mute">Salió</span><b class="mono" style="font-weight:400">${m0(st.gas)}</b></div>`;
   }
-  const catsUsed = [...new Set(MOVS.filter(x => x.day.startsWith(m) && x.category).map(x => x.category))];
+  const catsUsed = [...new Set(MOVS.filter(x => x.day.startsWith(m) && x.category && live(x)).map(x => gid(x.category)))];
   return `${header('Movimientos', `<button class="iconbtn" data-a="go:reglas" aria-label="Reglas">${ic('gear', 17)}</button>`, true)}
   <div class="seg">${['gastos', 'ingresos', 'todo'].map(k => `<button class="${MV.t === k ? 'on' : ''}" data-a="mv:t:${k}">${cap1(k)}</button>`).join('')}</div>
   <div class="pad" style="display:flex;align-items:center;justify-content:space-between;margin:18px 0 14px">
@@ -817,10 +836,10 @@ function scrMov({ id }) {
   <div class="field"><label class="lbl">TIPO</label></div>
   <div class="chips">${kinds.map(([k, l]) => `<button class="chip ${ED.kind === k ? 'on' : ''}" data-a="ed:kind:${k}">${l.toUpperCase()}</button>`).join('')}</div>
   ${ED.kind === 'gasto' || ED.kind === 'ingreso' ? `<div class="field"><label class="lbl">CATEGORÍA</label></div>
-    <div class="cats">${CATS()[ED.kind].map(c => `<button class="${ED.category === c.id ? 'on' : ''}" data-a="ed:cat:${c.id}">${ic(CAT_ICON[c.id], 18)}${esc(c.name)}</button>`).join('')}</div>` : ''}
+    <div class="cats">${CATS()[ED.kind].map(c => `<button class="${gid(ED.category) === c.id ? 'on' : ''}" data-a="ed:cat:${c.def}">${ic(c.icon, 18)}${esc(c.name)}</button>`).join('')}</div>` : ''}
   ${ED.kind === 'gasto' ? `<div class="field"><label class="lbl">¿HACÍA FALTA?</label></div><div class="toggle2"><button class="${ED.essential !== 0 ? 'on' : ''}" data-a="ed:ess:1">Necesario</button><button class="${ED.essential === 0 ? 'on' : ''}" data-a="ed:ess:0">Capricho</button></div>` : ''}
   ${ED.kind === 'reintegro' ? `<div class="field"><label class="lbl">¿DE QUÉ GASTO ES LA PARTE?</label><div class="mute" style="font-size:13px;line-height:1.5">Lo que te pasaron se descuenta de ese gasto y no cuenta como ingreso.</div></div>
-    <div style="margin-top:10px">${cands.length ? cands.map(x => `<button class="row" data-a="ed:link:${esc(x.id)}" style="${ED.linked_id === x.id ? 'background:var(--acc-dim)' : ''}"><div class="ic">${ED.linked_id === x.id ? ic('check', 18) : ic(CAT_ICON[x.category], 18)}</div><div class="tx"><div class="t1">${esc(title(x))}</div><div class="t2">${dayLabel(x.day)}</div></div><div class="am">${money(x.amount, x.currency)}</div></button>`).join('') + '<div class="list-end"></div>' : '<div class="empty">No encontré gastos cerca de esta fecha.</div>'}</div>` : ''}
+    <div style="margin-top:10px">${cands.length ? cands.map(x => `<button class="row" data-a="ed:link:${esc(x.id)}" style="${ED.linked_id === x.id ? 'background:var(--acc-dim)' : ''}"><div class="ic">${ED.linked_id === x.id ? ic('check', 18) : ic(catIcon(x.category), 18)}</div><div class="tx"><div class="t1">${esc(title(x))}</div><div class="t2">${dayLabel(x.day)}</div></div><div class="am">${money(x.amount, x.currency)}</div></button>`).join('') + '<div class="list-end"></div>' : '<div class="empty">No encontré gastos cerca de esta fecha.</div>'}</div>` : ''}
   ${manual ? `<div class="field"><label class="lbl">MONTO</label><input class="inp" inputmode="decimal" value="${esc(ED.amount)}" data-in="ed:amount"></div>
     <div class="field"><label class="lbl">DESCRIPCIÓN</label><input class="inp" value="${esc(ED.description)}" data-in="ed:description" maxlength="120"></div>
     <div class="field"><label class="lbl">FECHA</label><input class="inp" type="date" value="${ED.day}" data-in="ed:day"></div>` : ''}
@@ -843,11 +862,9 @@ function newCG(preset) {
 function cgCats() {
   const sug = suggestCat(CG.description, CG.kind);
   if (!CG.picked) CG.category = sug;
-  const list = CATS()[CG.kind];
-  const shown = CG.kind === 'gasto' && !CG.more ? list.slice(0, 7) : list;
+  const shown = CATS()[CG.kind];
   return `${sug ? `<div class="lbl" style="padding:0 20px;margin-bottom:8px">CATEGORÍA SUGERIDA · <span class="acc">${esc(catName(sug).toUpperCase())}</span></div>` : '<div class="lbl" style="padding:0 20px;margin-bottom:8px">CATEGORÍA</div>'}
-    <div class="cats">${shown.map(c => `<button class="${CG.category === c.id ? 'on' : ''} ${sug === c.id && CG.category !== c.id ? 'sug' : ''}" data-a="cg:cat:${c.id}">${ic(CAT_ICON[c.id], 18)}${esc(c.name)}</button>`).join('')}
-    ${CG.kind === 'gasto' && !CG.more ? `<button data-a="cg:more">${ic('dots', 18)}Más</button>` : ''}</div>`;
+    <div class="cats">${shown.map(c => `<button class="${gid(CG.category) === c.id ? 'on' : ''} ${sug && gid(sug) === c.id && gid(CG.category) !== c.id ? 'sug' : ''}" data-a="cg:cat:${c.def}">${ic(c.icon, 18)}${esc(c.name)}</button>`).join('')}</div>`;
 }
 function cgEss() {
   if (CG.kind !== 'gasto') return '';
@@ -914,14 +931,14 @@ function anEste() {
   if (!cats.length) return '<div class="empty">Todavía no hay gastos este mes.</div>';
   let insight = '';
   const ups = cats.map(([c, v]) => [c, v, prev.cats[c] || 0]).filter(([, v, p]) => p > 0 && v > p * 1.1).sort((a, b) => (b[1] - b[2]) - (a[1] - a[2]));
-  if (ups[0]) { const [c, v, p] = ups[0]; insight = `${catName(c)} subió ${Math.round(((v - p) / p) * 100)}% contra ${monthName(addMonths(m, -1))}. ${['delivery', 'salidas', 'compras', 'ropa'].includes(c) ? 'Bajalo a la mitad y la misión de ahorro sale sola.' : 'Fijate si es algo puntual.'}`; }
+  if (ups[0]) { const [c, v, p] = ups[0]; insight = `${catName(c)} subió ${Math.round(((v - p) / p) * 100)}% contra ${monthName(addMonths(m, -1))}. ${['salidas', 'compras'].includes(c) ? 'Bajalo a la mitad y la misión de ahorro sale sola.' : 'Fijate si es algo puntual.'}`; }
   const gastos = MOVS.filter(x => x.day.startsWith(m) && x.kind === 'gasto' && live(x));
   const top = gastos.slice().sort((a, b) => arsOf(a) - arsOf(b)).slice(0, 3);
   const byDay = {};
   for (const x of gastos) byDay[x.day] = (byDay[x.day] || 0) - arsOf(x);
   const worst = Object.entries(byDay).sort((a, b) => b[1] - a[1])[0];
   return `<section class="pad"><div class="lbl" style="display:flex;justify-content:space-between"><span>${monthName(m).toUpperCase()} POR CATEGORÍA</span><span style="color:var(--ink)">${m0(st.gas)}</span></div>
-    <div style="margin-top:14px">${cats.map(([c, v]) => `<div style="padding:10px 0;border-top:1px solid var(--line)"><div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px"><span>${ic(CAT_ICON[c], 14)}</span><span style="flex:1;margin-left:10px">${esc(catName(c))} <span class="mono mute2" style="font-size:11px">${pct(v, st.gas)}%</span></span><span class="mono">${m0(v)}</span></div>${bar(v / cats[0][1], catEssential(c) ? 'w' : 'y')}</div>`).join('')}</div></section>
+    <div style="margin-top:14px">${cats.map(([c, v]) => `<div style="padding:10px 0;border-top:1px solid var(--line)"><div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:8px"><span>${ic(catIcon(c), 14)}</span><span style="flex:1;margin-left:10px">${esc(catName(c))} <span class="mono mute2" style="font-size:11px">${pct(v, st.gas)}%</span></span><span class="mono">${m0(v)}</span></div>${bar(v / cats[0][1], catEssential(c) ? 'w' : 'y')}</div>`).join('')}</div></section>
     ${insight ? `<div class="card sec" style="font-size:14.5px;line-height:1.5;border-left:2px solid var(--acc)">${esc(insight)}</div>` : ''}
     <section class="sec"><div class="sec-h"><span class="lbl">LOS MÁS GRANDES</span></div>${top.map(movRow).join('')}<div class="list-end"></div></section>
     ${worst ? `<section class="sec pad"><div class="lbl">TU DÍA MÁS CARO</div><div style="font-size:15px;margin-top:8px">El ${dayLabel(worst[0]).toLowerCase()} gastaste <span class="serif" style="font-size:20px">${m0(worst[1])}</span>.</div></section>` : ''}`;
@@ -937,7 +954,7 @@ function anPres() {
     <input class="inp" inputmode="numeric" placeholder="${sug ? nf0.format(sug) : 'Ej.: 900.000'}" value="${esc(PB.total)}" data-in="pb:total">
     ${K.budgets?.total ? `<div style="margin-top:12px">${bar(st.gas / K.budgets.total, st.gas > K.budgets.total ? 'r' : '')}</div><div class="mono mute2" style="font-size:11px;margin-top:6px">${m0(st.gas)} DE ${m0(K.budgets.total)} · ${pct(st.gas, K.budgets.total)}%</div>` : ''}</section>
     <section class="sec"><div class="sec-h"><span class="lbl">POR CATEGORÍA (OPCIONAL)</span></div>
-    ${CATS().gasto.filter(c => c.id !== 'transferencias').map(c => { const lim = K.budgets?.cats?.[c.id], s = st.cats[c.id] || 0; return `<div class="row" style="flex-wrap:wrap"><div class="ic">${ic(CAT_ICON[c.id], 16)}</div><div class="tx"><div class="t1">${esc(c.name)}</div><div class="t2">ESTE MES ${m0(s)}</div></div><input class="inp" style="width:120px;height:40px;font-size:14px" inputmode="numeric" placeholder="Sin límite" value="${esc(PB.cats[c.id] || '')}" data-in="pb:${c.id}">${lim ? `<div style="width:100%;margin-top:8px">${bar(s / lim, s > lim ? 'r' : '')}</div>` : ''}</div>`; }).join('')}<div class="list-end"></div></section>
+    ${CATS().gasto.filter(c => c.id !== 'personas').map(c => { const lim = K.budgets?.cats?.[c.id], s = st.cats[c.id] || 0; return `<div class="row" style="flex-wrap:wrap"><div class="ic">${ic(c.icon, 16)}</div><div class="tx"><div class="t1">${esc(c.name)}</div><div class="t2">ESTE MES ${m0(s)}</div></div><input class="inp" style="width:120px;height:40px;font-size:14px" inputmode="numeric" placeholder="Sin límite" value="${esc(PB.cats[c.id] || '')}" data-in="pb:${c.id}">${lim ? `<div style="width:100%;margin-top:8px">${bar(s / lim, s > lim ? 'r' : '')}</div>` : ''}</div>`; }).join('')}<div class="list-end"></div></section>
     <div class="pad" style="margin-top:20px"><button class="btn" data-a="savePres">Guardar presupuesto</button></div>`;
 }
 
@@ -950,7 +967,9 @@ function scrAhorros() {
   return `${header('Ahorros', `<button class="lbl" style="color:var(--acc)" data-a="go:cotiz">COTIZACIONES →</button>`, true)}
   <section class="pad"><div class="lbl">PATRIMONIO</div>
     <div class="big" style="font-size:56px;margin-top:8px">${pat.any ? m0(pat.ars) : '—'}</div>
-    <div class="mono" style="margin-top:8px;font-size:13px">${pat.any ? m0(pat.usd, 'USD') : 'Cargá tus bolsillos para verlo'}</div>
+    <div class="sub" style="margin-top:8px">${pat.any ? `${m0(pat.usd, 'USD')}${pat.change != null ? ` · <span class="${pat.change >= 0 ? 'pos' : 'red'}">${pat.change >= 0 ? '▲' : '▼'} ${nf2.format(Math.abs(pat.change))}% en 30 días</span>` : ''}` : 'Tocá cada bolsillo y cargá su saldo de hoy.'}</div></section>
+  ${pat.any ? sparkline(balanceSeries(30)) : ''}
+  <section class="pad">
     ${parts.length ? `<div style="display:flex;height:6px;gap:2px;margin-top:18px">${parts.map(([k, , c]) => `<i style="flex:${pat.by[k]};background:${c}"></i>`).join('')}</div>
     <div class="mono" style="display:flex;gap:16px;margin-top:10px;font-size:11px;letter-spacing:1px">${parts.map(([k, l]) => `<span>${l} ${pct(pat.by[k], tot)}%</span>`).join('')}</div>` : ''}</section>
   <section class="sec"><div class="sec-h"><span class="lbl">MIS BOLSILLOS</span></div>
@@ -1142,9 +1161,10 @@ const A = {
     render(); vib();
   },
   mvMonth(m) { MV.m = m; MV.t = 'todo'; A.tab('movs'); },
+  catMovs(c) { MV.m = ymOf(today()); MV.t = 'gastos'; MV.f = 'todos'; MV.c = c; A.tab('movs'); },
   an(t) { AN.t = t; PB = null; render(); },
   ed(k, v, el) {
-    if (k === 'kind') { ED.kind = v; if (v === 'gasto' && !CATS().gasto.some(c => c.id === ED.category)) { ED.category = 'otros'; ED.essential = 1; } if (v === 'ingreso' && !CATS().ingreso.some(c => c.id === ED.category)) ED.category = 'otros_ingreso'; }
+    if (k === 'kind') { ED.kind = v; if (v === 'gasto' && !inKind(ED.category, 'gasto')) { ED.category = 'otros'; ED.essential = 1; } if (v === 'ingreso' && !inKind(ED.category, 'ingreso')) ED.category = 'otros_ingreso'; }
     if (k === 'cat') { ED.category = v; if (ED.kind === 'gasto') ED.essential = catEssential(v) ? 1 : 0; }
     if (k === 'ess') ED.essential = +v;
     if (k === 'link') ED.linked_id = ED.linked_id === v ? '' : v;
@@ -1202,7 +1222,6 @@ const A = {
     if (k === 'cur') { CG.currency = v; if (v === 'USDC' && CG.pocket === 'efectivo') CG.pocket = 'binance'; }
     if (k === 'cat') { CG.category = v; CG.picked = true; CG.essential = null; }
     if (k === 'ess') CG.essential = v === '1';
-    if (k === 'more') CG.more = true;
     if (k === 'preset') { CG = newCG(v); }
     const y = scrollY; render(); scrollTo(0, y); vib();
   },

@@ -1,5 +1,5 @@
 // FinTrack · service worker. Subí CACHE en cada cambio de public/ (si no, el iPhone sigue con la versión vieja).
-const CACHE = 'fintrack-v2-3';
+const CACHE = 'fintrack-v2-4';
 const FONTS = 'fintrack-fonts-v1';
 const SHELL = ['./', './index.html', './app.js', './manifest.webmanifest', './icon.svg', './icon-180.png', './icon-192.png', './icon-512.png'];
 
