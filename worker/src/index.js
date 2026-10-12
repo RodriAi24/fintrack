@@ -19,8 +19,18 @@ export default {
 
     const { pathname } = new URL(request.url);
     if (request.method !== 'GET') return json({ error: 'Solo GET.' }, 405);
-    if (pathname === '/') return json({ app: 'FinTrack API', endpoints: ['/test', '/reporte'] });
+    if (pathname === '/') return json({ app: 'FinTrack API', endpoints: ['/test', '/reporte', '/detalle?id='] });
     if (pathname === '/test') return json(await test(env));
+    if (pathname === '/detalle') {
+      // Diagnóstico: qué sabe MP de un movimiento puntual (ej.: un PAYOUT del reporte)
+      const id = new URL(request.url).searchParams.get('id') || '';
+      if (!/^\d{6,20}$/.test(id)) return json({ ok: false, error: 'Pasá ?id= con el número de operación.' }, 400);
+      if (!env.MP_ACCESS_TOKEN) return json({ ok: false, error: 'Falta el secret MP_ACCESS_TOKEN en Cloudflare.' });
+      const r = await mpGet(env, `/v1/payments/${id}`);
+      return json(r.http === 200
+        ? { ok: true, http: 200, campos: fieldNames(r.body), pago: r.body }
+        : { ok: false, http: r.http, error: r.error });
+    }
     if (pathname === '/reporte') {
       if (!env.MP_ACCESS_TOKEN) return json({ ok: false, error: 'Falta el secret MP_ACCESS_TOKEN en Cloudflare.' });
       return json(await settlementReport(env));

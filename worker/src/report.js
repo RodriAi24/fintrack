@@ -87,6 +87,11 @@ export async function settlementReport(env) {
         descripcion: r.DESCRIPTION || null,
         contraparte: r.PAYER_NAME || r.POI_WALLET_NAME || r.POI_BANK_NAME || null,
         canal: [r.BUSINESS_UNIT, r.SUB_UNIT].filter(Boolean).join(' / ') || null,
+        // Campos crudos para aprender a clasificar (rendimientos, salidas a otros bancos)
+        crudo: Object.fromEntries(Object.entries({
+          metodo: r.PAYMENT_METHOD, ref_externa: r.EXTERNAL_REFERENCE, tags: r.OPERATION_TAGS,
+          metadata: r.METADATA, billetera: r.POI_WALLET_NAME, banco: r.POI_BANK_NAME,
+        }).filter(([, v]) => v)),
       };
     })
     .sort((a, b) => Date.parse(b.fecha) - Date.parse(a.fecha));
