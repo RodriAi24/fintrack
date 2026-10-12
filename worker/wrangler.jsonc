@@ -1,0 +1,13 @@
+// FinTrack · Worker de la API (etapa 0: /test)
+// Los secrets (MP_ACCESS_TOKEN, FINTRACK_PASSWORD, etc.) se cargan en el panel de Cloudflare,
+// nunca acá: este archivo está en un repo.
+{
+  "name": "fintrack-api",
+  "main": "src/index.js",
+  "compatibility_date": "2025-09-01",
+  "workers_dev": true,
+  "preview_urls": false,
+  // No borrar las variables cargadas desde el panel en cada deploy
+  "keep_vars": true,
+  "observability": { "enabled": true }
+}
