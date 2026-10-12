@@ -1,14 +1,17 @@
 # FinTrack API (Cloudflare Worker)
 
-Worker que guarda el token de Mercado Pago como secret, habla con MP y le devuelve los datos a la app. Etapa 0: `/test`, `/reporte` y `/detalle`.
+Worker que guarda el token de Mercado Pago como secret, habla con MP y le devuelve los datos a la app. Sirve la app, la API y sincroniza con Mercado Pago cada 2 horas.
 
 Dirección: <https://fintrack-api.rodricingolani1.workers.dev> · se redespliega solo con cada push a `main` que toque `worker/`.
 
 ## Endpoints
 
-- `GET /test` → últimos 20 movimientos normalizados, saldo (si MP lo da) y un diagnóstico de cada fuente (`fuentes`: qué respondió, con qué código y qué campos trae).
-- `GET /detalle?id=` → qué sabe Mercado Pago de una operación puntual (diagnóstico).
-- `GET /reporte` → reporte de dinero en cuenta de los últimos 30 días (incluye transferencias a CBU/CVU de otros bancos). La primera vez lo pide y crea la configuración de reportes en tu cuenta de MP (sin programación automática); a los 2-3 minutos, volvé a abrirlo y lo descarga y resume.
+- `/` → la app (archivos de `public/`).
+- `GET /api/state` → movimientos de los últimos 400 días, configuración (`kv`) y reglas.
+- `POST /api/sync` → sincroniza con Mercado Pago ya (máximo una vez por minuto). El cron lo hace solo cada 2 horas.
+- `POST /api/movements`, `PATCH /api/movements/:id`, `DELETE /api/movements/:id` → cargar, corregir (y aprender reglas) o borrar movimientos a mano.
+- `PUT /api/kv/:key` → guardar bolsillos, presupuestos, metas, juego y preferencias.
+- `GET /api/export`, `POST /api/import` → backup en JSON (el import se valida entero antes de tocar nada).
 
 Todo pide contraseña (Basic Auth con el secret `FINTRACK_PASSWORD`). Sin contraseña configurada, el Worker no atiende nada.
 

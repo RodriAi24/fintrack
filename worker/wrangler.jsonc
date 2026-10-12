@@ -1,4 +1,4 @@
-// FinTrack · Worker de la API (etapa 0: /test)
+// FinTrack · Worker: app (public/), API (/api/*) y sincronización con Mercado Pago (cron).
 // Los secrets (MP_ACCESS_TOKEN, FINTRACK_PASSWORD, etc.) se cargan en el panel de Cloudflare,
 // nunca acá: este archivo está en un repo.
 {
@@ -9,5 +9,12 @@
   "preview_urls": false,
   // No borrar las variables cargadas desde el panel en cada deploy
   "keep_vars": true,
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+  // La app. run_worker_first: hasta los archivos pasan por la protección
+  "assets": { "directory": "./public", "binding": "ASSETS", "run_worker_first": true },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "fintrack", "database_id": "9456b9ad-184b-455c-9bc5-60baaed98dc3" }
+  ],
+  // Sincronización con Mercado Pago cada 2 horas
+  "triggers": { "crons": ["17 */2 * * *"] }
 }

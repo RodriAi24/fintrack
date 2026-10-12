@@ -5,11 +5,13 @@ App de finanzas personales de Rodrigo. Es solo para él, no es un producto. PWA 
 Rodrigo no usaba la app vieja: **no hay datos guardados que migrar**. Se arranca de cero con los datos que entran solos.
 
 ## Cómo está armada
-- El frontend vive en `index.html`: HTML, CSS y JS vanilla, sin framework ni build. Chart.js por CDN (cdnjs, versión fija).
-- `sw.js` es el service worker. **Cada vez que cambies `index.html` (o cualquier archivo cacheado), subí la versión de `CACHE` en `sw.js`.** Si no, el iPhone sigue mostrando la versión vieja.
-- `manifest.json` **no lleva `start_url`**: con ella iOS puede dar 404 al abrir desde la pantalla de inicio (mismo problema que en GymBrain).
+- Todo vive en `worker/`: un solo Cloudflare Worker (`fintrack-api`) que sirve la app (`worker/public/`), la API (`/api/*`) y sincroniza con Mercado Pago por cron. Dirección: https://fintrack-api.rodricingolani1.workers.dev
+- Frontend: `worker/public/index.html` (HTML + CSS con los tokens del diseño) y `worker/public/app.js` (JS vanilla, sin framework ni build). Gráficos en SVG propio, animados.
+- `worker/public/sw.js` (cuando exista) es el service worker. **Cada vez que cambies un archivo de `public/`, subí la versión de `CACHE` en `sw.js`.** Si no, el iPhone sigue mostrando la versión vieja.
+- El manifest **no lleva `start_url`**: con ella iOS puede dar 404 al abrir desde la pantalla de inicio (mismo problema que en GymBrain).
 - Actualizá `APP_VERSION` cuando haya un cambio visible.
-- Backend en Cloudflare (ver "Infra"). El frontend nunca habla directo con Mercado Pago.
+- El frontend nunca habla directo con Mercado Pago. Sí puede llamar a DolarApi (público).
+- Los archivos de la raíz (`index.html`, `sw.js`, `manifest.json`, `favicon.png`, `avatar.png`) son la app vieja de GitHub Pages: Rodrigo no la usa, se borran cuando la nueva esté lista.
 
 ## Datos (lo más delicado)
 - La fuente de verdad va a ser el backend (D1), alimentado por las sincronizaciones. El frontend guarda una copia para andar offline.
@@ -57,7 +59,9 @@ Rodrigo no usaba la app vieja: **no hay datos guardados que migrar**. Se arranca
   - Las fechas vienen en `-04:00`: convertir siempre al día de Argentina. Usar `date_created` (lo que muestra la app de MP); `date_approved` llega días después en pagos con la prepaga.
   - El **reporte de dinero en cuenta** (`/v1/account/settlement_report`) trae todo lo que mueve el disponible, verificado al centavo contra la app: `SETTLEMENT` (pagos y cobros, mismo ID que payments), `PAYOUTS` (transferencias a CBU/CVU de otros bancos y QR de otras billeteras, **sin destinatario**), `REFUND` y los rendimientos. Llega con 1-3 días de atraso. No incluye la cuenta en dólares.
   - Los `PAYOUTS` y los rendimientos no existen en `/v1/payments/{id}` (404).
-- Más adelante: frontend en Cloudflare (Pages o el mismo Worker con static assets), D1 para movimientos y cron diario.
+- Backend (worker/src): `index.js` (router + cron), `auth.js`, `api.js` (`/api/state`, `/api/sync`, `/api/movements`, `/api/kv/:key`, `/api/rules/:id`, `/api/export`, `/api/import`), `sync.js` (búsqueda de pagos cada 2 h + reporte diario), `report.js`, `classify.js` (categorías, reglas de fábrica y aprendizaje), `db.js` (D1: tablas `movements`, `rules`, `kv`; el esquema se crea solo).
+- D1 `fintrack` (id en `wrangler.jsonc`). Cron `17 */2 * * *`. Primera sincronización: 364 días de pagos + reporte de 120 días.
+- `kv` guarda: `me`, `sync` (estado), `pockets`, `budgets`, `goals`, `game`, `prefs`.
 - Secrets y bindings se configuran en el panel de Cloudflare, nunca en el código.
 - Pruebas del Worker (con Mercado Pago simulado): `node --test worker/test/*.mjs`.
 
@@ -67,3 +71,22 @@ Rodrigo no usaba la app vieja: **no hay datos guardados que migrar**. Se arranca
 3. Cambios chicos y commits claros, en español.
 4. Si un cambio puede romper datos guardados, avisá antes de hacerlo.
 5. Al terminar, resumí en 2-3 líneas qué cambió y qué tiene que mirar Rodrigo en el celu.
+
+## Estado actual (12/10/2026) y próximos pasos
+Hecho y desplegado:
+- Etapa 0: probado contra la cuenta real qué da Mercado Pago (ver "Infra").
+- Backend completo de sincronización: D1, cron cada 2 h, clasificación con reglas, aprendizaje al corregir, export/import validado. La app provisoria (`public/app.js`) muestra el estado de la sincronización y un botón para sincronizar.
+
+Falta (en este orden):
+1. **App completa en `public/app.js`** siguiendo las 10 pantallas del diseño (Inicio, Inicio scroll con progreso, Registrar, Movimientos, Análisis, Ahorros y metas, Cotizaciones, Recurrentes, Tu progreso, Reglas MP) + Ajustes, detalle/edición de movimiento, alertas y resumen mensual. Ya están los estilos en `index.html`. Pantallas y lógica pensadas:
+   - Router con stacks por pestaña (inicio, movs, analisis, ahorros) + `popstate` como GymBrain; "Cargar" se abre desde el botón central.
+   - Bolsillos en `kv.pockets` con ancla `{amount, ts}`: saldo = ancla + movimientos del bolsillo posteriores. MP disponible y reserva se actualizan solos; inversiones MP, dólares MP, Binance (USDC), Cocos, ICBC y efectivo son manuales (actualizar valor = nueva ancla + snapshot para ver cuánto rindió).
+   - Totales del mes: gastos = `kind gasto` (+ `reintegro` vinculado resta del gasto y su categoría); ingresos = `kind ingreso`; `interno` y `descartado` no cuentan. USD/USDC se pasan a pesos con la cotización elegida (blue por defecto, DolarApi).
+   - Hormiga: gasto capricho de menos de $10.000 (configurable). Racha = días seguidos sin hormiga.
+   - XP derivada de los datos (determinística): +5 por movimiento revisado o cargado a mano, +15 por día sin hormiga desde `game.start`, misiones semanales (ahorro de la semana, finde sin delivery, todo revisado, 3 días sin hormiga, menos salidas que la semana pasada, cargar ingresos extra), mes bajo presupuesto, mes en verde, metas y logros. Nivel: XP para llegar al nivel L = 50·L·(L−1). `kv.game` guarda solo lo ya celebrado (para disparar cinemáticas una vez).
+   - Recurrentes: mismo comercio (o mismo monto en transferencias a otros bancos) en 2 de los últimos 3 meses, con monto ±20% y día ±5 → próximo cobro y aviso 3 días antes.
+   - Pasamanos (mismo monto entra y sale el mismo día) y gasto compartido (ingreso de una persona vinculado a un gasto) se resuelven desde "Para revisar".
+   - Sueldo: aviso el 2.º día hábil del mes para cargarlo (ICBC no tiene API).
+2. Service worker, manifest e íconos PNG (180/192/512) del logo del diseño.
+3. Cloudflare Access para entrar desde el iPhone (la contraseña Basic Auth anda mal en la app instalada). `auth.js` ya valida el JWT si se cargan `ACCESS_TEAM_DOMAIN`, `ACCESS_AUD` y `ALLOWED_EMAIL`.
+4. Borrar la app vieja de la raíz y actualizar `worker/README.md`.

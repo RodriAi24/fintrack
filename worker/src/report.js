@@ -1,111 +1,121 @@
 // Reporte de "dinero en cuenta" (settlement_report) de Mercado Pago.
-// Sirve para ver lo que la búsqueda de pagos no trae: transferencias a CBU/CVU de otros bancos,
-// retiros, y (si MP los incluye) rendimientos. Es asincrónico: se pide y se descarga minutos después.
-// No mueve plata: solo crea la configuración del reporte (si no existe) y pide el archivo.
+// Trae lo que la búsqueda de pagos no ve: transferencias a CBU/CVU de otros bancos (PAYOUTS),
+// rendimientos del disponible y de la reserva, y devoluciones. Es asincrónico: se pide y se
+// descarga más tarde. Verificado al centavo contra la app de MP (12/10/2026).
 
 import { mpGet, mpGetText, mpPost, localDay } from './mp.js';
 
 const BASE = '/v1/account/settlement_report';
-const DAYS = 30;
-const FRESH_MS = 6 * 3600_000; // un reporte de las últimas 6 h se reutiliza
 
 const COLUMNS = ['TRANSACTION_DATE', 'SOURCE_ID', 'EXTERNAL_REFERENCE', 'TRANSACTION_TYPE', 'TRANSACTION_AMOUNT',
   'TRANSACTION_CURRENCY', 'SETTLEMENT_NET_AMOUNT', 'SETTLEMENT_CURRENCY', 'PAYMENT_METHOD', 'PAYMENT_METHOD_TYPE',
   'DESCRIPTION', 'PAYER_NAME', 'POI_WALLET_NAME', 'POI_BANK_NAME', 'BUSINESS_UNIT', 'SUB_UNIT', 'OPERATION_TAGS', 'METADATA'];
 
 const CONFIG = {
-  file_name_prefix: 'fintrack',
-  show_fee_prevision: false,
-  show_chargeback_cancel: true,
-  coupon_detailed: true,
-  include_withdraw: true,
-  shipping_detail: false,
-  refund_detailed: true,
-  display_timezone: 'GMT-03',
-  header_language: 'en',
-  frequency: { hour: 3, type: 'monthly', value: 1 }, // no se programa: solo queda definido
+  file_name_prefix: 'fintrack', show_fee_prevision: false, show_chargeback_cancel: true, coupon_detailed: true,
+  include_withdraw: true, shipping_detail: false, refund_detailed: true, display_timezone: 'GMT-03',
+  header_language: 'en', frequency: { hour: 3, type: 'monthly', value: 1 }, // no se programa: solo queda definido
   columns: COLUMNS.map(key => ({ key })),
 };
 
 const iso = d => d.toISOString().replace(/\.\d{3}Z$/, 'Z');
-const reportDate = r => Date.parse(r.date_created || r.generation_date || r.last_modified || 0) || 0;
+export const reportDate = r => Date.parse(r.date_created || r.generation_date || r.last_modified || 0) || 0;
 
-export async function settlementReport(env) {
-  // 1. Configuración: si no existe, crear una mínima (sin generación automática)
-  let configCreated = false;
+export async function ensureConfig(env) {
   const cfg = await mpGet(env, `${BASE}/config`);
-  if (cfg.http === 404) {
-    const made = await mpPost(env, `${BASE}/config`, CONFIG);
-    if (made.http !== 200 && made.http !== 201) {
-      return { ok: false, paso: 'crear configuración', http: made.http, error: made.error };
-    }
-    configCreated = true;
-  } else if (cfg.http !== 200) {
-    return { ok: false, paso: 'leer configuración', http: cfg.http, error: cfg.error };
-  }
+  if (cfg.http === 200) return { ok: true };
+  if (cfg.http !== 404) return { ok: false, error: `config: ${cfg.error}` };
+  const made = await mpPost(env, `${BASE}/config`, CONFIG);
+  return made.http === 200 || made.http === 201 ? { ok: true, created: true } : { ok: false, error: `crear config: ${made.error}` };
+}
 
-  // 2. ¿Hay un reporte reciente listo?
+export async function listReports(env) {
   const list = await mpGet(env, `${BASE}/list`);
-  if (list.http !== 200) return { ok: false, paso: 'listar reportes', http: list.http, error: list.error };
+  if (list.http !== 200) return { ok: false, error: `listar: ${list.error}` };
   const reports = (Array.isArray(list.body) ? list.body : list.body?.results || [])
     .filter(r => String(r.file_name || '').endsWith('.csv'))
     .sort((a, b) => reportDate(b) - reportDate(a));
-  const recent = reports.find(r => Date.now() - reportDate(r) < FRESH_MS);
+  return { ok: true, reports };
+}
 
-  // 3. Si no hay, pedirlo
-  if (!recent) {
-    const now = new Date();
-    const asked = await mpPost(env, BASE, { begin_date: iso(new Date(now - DAYS * 86400_000)), end_date: iso(now) });
-    if (asked.http !== 200 && asked.http !== 201 && asked.http !== 202) {
-      return { ok: false, paso: 'pedir reporte', http: asked.http, error: asked.error };
+export async function requestReport(env, days) {
+  const now = new Date();
+  const r = await mpPost(env, BASE, { begin_date: iso(new Date(now - days * 86400_000)), end_date: iso(now) });
+  return r.http >= 200 && r.http < 300 ? { ok: true } : { ok: false, error: `pedir: ${r.error}` };
+}
+
+export async function downloadReport(env, fileName) {
+  const file = await mpGetText(env, `${BASE}/${encodeURIComponent(fileName)}`);
+  return file.http === 200 ? { ok: true, rows: parseCsv(file.body) } : { ok: false, error: `descargar: ${file.error}` };
+}
+
+const num = v => Number(String(v ?? '0').replace(',', '.')) || 0;
+const cents = n => Math.round(Math.abs(n) * 100);
+
+const isYield = r => r.TRANSACTION_TYPE === 'SETTLEMENT' && num(r.SETTLEMENT_NET_AMOUNT) > 0
+  && !r.PAYMENT_METHOD && !r.PAYMENT_METHOD_TYPE && !r.PAYER_NAME && !r.EXTERNAL_REFERENCE;
+
+// Filas del reporte → movimientos crudos. ctx: { reserve: { balance, rate } }
+// Las filas SETTLEMENT comunes usan el mismo ID que la búsqueda de pagos (pay_<id>): el que
+// llama decide si las inserta (solo las que la búsqueda no trajo).
+export function reportToMovements(rows, ctx = {}) {
+  const out = [];
+  const base = r => {
+    const ts = r.TRANSACTION_DATE;
+    return { ts: new Date(ts).toISOString(), day: localDay(ts), currency: r.SETTLEMENT_CURRENCY || r.TRANSACTION_CURRENCY || 'ARS', source: 'mp_reporte', status: 'approved' };
+  };
+
+  // Rendimientos: dos filas por día con el mismo SOURCE_ID (disponible + reserva)
+  const yields = {};
+  for (const r of rows.filter(isYield)) (yields[r.SOURCE_ID] ||= []).push(r);
+  let prevDay = null;
+  for (const src of Object.keys(yields).sort((a, b) => Date.parse(yields[a][0].TRANSACTION_DATE) - Date.parse(yields[b][0].TRANSACTION_DATE))) {
+    const group = yields[src];
+    const day = localDay(group[0].TRANSACTION_DATE);
+    const gap = prevDay ? Math.max(1, Math.round((Date.parse(day) - Date.parse(prevDay)) / 86400_000)) : 1;
+    prevDay = day;
+    let reserveIdx = -1;
+    if (group.length >= 2) {
+      const { balance = 0, rate = 0 } = ctx.reserve || {};
+      const expected = balance > 0 && rate > 0 ? balance * rate / 100 / 365 * gap : null;
+      const amounts = group.map(r => num(r.SETTLEMENT_NET_AMOUNT));
+      reserveIdx = expected != null
+        ? amounts.reduce((best, a, i) => (Math.abs(a - expected) < Math.abs(amounts[best] - expected) ? i : best), 0)
+        : amounts.indexOf(Math.min(...amounts)); // sin datos de la reserva: la menor
     }
-    return {
-      ok: true,
-      estado: 'generando',
-      mensaje: `Le pedí a Mercado Pago el reporte de los últimos ${DAYS} días. Volvé a abrir /reporte en 2 o 3 minutos.`,
-      configuracion_creada: configCreated,
-      reportes_anteriores: reports.length,
-    };
+    group.forEach((r, i) => {
+      const amount = num(r.SETTLEMENT_NET_AMOUNT);
+      const reserve = i === reserveIdx;
+      out.push({ ...base(r), id: `yld_${src}_${cents(amount)}`, amount, op: 'rendimiento', kind_hint: 'rendimiento',
+        description: reserve ? 'Rendimientos · Reserva' : 'Rendimientos', pocket: reserve ? 'reserva' : 'mp' });
+    });
   }
 
-  // 4. Descargar y resumir
-  const file = await mpGetText(env, `${BASE}/${encodeURIComponent(recent.file_name)}`);
-  if (file.http !== 200) return { ok: false, paso: 'descargar reporte', http: file.http, error: file.error };
-  const rows = parseCsv(file.body);
-  const count = col => rows.reduce((acc, r) => ((acc[r[col] || '(vacío)'] = (acc[r[col] || '(vacío)'] || 0) + 1), acc), {});
-  const movimientos = rows
-    .map(r => {
-      const neto = Number(String(r.SETTLEMENT_NET_AMOUNT || r.TRANSACTION_AMOUNT || '0').replace(',', '.'));
-      return {
-        id: r.SOURCE_ID ? `pay_${r.SOURCE_ID}` : null,
-        fecha: r.TRANSACTION_DATE,
-        dia: r.TRANSACTION_DATE ? localDay(r.TRANSACTION_DATE) : null,
-        tipo: r.TRANSACTION_TYPE,
-        monto: neto,
-        moneda: r.SETTLEMENT_CURRENCY || r.TRANSACTION_CURRENCY,
-        medio: r.PAYMENT_METHOD_TYPE || r.PAYMENT_METHOD || null,
-        descripcion: r.DESCRIPTION || null,
-        contraparte: r.PAYER_NAME || r.POI_WALLET_NAME || r.POI_BANK_NAME || null,
-        canal: [r.BUSINESS_UNIT, r.SUB_UNIT].filter(Boolean).join(' / ') || null,
-        // Campos crudos para aprender a clasificar (rendimientos, salidas a otros bancos)
-        crudo: Object.fromEntries(Object.entries({
-          metodo: r.PAYMENT_METHOD, ref_externa: r.EXTERNAL_REFERENCE, tags: r.OPERATION_TAGS,
-          metadata: r.METADATA, billetera: r.POI_WALLET_NAME, banco: r.POI_BANK_NAME,
-        }).filter(([, v]) => v)),
-      };
-    })
-    .sort((a, b) => Date.parse(b.fecha) - Date.parse(a.fecha));
-
-  return {
-    ok: true,
-    estado: 'listo',
-    archivo: { desde: recent.begin_date, hasta: recent.end_date, generado: recent.date_created || null },
-    filas: rows.length,
-    columnas: rows[0] ? Object.keys(rows[0]) : [],
-    por_tipo: count('TRANSACTION_TYPE'),
-    por_medio: count('PAYMENT_METHOD_TYPE'),
-    movimientos,
-  };
+  for (const r of rows) {
+    if (isYield(r)) continue;
+    const amount = num(r.SETTLEMENT_NET_AMOUNT || r.TRANSACTION_AMOUNT);
+    const src = r.SOURCE_ID;
+    if (r.TRANSACTION_TYPE === 'PAYOUTS') {
+      out.push({ ...base(r), id: `out_${src}`, amount, op: 'payout', kind_hint: 'payout', pocket: 'mp',
+        description: 'Transferencia a otra cuenta', counterparty: r.POI_BANK_NAME || null });
+    } else if (r.TRANSACTION_TYPE === 'REFUND') {
+      out.push({ ...base(r), id: `ref_${src}_${cents(amount)}`, amount, op: 'refund', kind_hint: 'reintegro', pocket: 'mp',
+        description: 'Devolución', linked_id: `pay_${src}` });
+    } else if (r.TRANSACTION_TYPE === 'SETTLEMENT') {
+      out.push({ ...base(r), id: `pay_${src}`, amount, pocket: 'mp', report_only: true,
+        method: r.PAYMENT_METHOD || null, mp_type: r.PAYMENT_METHOD_TYPE || null,
+        op: r.PAYMENT_METHOD_TYPE === 'bank_transfer' ? 'money_transfer' : null,
+        direction: amount < 0 ? 'sale' : 'entra',
+        description: r.DESCRIPTION || null,
+        // En las salidas PAYER_NAME es el propio Rodrigo: no sirve como contraparte
+        counterparty: amount > 0 ? r.PAYER_NAME || r.POI_WALLET_NAME || r.POI_BANK_NAME || null : null,
+        channel: r.SUB_UNIT || null });
+    } else {
+      out.push({ ...base(r), id: `rep_${String(r.TRANSACTION_TYPE).toLowerCase()}_${src}_${cents(amount)}`, amount, pocket: 'mp',
+        op: String(r.TRANSACTION_TYPE).toLowerCase(), description: r.TRANSACTION_TYPE });
+    }
+  }
+  return out;
 }
 
 // CSV con comillas (RFC 4180). Detecta separador , o ;
