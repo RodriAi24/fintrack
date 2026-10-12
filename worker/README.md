@@ -2,6 +2,8 @@
 
 Worker que guarda el token de Mercado Pago como secret, habla con MP y le devuelve los datos a la app. Etapa 0: solo existe `/test`.
 
+Dirección: <https://fintrack-api.rodricingolani1.workers.dev> · se redespliega solo con cada push a `main` que toque `worker/`.
+
 ## Endpoints
 
 - `GET /test` → últimos 20 movimientos normalizados, saldo (si MP lo da) y un diagnóstico de cada fuente (`fuentes`: qué respondió, con qué código y qué campos trae).
