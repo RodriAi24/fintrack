@@ -40,7 +40,7 @@ const BUILTIN = [
   ['salidas', ['hormiga negra', 'bar ', 'cerveceria', 'restaurant', 'resto ', 'parrilla', 'pizzeria', 'cafe', 'starbucks', 'havanna', 'mostaza', 'mcdonald', 'burger king', 'boliche', 'cine', 'teatro', 'ticketek', 'passline', 'eventbrite']],
   ['servicios', ['edenor', 'edesur', 'metrogas', 'naturgy', 'aysa', 'personal', 'movistar', 'claro', 'telecentro', 'fibertel', 'flow', 'directv', 'telefonica']],
   ['suscripciones', ['netflix', 'spotify', 'disney', 'hbo', 'youtube', 'apple.com', 'icloud', 'google', 'chatgpt', 'openai', 'anthropic', 'claude.ai', 'amazon prime', 'prime video', 'paramount', 'crunchyroll', 'canva', 'notion', 'dropbox']],
-  ['salud', ['farmacity', 'farmacia', 'osde', 'swiss medical', 'galeno', 'medicus', 'omint', 'hospital', 'clinica', 'odontolog', 'smart fit', 'megatlon', 'gimnasio', 'sport club']],
+  ['salud', ['farmacity', 'farmacia', 'osde', 'swiss medical', 'swissmedical', 'medife', 'sancor salud', 'hospital italiano', 'galeno', 'medicus', 'omint', 'hospital', 'clinica', 'odontolog', 'smart fit', 'megatlon', 'gimnasio', 'sport club']],
   ['hogar', ['alquiler', 'expensas', 'easy', 'sodimac', 'ikea', 'ferreteria', 'pintureria']],
   ['compras', ['mercadolibre', 'mercado libre', 'amazon', 'aliexpress', 'shein', 'temu', 'fravega', 'garbarino', 'musimundo', 'tiendamia']],
   ['ropa', ['zara', 'nike', 'adidas', 'h&m', 'kevingston', 'levis', 'dexter', 'grimoldi', 'stock center']],
@@ -83,6 +83,10 @@ export function classify(m, ctx = {}) {
   if (m.status && ['cancelled', 'rejected', 'pending', 'in_process', 'authorized'].includes(m.status)) {
     return { kind: 'descartado', category: null, essential: null, review: 0, category_source: 'auto' };
   }
+
+  // Entre cuentas propias (vos pagás y vos cobrás) o un pago que no es tuyo: nunca suma
+  if (m.direction === 'interno') return { kind: 'interno', category: null, essential: null, review: 0, category_source: 'auto' };
+  if (m.direction === 'ajeno') return { kind: 'descartado', category: null, essential: null, review: 0, category_source: 'auto' };
 
   // Reglas de Rodrigo primero (pueden cambiar hasta el tipo)
   const rule = matchRule(ctx.rules || [], text);

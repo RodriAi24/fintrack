@@ -720,7 +720,11 @@ function scrInicio() {
   const pat = patrimony(), t = today(), m = ymOf(t), prevM = addMonths(m, -1);
   const st = monthStats(m), dayN = +t.slice(8), dmax = dim(m);
   const prevSame = rangeStats(`${prevM}-01`, `${prevM}-${String(Math.min(dayN, dim(prevM))).padStart(2, '0')}`);
-  const dGas = prevSame.gas > 0 ? Math.round(((st.gas - prevSame.gas) / prevSame.gas) * 100) : null;
+  // Día a día: sin transferencias a personas ni la tarjeta (montos grandes y salteados)
+  const daily = x => x.gas - (x.cats.personas || 0) - (x.cats.tarjeta || 0);
+  const dPrev = daily(prevSame);
+  let dGas = dPrev > 0 ? Math.round(((daily(st) - dPrev) / dPrev) * 100) : null;
+  if (dGas != null && Math.abs(dGas) > 300) dGas = null;
   const b = K.budgets?.total, proj = dayN ? (st.gas / dayN) * dmax : 0;
   const top = Object.entries(st.cats).filter(([, v]) => v > 0).sort((x, y) => y[1] - x[1]).slice(0, 4);
   const lvlOrder = { bad: 0, warn: 1, info: 2 };
@@ -745,7 +749,7 @@ function scrInicio() {
       <div><span>Salió</span><b>${mS(st.gas)}</b></div>
       <div><span>Te queda</span><b class="${st.ahorro >= 0 ? 'pos' : 'red'}">${mS(st.ahorro)}</b></div>
     </div>
-    ${dGas != null ? `<p class="note">${dGas <= 0 ? `Vas gastando <b class="pos">${-dGas}% menos</b> que en ${monthName(prevM)} a esta altura. Bien ahí.` : `Vas gastando <b class="red">${dGas}% más</b> que en ${monthName(prevM)} a esta altura.`}</p>` : ''}
+    ${dGas != null ? `<p class="note">${dGas <= 0 ? `En el día a día vas gastando <b class="pos">${-dGas}% menos</b> que en ${monthName(prevM)} a esta altura. Bien ahí.` : `En el día a día vas gastando <b class="red">${dGas}% más</b> que en ${monthName(prevM)} a esta altura.`}</p>` : ''}
     ${b ? `<div style="margin-top:16px">${bar(st.gas / b, st.gas > b ? 'r' : '')}</div>
       <p class="note" style="margin-top:8px">${proj <= b ? `De tu presupuesto de ${m0(b)}, a este ritmo te sobran <b class="pos">${m0(b - proj)}</b>.` : `A este ritmo te pasás <b class="red">${m0(proj - b)}</b> de tu presupuesto de ${m0(b)}.`}</p>`
     : `<button class="link" data-a="go:analisis:pres">Poné un presupuesto mensual →</button>`}
@@ -783,7 +787,8 @@ function scrMovs() {
   if (MV.q) { const q = normalizeText(MV.q).trim(); list = list.filter(x => normalizeText(title(x), x.description, x.note, catName(x.category)).includes(q)); }
   let summary;
   if (MV.t === 'gastos') {
-    const d = prevSt.gas ? ((st.gas - prevSt.gas) / prevSt.gas) * 100 : null;
+    let d = prevSt.gas ? ((st.gas - prevSt.gas) / prevSt.gas) * 100 : null;
+    if (d != null && Math.abs(d) > 300) d = null;
     summary = `<div class="lbl" style="display:flex;justify-content:space-between"><span>GASTADO · ${monthName(m).toUpperCase()}</span>${d != null ? `<span class="${d <= 0 ? 'pos' : 'red'}">${d <= 0 ? '▼' : '▲'} ${Math.abs(Math.round(d))}% VS ${MES3[+prevM.slice(5, 7) - 1]}</span>` : ''}</div>
       <div class="big" style="font-size:52px;margin:10px 0 16px">${m0(st.gas)}</div>
       <div style="display:flex;height:6px;gap:2px"><i style="flex:${Math.max(st.nec, 0) || 0.001};background:var(--ink)"></i><i style="flex:${Math.max(st.cap, 0) || 0.001};background:var(--gold)"></i></div>

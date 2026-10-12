@@ -38,9 +38,10 @@ export async function listReports(env) {
   return { ok: true, reports };
 }
 
-export async function requestReport(env, days) {
-  const now = new Date();
-  const r = await mpPost(env, BASE, { begin_date: iso(new Date(now - days * 86400_000)), end_date: iso(now) });
+// days de largo, terminando hace endDaysAgo días
+export async function requestReport(env, days, endDaysAgo = 0) {
+  const end = new Date(Date.now() - endDaysAgo * 86400_000);
+  const r = await mpPost(env, BASE, { begin_date: iso(new Date(end - days * 86400_000)), end_date: iso(end) });
   return r.http >= 200 && r.http < 300 ? { ok: true } : { ok: false, error: `No pude pedir el reporte diario de Mercado Pago (${r.error})` };
 }
 

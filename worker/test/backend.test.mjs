@@ -68,6 +68,16 @@ test('reporte: separa rendimientos de disponible y reserva, payouts y devolucion
   assert.equal(classify(movs.find(m => m.id === 'pay_190'), {}).kind, 'interno');
 });
 
+test('plata entre cuentas propias (vos pagás y vos cobrás) no es ingreso ni toca el saldo', () => {
+  const self = normalizePayment({ id: 9, payer_id: 7, collector_id: 7, transaction_amount: 5000000, currency_id: 'ARS', operation_type: 'money_transfer', status: 'approved', date_created: '2026-07-01T10:00:00.000-04:00' }, 7);
+  assert.equal(self.direction, 'interno');
+  assert.equal(self.pocket, null);
+  assert.equal(classify(self).kind, 'interno');
+  const foreign = normalizePayment({ id: 10, payer_id: 1, collector_id: 2, transaction_amount: 100, status: 'approved', date_created: '2026-07-01T10:00:00.000-04:00' }, 7);
+  assert.equal(classify(foreign).kind, 'descartado');
+  assert.equal(classify({ amount: -605671.54, op: 'regular_payment', description: 'Swissmedicalgroup' }).category, 'salud');
+});
+
 test('clasificación: comercios, transferencias y reglas propias', () => {
   const uber = normalizePayment({ id: 1, payer_id: 9, collector: { id: 2 }, transaction_amount: 2806, currency_id: 'ARS', operation_type: 'regular_payment', description: 'Payu*ar*uber', status: 'approved', payment_type_id: 'prepaid_card', date_created: '2026-10-07T21:07:33.000-04:00' }, 9);
   assert.equal(uber.amount, -2806);

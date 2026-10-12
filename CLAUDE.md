@@ -57,6 +57,9 @@ Rodrigo no usaba la app vieja: **no hay datos guardados que migrar**. Se arranca
   - `payments/search?collector.id=<yo>` trae lo que cobra (transferencias recibidas, etc.), con el objeto `payer`.
   - `/mercadopago_account/movements/search` y `/users/{id}/mercadopago_account/balance` dan 403: **no hay saldo ni rendimientos por API**.
   - `/v1/orders` responde pero vacío (solo ve cobros hechos con la integración).
+  - **Pagos donde Rodrigo es pagador Y cobrador** = plata entre sus propias cuentas (reserva, dinero que rinde, dólares, inversiones). MP los registra muchas veces por día y suman cientos de millones falsos: van como `interno`, sin bolsillo, nunca como ingreso.
+  - El reporte de dinero en cuenta solo acepta rangos de ~30 días (con 120 falla con "Error creating Statement"): el historial se completa pidiendo de a 30 días hacia atrás, uno por corrida.
+  - `CLASSIFY_VERSION` en `sync.js`: subirlo cuando cambia la clasificación, así la próxima sincronización relee el año y reclasifica (sin tocar lo corregido a mano).
   - Las fechas vienen en `-04:00`: convertir siempre al día de Argentina. Usar `date_created` (lo que muestra la app de MP); `date_approved` llega días después en pagos con la prepaga.
   - El **reporte de dinero en cuenta** (`/v1/account/settlement_report`) trae todo lo que mueve el disponible, verificado al centavo contra la app: `SETTLEMENT` (pagos y cobros, mismo ID que payments), `PAYOUTS` (transferencias a CBU/CVU de otros bancos y QR de otras billeteras, **sin destinatario**), `REFUND` y los rendimientos. Llega con 1-3 días de atraso. No incluye la cuenta en dólares.
   - Los `PAYOUTS` y los rendimientos no existen en `/v1/payments/{id}` (404).

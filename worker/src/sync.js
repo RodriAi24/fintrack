@@ -10,6 +10,10 @@ import { upsertMovements, existingIds, getKv, setKv, listRules } from './db.js';
 const FIRST_DAYS = 364; // la búsqueda de MP acepta rangos de menos de 365 días
 const OVERLAP_DAYS = 10; // re-leer los últimos días: los pagos cambian de estado
 const REPORT_EVERY_MS = 20 * 3600_000;
+const HISTORY_WINDOWS = 12; // reportes de 30 días hacia atrás para completar el último año
+// Subir cuando cambia la clasificación: la próxima sincronización relee el año entero y reclasifica
+// (lo corregido a mano no se toca).
+const CLASSIFY_VERSION = 2;
 
 async function getMe(env, db) {
   const cached = await getKv(db, 'me');
@@ -50,12 +54,13 @@ async function fetchPayments(env, role, myId, days) {
 export async function syncPayments(env, db, state) {
   const me = await getMe(env, db);
   const ctx = await context(db, me);
-  const days = state.payments_at ? OVERLAP_DAYS : FIRST_DAYS;
+  const days = state.payments_at && state.classify_version === CLASSIFY_VERSION ? OVERLAP_DAYS : FIRST_DAYS;
   const [paid, collected] = await Promise.all([fetchPayments(env, 'payer', me.id, days), fetchPayments(env, 'collector', me.id, days)]);
   const byId = new Map();
   for (const p of [...paid, ...collected]) byId.set(p.id, p);
   const movements = [...byId.values()].map(p => classified(normalizePayment(p, me.id), ctx));
   await upsertMovements(db, movements);
+  state.classify_version = CLASSIFY_VERSION;
   return movements.length;
 }
 
@@ -68,7 +73,7 @@ export async function syncReport(env, db, state) {
   const list = await listReports(env);
   if (!list.ok) throw new Error(list.error);
   const processed = new Set(state.report_files || []);
-  const fresh = list.reports.find(r => !processed.has(r.file_name) && (!state.report_requested_at || reportDate(r) >= Date.parse(state.report_requested_at) - 60_000));
+  const fresh = list.reports.find(r => !processed.has(r.file_name) && (!state.report_requested_at || reportDate(r) >= Date.parse(state.report_requested_at) - 3 * 86400_000));
   if (fresh) {
     const file = await downloadReport(env, fresh.file_name);
     if (!file.ok) throw new Error(file.error);
@@ -84,11 +89,19 @@ export async function syncReport(env, db, state) {
     out.downloaded = toSave.length;
   }
 
-  // ¿Toca pedir uno nuevo?
-  if (!state.report_requested_at || Date.now() - Date.parse(state.report_requested_at) > REPORT_EVERY_MS) {
-    const asked = await requestReport(env, 30); // 30 días: es lo que MP acepta (con 120 falla)
+  // ¿Toca pedir uno nuevo? Primero el de los últimos 30 días (una vez por día). Si no, de a uno
+  // por corrida, los 30 días anteriores, hasta completar el año (MP no acepta rangos largos).
+  const due = !state.report_requested_at || Date.now() - Date.parse(state.report_requested_at) > REPORT_EVERY_MS;
+  const back = state.report_history || 0;
+  if (due) {
+    const asked = await requestReport(env, 30, 0);
     if (!asked.ok) throw new Error(asked.error);
     state.report_requested_at = new Date().toISOString();
+    out.requested = true;
+  } else if (back < HISTORY_WINDOWS && !fresh) {
+    const asked = await requestReport(env, 30, (back + 1) * 30);
+    if (!asked.ok) throw new Error(asked.error);
+    state.report_history = back + 1;
     out.requested = true;
   }
   return out;

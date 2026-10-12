@@ -59,7 +59,9 @@ export function normalizePayment(p, myId) {
   const iCollected = String(collectorId ?? '') === String(myId);
   const amount = round(p.transaction_amount);
   const refunded = round(p.transaction_amount_refunded);
-  const direction = iPaid && iCollected ? 'interno' : iPaid ? 'sale' : 'entra';
+  // Vos de los dos lados = plata entre tus propias cuentas (reserva, dinero que rinde, dólares,
+  // inversiones). MP los registra como pagos y pasan muchas veces por día: NO son ingresos.
+  const direction = iPaid && iCollected ? 'interno' : iPaid ? 'sale' : iCollected ? 'entra' : 'ajeno';
   // date_created = cuándo lo hiciste (lo que muestra la app). date_approved puede llegar días después.
   const ts = p.date_created || p.date_approved;
   const type = p.payment_type_id || null;
@@ -82,6 +84,6 @@ export function normalizePayment(p, myId) {
     channel: p.point_of_interaction?.type || null,
     status: p.status,
     // Lo pagado con tarjeta de crédito o débito de otro banco no sale del saldo de MP
-    pocket: direction === 'sale' && type && !FROM_MP_BALANCE.has(type) ? 'externo' : 'mp',
+    pocket: direction === 'interno' || direction === 'ajeno' ? null : direction === 'sale' && type && !FROM_MP_BALANCE.has(type) ? 'externo' : 'mp',
   };
 }
