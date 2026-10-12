@@ -1,6 +1,6 @@
 # FinTrack — instrucciones para Claude
 
-App de finanzas personales de Rodrigo. Es solo para él, no es un producto. PWA instalada en el iPhone ("Agregar a pantalla de inicio"). El objetivo es que los movimientos entren solos (Mercado Pago y Binance) y que usarla se sienta como GymBrain: premium, oscura y gamificada.
+App de finanzas personales de Rodrigo. Es solo para él, no es un producto. PWA instalada en el iPhone ("Agregar a pantalla de inicio"). El objetivo es que los movimientos entren solos (Mercado Pago) y que usarla se sienta como GymBrain: premium, oscura y gamificada.
 
 Rodrigo no usaba la app vieja: **no hay datos guardados que migrar**. Se arranca de cero con los datos que entran solos.
 
@@ -15,20 +15,21 @@ Rodrigo no usaba la app vieja: **no hay datos guardados que migrar**. Se arranca
 - La fuente de verdad va a ser el backend (D1), alimentado por las sincronizaciones. El frontend guarda una copia para andar offline.
 - **No cambies formatos guardados sin una migración versionada** (`schemaVersion`) que corra una sola vez y sea idempotente. Desde que haya datos reales, nada se pierde.
 - Export/import en JSON con validación: nada se importa sin pasar el validador, y siempre se muestra una vista previa (cuántos movimientos, rango de fechas) antes de reemplazar.
-- Cada movimiento se deduplica por el ID de su fuente (`pay_<id MP>`, `bn_*`). Una corrección manual (categoría, nota, gasto compartido) nunca se pisa en una sincronización.
+- Cada movimiento se deduplica por el ID de su fuente (`pay_<id MP>`). Una corrección manual (categoría, nota, gasto compartido) nunca se pisa en una sincronización.
 - Fechas: usá la fecha **local** de Argentina (`America/Argentina/Buenos_Aires`), nunca `toISOString().split('T')[0]` (da el día siguiente después de las 21 h).
 - Montos: guardá el monto original en su moneda (ARS, USD, USDC); las conversiones se calculan al mostrar y guardan qué cotización se usó.
 
 ## Cómo se mueve la plata de Rodrigo (reglas de clasificación)
 - **Sueldo**: entra a ICBC el **segundo día hábil del mes** (ICBC no tiene API: ingreso fijo mensual, el monto lo carga él). Después pasa una parte a Mercado Pago por **DEBIN** en los primeros días del mes: eso es **movimiento interno**, no ingreso.
-- **Bolsillos**: MP disponible (saldo anclado una vez + movimientos del reporte), reserva "Emergencias" (rinde 19%), inversiones de MP (renta fija y variable, valor manual), dólares de MP (manual, no salen por API), Cocos (manual), ICBC (manual), Binance (automático, casi todo en USDC: es donde tiene más plata y donde le entran ingresos extra).
+- **Bolsillos**: MP disponible (saldo anclado una vez + movimientos del reporte), reserva "Emergencias" (rinde 19%), inversiones de MP (renta fija y variable, valor manual), dólares de MP (manual, no salen por API), Cocos (manual), ICBC (manual), Binance (manual: casi todo en USDC, es donde tiene más plata; los ingresos extra entran ahí semanalmente y él los carga a mano).
+- **Solo Mercado Pago es automático.** Binance, Cocos e ICBC no se integran (decisión de Rodrigo): la carga manual tiene que ser rapidísima.
 - **Rendimientos de MP**: vienen en el reporte como dos filas `SETTLEMENT` positivas por madrugada, sin medio de pago, sin persona y sin referencia: una es del disponible y otra de la reserva (se distinguen por cuál se acerca a saldo × tasa diaria de cada bolsillo). La de la reserva no suma al disponible.
 - **Gasto compartido**: ej. paga la tarjeta de su mamá (−$1.930.000) y el hermano le pasa su parte (+$1.190.000) el día antes: el gasto real es la diferencia y lo del hermano no es ingreso. Lo mismo con amigos que le transfieren su parte.
 - **Pasamanos**: entra y sale el mismo monto el mismo día (ej. $595.000): preguntar si se ignora.
 
 ## Seguridad
-- **Los tokens (`MP_ACCESS_TOKEN`, `BINANCE_API_KEY`, `BINANCE_API_SECRET`) nunca van al frontend, al repo ni a un log.** Viven solo como secrets de Cloudflare.
-- Solo lectura: nada que cree pagos, reembolsos, transferencias, órdenes ni retiros. Las únicas escrituras permitidas son pedir reportes de MP. La clave de Binance tiene que ser de solo lectura ("Enable Reading").
+- **El token de Mercado Pago (`MP_ACCESS_TOKEN`) nunca va al frontend, al repo ni a un log.** Vive solo como secret de Cloudflare.
+- Solo lectura: nada que cree pagos, reembolsos ni transferencias. La única escritura permitida es pedir reportes de MP.
 - La API nunca atiende sin protección (falla cerrado). Hoy: contraseña propia por Basic Auth (secret `FINTRACK_PASSWORD`). Cuando la app se mude a Cloudflare: todo detrás de Cloudflare Access (solo el email de Rodrigo) y la API valida el JWT (`Cf-Access-Jwt-Assertion`); `worker/src/auth.js` ya soporta los dos modos.
 - No subas al repo `.dev.vars`, backups JSON ni CSV de movimientos reales (están en `.gitignore`).
 
@@ -46,7 +47,7 @@ Rodrigo no usaba la app vieja: **no hay datos guardados que migrar**. Se arranca
 
 ## Infra
 - La API vive en `worker/` (Cloudflare Worker `fintrack-api`, config en `worker/wrangler.jsonc`). Se despliega solo con Workers Builds en cada push a `main` (raíz `worker`, comando `npx wrangler deploy`). Rodrigo no instala nada en su compu.
-- `worker/src/mp.js` es el cliente de Mercado Pago y normaliza a movimientos (`fecha, dia, monto, moneda, sentido, tipo, descripcion, contraparte`). Montos negativos = sale plata. `worker/src/report.js` pide y lee el reporte de dinero en cuenta. `worker/src/binance.js` es el cliente de Binance (clave de solo lectura, firma HMAC).
+- `worker/src/mp.js` es el cliente de Mercado Pago y normaliza a movimientos (`fecha, dia, monto, moneda, sentido, tipo, descripcion, contraparte`). Montos negativos = sale plata. `worker/src/report.js` pide y lee el reporte de dinero en cuenta.
 - Endpoints `/v1/payments/search` (marcado legacy, sin fecha de baja), `/mercadopago_account/*` (no documentados) y `/v1/orders` (solo cobros de la integración): cualquiera puede dejar de andar; el código tiene que tolerar que una fuente falle sin romper las demás.
 - Probado con la cuenta real (12/10/2026):
   - `payments/search?payer.id=<yo>` **sí** trae los pagos que hace Rodrigo (QR, Uber, transferencias a otros usuarios de MP, compras con tarjeta). En esos MP manda `payer_id` en el primer nivel y el destinatario en `collector` (nombre, email).
@@ -58,7 +59,7 @@ Rodrigo no usaba la app vieja: **no hay datos guardados que migrar**. Se arranca
   - Los `PAYOUTS` y los rendimientos no existen en `/v1/payments/{id}` (404).
 - Más adelante: frontend en Cloudflare (Pages o el mismo Worker con static assets), D1 para movimientos y cron diario.
 - Secrets y bindings se configuran en el panel de Cloudflare, nunca en el código.
-- Pruebas del Worker (con Mercado Pago y Binance simulados): `node --test worker/test/*.mjs`.
+- Pruebas del Worker (con Mercado Pago simulado): `node --test worker/test/*.mjs`.
 
 ## Cómo trabajar
 1. Antes de commitear, probá con Playwright en viewport de iPhone 13 (390×844). Sacá screenshots de las pantallas que tocaste y fijate que no haya errores en la consola. Probá también la navegación atrás.
