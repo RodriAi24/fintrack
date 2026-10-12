@@ -5,6 +5,7 @@
 import { authorize } from './auth.js';
 import { mpGet, normalizePayment, normalizeMovement, normalizeOrder, fieldNames, NOT_A_MOVEMENT } from './mp.js';
 import { settlementReport } from './report.js';
+import { binanceProbe } from './binance.js';
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data, null, 2), {
@@ -19,8 +20,9 @@ export default {
 
     const { pathname } = new URL(request.url);
     if (request.method !== 'GET') return json({ error: 'Solo GET.' }, 405);
-    if (pathname === '/') return json({ app: 'FinTrack API', endpoints: ['/test', '/reporte', '/detalle?id='] });
+    if (pathname === '/') return json({ app: 'FinTrack API', endpoints: ['/test', '/reporte', '/detalle?id=', '/binance'] });
     if (pathname === '/test') return json(await test(env));
+    if (pathname === '/binance') return json(await binanceProbe(env, request.cf?.colo));
     if (pathname === '/detalle') {
       // Diagnóstico: qué sabe MP de un movimiento puntual (ej.: un PAYOUT del reporte)
       const id = new URL(request.url).searchParams.get('id') || '';

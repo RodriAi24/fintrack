@@ -1,12 +1,14 @@
 # FinTrack API (Cloudflare Worker)
 
-Worker que guarda el token de Mercado Pago como secret, habla con MP y le devuelve los datos a la app. Etapa 0: `/test` y `/reporte`.
+Worker que guarda el token de Mercado Pago como secret, habla con MP y le devuelve los datos a la app. Etapa 0: `/test`, `/reporte`, `/detalle` y `/binance`.
 
 Dirección: <https://fintrack-api.rodricingolani1.workers.dev> · se redespliega solo con cada push a `main` que toque `worker/`.
 
 ## Endpoints
 
 - `GET /test` → últimos 20 movimientos normalizados, saldo (si MP lo da) y un diagnóstico de cada fuente (`fuentes`: qué respondió, con qué código y qué campos trae).
+- `GET /binance` → saldos de Binance (Spot, Funding, Earn) y movimientos de 30 días (depósitos, retiros, Binance Pay, P2P, rendimientos de Earn). Necesita `BINANCE_API_KEY` y `BINANCE_API_SECRET` de una clave de **solo lectura**.
+- `GET /detalle?id=` → qué sabe Mercado Pago de una operación puntual (diagnóstico).
 - `GET /reporte` → reporte de dinero en cuenta de los últimos 30 días (incluye transferencias a CBU/CVU de otros bancos). La primera vez lo pide y crea la configuración de reportes en tu cuenta de MP (sin programación automática); a los 2-3 minutos, volvé a abrirlo y lo descarga y resume.
 
 Todo pide contraseña (Basic Auth con el secret `FINTRACK_PASSWORD`). Sin contraseña configurada, el Worker no atiende nada.
@@ -17,6 +19,7 @@ Todo pide contraseña (Basic Auth con el secret `FINTRACK_PASSWORD`). Sin contra
 |---|---|
 | `MP_ACCESS_TOKEN` | Access Token de producción de Mercado Pago (`APP_USR-…`) |
 | `FINTRACK_PASSWORD` | Tu contraseña para abrir el Worker |
+| `BINANCE_API_KEY`, `BINANCE_API_SECRET` | Clave de Binance de solo lectura |
 | `ACCESS_TEAM_DOMAIN`, `ACCESS_AUD`, `ALLOWED_EMAIL` | Opcionales, para cuando pasemos a Cloudflare Access |
 
 ## Puesta en marcha, paso a paso (sin instalar nada)
@@ -61,4 +64,4 @@ Los secrets no se pueden volver a leer desde el panel; si te equivocás, cargalo
 
 ## Desarrollo
 
-Pruebas con Mercado Pago simulado (desde la raíz del repo): `node --test worker/test/worker.test.mjs worker/test/report.test.mjs`.
+Pruebas con Mercado Pago simulado (desde la raíz del repo): `node --test worker/test/*.mjs`.
