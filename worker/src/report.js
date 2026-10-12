@@ -63,7 +63,7 @@ export function reportToMovements(rows, ctx = {}) {
   const out = [];
   const base = r => {
     const ts = r.TRANSACTION_DATE;
-    return { ts: new Date(ts).toISOString(), day: localDay(ts), currency: r.SETTLEMENT_CURRENCY || r.TRANSACTION_CURRENCY || 'ARS', source: 'mp_reporte', status: 'approved' };
+    return { ts: new Date(ts).toISOString(), day: localDay(ts), currency: r.SETTLEMENT_CURRENCY || r.TRANSACTION_CURRENCY || 'ARS', source: 'mp_reporte', status: 'approved', in_report: 1 };
   };
 
   // Rendimientos: dos filas por día con el mismo SOURCE_ID (disponible + reserva)

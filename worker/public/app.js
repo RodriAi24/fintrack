@@ -228,7 +228,16 @@ const toArs = (n, cur) => (cur === 'ARS' ? n : n * rate());
 const fromArs = (n, cur) => (cur === 'ARS' ? n : n / rate());
 
 /* ═══ Cálculos ═════════════════════════════════════════════ */
-const live = m => m.kind !== 'descartado';
+// Qué cuenta para los totales: lo que confirmó el reporte de Mercado Pago (lo mismo que su app),
+// lo cargado a mano en tus otras cuentas y, provisorio, lo posterior al último reporte.
+// Las compras con tarjeta de crédito ('externo') no salen de tu cuenta: no cuentan.
+const cov = () => K.sync?.report_cov || null;
+const live = m => {
+  if (m.kind === 'descartado' || m.pocket == null || m.pocket === 'externo') return false;
+  if (m.source === 'manual' || m.source === 'mp_reporte' || m.in_report) return true;
+  const c = cov();
+  return !!c && m.day > c.to;
+};
 const needsReview = m => m.review && !m.user_edited && live(m);
 function title(m) {
   if (m.op === 'payout') return m.note || m.counterparty || 'Transferencia a otra cuenta';
@@ -247,7 +256,7 @@ function catOf(m) {
 // Entró = suma de lo positivo. Salió = suma de lo negativo. Diferencia = entró − salió.
 // Cuenta todo lo que movió alguna de tus cuentas (los movimientos sin cuenta o cancelados no existen).
 // Las categorías solo reparten lo que salió (o entró): no cambian ningún total.
-const counts = m => live(m) && m.pocket != null;
+const counts = live;
 function rangeStats(from, to) {
   return memo(`rs${from}${to}`, () => {
     let gas = 0, ing = 0, nec = 0, cap = 0;
@@ -423,8 +432,11 @@ function levelOf(xp) {
 }
 function savingsTarget() {
   return memo('st', () => {
-    const inc = rangeStats(addDays(today(), -56), today()).ing / 8;
-    return inc > 0 ? Math.max(10000, Math.round((inc * 0.2) / 5000) * 5000) : 20000;
+    // Mediana de lo que te quedó por semana en las últimas 8 (lo que sobra, no lo que entra), con tope
+    const weeks = [];
+    for (let i = 1; i <= 8; i++) { const w = weekStart(addDays(today(), -7 * i)); const st = rangeStats(w, addDays(w, 6)); weeks.push(st.ing - st.gas); }
+    const med = median(weeks.filter(x => x > 0));
+    return Math.min(100000, Math.max(10000, Math.round((med * 0.5) / 5000) * 5000 || 20000));
   });
 }
 function missions(w) {
@@ -749,6 +761,7 @@ function scrInicio() {
       <div><span>Salió</span><b>${mS(st.gas)}</b></div>
       <div><span>Diferencia</span><b class="${st.ahorro >= 0 ? 'pos' : 'red'}">${mS(st.ahorro)}</b></div>
     </div>
+    ${cov() ? `<p class="note" style="color:var(--mute);font-size:13px;margin-top:10px">Mercado Pago confirmado hasta el ${+cov().to.slice(8)}/${cov().to.slice(5, 7)}. Lo posterior es provisorio.</p>` : `<p class="note" style="color:var(--mute);font-size:13px;margin-top:10px">Esperando el primer reporte de Mercado Pago (tarda unos minutos).</p>`}
     ${dGas != null ? `<p class="note">${dGas <= 0 ? `En el día a día vas gastando <b class="pos">${-dGas}% menos</b> que en ${monthName(prevM)} a esta altura. Bien ahí.` : `En el día a día vas gastando <b class="red">${dGas}% más</b> que en ${monthName(prevM)} a esta altura.`}</p>` : ''}
     ${b ? `<div style="margin-top:16px">${bar(st.gas / b, st.gas > b ? 'r' : '')}</div>
       <p class="note" style="margin-top:8px">${proj <= b ? `De tu presupuesto de ${m0(b)}, a este ritmo te sobran <b class="pos">${m0(b - proj)}</b>.` : `A este ritmo te pasás <b class="red">${m0(proj - b)}</b> de tu presupuesto de ${m0(b)}.`}</p>`
@@ -908,8 +921,10 @@ function scrAnalisis(ctx) {
 function anMes() {
   const t = ymOf(today()), months = [];
   for (let i = 11; i >= 0; i--) months.push(addMonths(t, -i));
-  const data = months.map(m => ({ m, ...monthStats(m) })).filter((x, i, a) => x.gas || x.ing || a.slice(0, i).some(y => y.gas || y.ing));
-  if (!data.length) return '<div class="empty">Todavía no hay meses para comparar.</div>';
+  const c = cov();
+  const data = months.filter(m => c && m >= ymOf(c.from)).map(m => ({ m, ...monthStats(m) }));
+  const loading = c ? `<p class="note pad" style="color:var(--mute);font-size:13px">Historial de Mercado Pago desde el ${+c.from.slice(8)}/${c.from.slice(5, 7)}/${c.from.slice(0, 4)}. Lo anterior se va completando solo (unas horas).</p>` : '';
+  if (!data.length) return '<div class="empty">Esperando el primer reporte de Mercado Pago. Tarda unos minutos.</div>';
   const max = Math.max(...data.map(x => Math.max(x.gas, x.ing)), 1);
   const W = 350, H = 170, slot = W / data.length, bw = Math.min(12, slot / 3);
   const bars = data.map((x, i) => {
@@ -928,7 +943,7 @@ function anMes() {
       <div><div class="lbl">AHORRO PROMEDIO</div><div class="serif" style="font-size:34px;margin-top:6px">${ingT ? `${pct(ahT, ingT)}%` : '—'}</div><div class="mute" style="font-size:12.5px">de lo que entra</div></div>
       <div><div class="lbl">MEJOR MES</div><div class="serif" style="font-size:34px;margin-top:6px">${best ? cap1(monthName(best.m)) : '—'}</div><div class="mute" style="font-size:12.5px">${best ? (best.ahorro > 0 ? `guardaste ${m0(best.ahorro)}` : `faltaron ${m0(-best.ahorro)}`) : ''}</div></div></div>
     ${!MOVS.some(x => x.category === 'sueldo') ? `<button class="alert warn sec" data-a="cargar:sueldo">Tu sueldo entra a ICBC y no lo veo: cargalo cada mes y el ahorro te va a dar bien.</button>` : ''}
-    <section class="sec">${data.slice().reverse().map(x => `<button class="row" data-a="go:resumen:${x.m}"><div class="tx"><div class="t1">${cap1(monthName(x.m))} ${x.m.slice(0, 4)}</div><div class="t2">ENTRÓ ${m0(x.ing)} · SALIÓ ${m0(x.gas)}</div></div><div class="am ${x.ahorro >= 0 ? 'pos' : 'red'}">${money(x.ahorro, 'ARS', { sign: true, dec: false })}</div></button>`).join('')}<div class="list-end"></div></section>`;
+    ${loading}<section class="sec">${data.slice().reverse().map(x => `<button class="row" data-a="go:resumen:${x.m}"><div class="tx"><div class="t1">${cap1(monthName(x.m))} ${x.m.slice(0, 4)}</div><div class="t2">ENTRÓ ${m0(x.ing)} · SALIÓ ${m0(x.gas)}</div></div><div class="am ${x.ahorro >= 0 ? 'pos' : 'red'}">${money(x.ahorro, 'ARS', { sign: true, dec: false })}</div></button>`).join('')}<div class="list-end"></div></section>`;
 }
 function anEste() {
   const t = today(), m = ymOf(t), st = monthStats(m), prev = monthStats(addMonths(m, -1));

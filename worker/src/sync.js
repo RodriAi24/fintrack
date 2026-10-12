@@ -2,10 +2,10 @@
 // 1. Búsqueda de pagos (pagos y cobros, con detalle).
 // 2. Reporte de dinero en cuenta: se pide una vez por día y se baja en la corrida siguiente.
 
-import { mpGet, normalizePayment } from './mp.js';
+import { mpGet, normalizePayment, localDay } from './mp.js';
 import { ensureConfig, listReports, requestReport, downloadReport, reportToMovements, reportDate } from './report.js';
 import { classify } from './classify.js';
-import { upsertMovements, existingIds, getKv, setKv, listRules } from './db.js';
+import { upsertMovements, existingIds, confirmFromReport, getKv, setKv, listRules } from './db.js';
 
 const FIRST_DAYS = 364; // la búsqueda de MP acepta rangos de menos de 365 días
 const OVERLAP_DAYS = 10; // re-leer los últimos días: los pagos cambian de estado
@@ -14,6 +14,9 @@ const HISTORY_WINDOWS = 12; // reportes de 30 días hacia atrás para completar 
 // Subir cuando cambia la clasificación: la próxima sincronización relee el año entero y reclasifica
 // (lo corregido a mano no se toca).
 const CLASSIFY_VERSION = 2;
+// Subir si cambia cómo se procesa el reporte: se vuelven a bajar y procesar todos
+const REPORT_VERSION = 2;
+const MAX_FILES_PER_RUN = 6;
 
 async function getMe(env, db) {
   const cached = await getKv(db, 'me');
@@ -69,24 +72,39 @@ export async function syncReport(env, db, state) {
   const cfg = await ensureConfig(env);
   if (!cfg.ok) throw new Error(cfg.error);
 
-  // ¿Hay un reporte nuevo para bajar?
+  if (state.report_version !== REPORT_VERSION) {
+    Object.assign(state, { report_version: REPORT_VERSION, report_files: [], report_history: 0, report_cov: null, report_requested_at: null });
+  }
+  // Bajar los reportes listos que falten. El reporte es la verdad de la cuenta de MP (lo mismo que
+  // muestra la app de MP): sus montos mandan. La búsqueda de pagos solo pone nombres.
   const list = await listReports(env);
   if (!list.ok) throw new Error(list.error);
   const processed = new Set(state.report_files || []);
-  const fresh = list.reports.find(r => !processed.has(r.file_name) && (!state.report_requested_at || reportDate(r) >= Date.parse(state.report_requested_at) - 3 * 86400_000));
-  if (fresh) {
-    const file = await downloadReport(env, fresh.file_name);
-    if (!file.ok) throw new Error(file.error);
+  const pending = list.reports.filter(r => !processed.has(r.file_name)).slice(0, MAX_FILES_PER_RUN);
+  if (pending.length) {
     const me = await getMe(env, db);
     const ctx = await context(db, me);
-    const raw = reportToMovements(file.rows, ctx);
-    // Los pagos que ya trajo la búsqueda tienen más detalle: del reporte solo entra lo que falta
-    const reportOnly = raw.filter(m => m.report_only).map(m => m.id);
-    const have = await existingIds(db, reportOnly);
-    const toSave = raw.filter(m => !(m.report_only && have.has(m.id))).map(m => classified(m, ctx));
-    await upsertMovements(db, toSave);
-    state.report_files = [...processed, fresh.file_name].slice(-30);
-    out.downloaded = toSave.length;
+    for (const rep of pending) {
+      const file = await downloadReport(env, rep.file_name);
+      if (!file.ok) throw new Error(file.error);
+      const raw = reportToMovements(file.rows, ctx);
+      const reportOnly = raw.filter(m => m.report_only);
+      const have = await existingIds(db, reportOnly.map(m => m.id));
+      await confirmFromReport(db, reportOnly.filter(m => have.has(m.id)));
+      const toSave = raw.filter(m => !(m.report_only && have.has(m.id))).map(m => classified(m, ctx));
+      await upsertMovements(db, toSave);
+      // Cobertura: desde el inicio del pedido hasta el último día con datos
+      const days = raw.map(m => m.day).filter(Boolean).sort();
+      const from = (rep.begin_date && localDay(rep.begin_date)) || days[0];
+      const to = days[days.length - 1];
+      if (from && to) {
+        const c = state.report_cov;
+        state.report_cov = { from: c && c.from < from ? c.from : from, to: c && c.to > to ? c.to : to };
+      }
+      processed.add(rep.file_name);
+      out.downloaded += raw.length;
+    }
+    state.report_files = [...processed].slice(-60);
   }
 
   // ¿Toca pedir uno nuevo? Primero el de los últimos 30 días (una vez por día). Si no, de a uno
@@ -98,7 +116,7 @@ export async function syncReport(env, db, state) {
     if (!asked.ok) throw new Error(asked.error);
     state.report_requested_at = new Date().toISOString();
     out.requested = true;
-  } else if (back < HISTORY_WINDOWS && !fresh) {
+  } else if (back < HISTORY_WINDOWS) {
     const asked = await requestReport(env, 30, (back + 1) * 30);
     if (!asked.ok) throw new Error(asked.error);
     state.report_history = back + 1;

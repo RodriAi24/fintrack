@@ -17,21 +17,30 @@ const SCHEMA = [
   'CREATE TABLE IF NOT EXISTS kv (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL)',
 ];
 
-let schemaReady = false;
+const ready = new WeakSet();
 export async function ensureSchema(db) {
-  if (schemaReady) return;
+  if (ready.has(db)) return;
   await db.batch(SCHEMA.map(s => db.prepare(s)));
-  schemaReady = true;
+  // in_report = 1: el monto y la cuenta los confirmó el reporte de Mercado Pago (la verdad)
+  try {
+    await db.prepare('ALTER TABLE movements ADD COLUMN in_report INTEGER NOT NULL DEFAULT 0').run();
+  } catch {
+    /* ya existe */
+  }
+  ready.add(db);
 }
 
-const SOURCE_FIELDS = ['source', 'ts', 'day', 'amount', 'currency', 'direction', 'op', 'method', 'mp_type',
+const SOURCE_FIELDS = ['source', 'ts', 'day', 'currency', 'direction', 'op', 'method', 'mp_type',
   'description', 'counterparty', 'channel', 'status', 'pocket', 'refunded'];
 const CLASS_FIELDS = ['kind', 'category', 'essential', 'review', 'category_source', 'linked_id'];
-const ALL = ['id', ...SOURCE_FIELDS, ...CLASS_FIELDS, 'user_edited', 'created_at', 'updated_at'];
+const LEDGER_FIELDS = ['amount', 'pocket'];
+const ALL = ['id', ...SOURCE_FIELDS, ...LEDGER_FIELDS, 'in_report', ...CLASS_FIELDS, 'user_edited', 'created_at', 'updated_at'];
 
 const UPSERT = `INSERT INTO movements (${ALL.join(', ')}) VALUES (${ALL.map(() => '?').join(', ')})
   ON CONFLICT(id) DO UPDATE SET
   ${SOURCE_FIELDS.map(f => `${f} = excluded.${f}`).join(', ')},
+  ${LEDGER_FIELDS.map(f => `${f} = CASE WHEN movements.in_report = 1 AND excluded.in_report = 0 THEN movements.${f} ELSE excluded.${f} END`).join(', ')},
+  in_report = MAX(movements.in_report, excluded.in_report),
   ${CLASS_FIELDS.map(f => `${f} = CASE WHEN movements.user_edited = 1 THEN movements.${f} ELSE excluded.${f} END`).join(', ')},
   updated_at = excluded.updated_at`;
 
@@ -43,9 +52,16 @@ export async function upsertMovements(db, list) {
   const stmt = db.prepare(UPSERT);
   for (let i = 0; i < list.length; i += 50) {
     await db.batch(list.slice(i, i + 50).map(m =>
-      stmt.bind(...ALL.map(f => (f === 'created_at' || f === 'updated_at' ? now : f === 'user_edited' ? m.user_edited ? 1 : 0 : val(m[f]))))));
+      stmt.bind(...ALL.map(f => (f === 'created_at' || f === 'updated_at' ? now : f === 'user_edited' || f === 'in_report' ? m[f] ? 1 : 0 : val(m[f]))))));
   }
   return list.length;
+}
+
+// El reporte confirma un pago que ya trajo la búsqueda: manda su monto y su cuenta
+export async function confirmFromReport(db, list) {
+  const now = new Date().toISOString();
+  const stmt = db.prepare("UPDATE movements SET amount = ?, pocket = 'mp', in_report = 1, updated_at = ? WHERE id = ?");
+  for (let i = 0; i < list.length; i += 50) await db.batch(list.slice(i, i + 50).map(m => stmt.bind(m.amount, now, m.id)));
 }
 
 export async function existingIds(db, ids) {
