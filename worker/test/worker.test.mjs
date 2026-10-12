@@ -19,7 +19,8 @@ beforeEach(() => {
       { id: 3, payer_id: ME, collector: { id: 998 }, transaction_amount: 2790, currency_id: 'ARS', operation_type: 'regular_payment',
         description: 'Payu*ar*uber', status: 'cancelled', date_created: '2026-10-12T09:00:00.000-04:00' },
       { id: 4, payer_id: ME, collector: { id: 997, email: 'amigo@mail.com' }, transaction_amount: 1400, currency_id: 'ARS',
-        operation_type: 'money_transfer', description: 'Varios', status: 'approved', date_created: '2026-10-10T23:30:00.000-04:00' },
+        operation_type: 'money_transfer', description: 'Varios', status: 'approved', date_created: '2026-10-10T23:30:00.000-04:00',
+        date_approved: '2026-10-12T15:00:00.000-04:00' }, // aprobado días después: manda la fecha de creación
     ] }],
     '/v1/payments/search?collector': [200, { paging: { total: 1 }, results: [
       { id: 2, payer: { id: 555, first_name: 'Juan', last_name: 'Pérez' }, collector_id: ME, transaction_amount: 5000, currency_id: 'ARS',

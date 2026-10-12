@@ -1,26 +1,36 @@
-// Cliente de solo lectura de Mercado Pago + normalización de movimientos.
-// Nada acá crea pagos, reembolsos ni transferencias: solo GET.
+// Cliente de Mercado Pago + normalización de movimientos.
+// Nada acá crea pagos, reembolsos ni transferencias. Las únicas escrituras son pedir
+// reportes (y su configuración), que no mueven plata.
 
 const API = 'https://api.mercadopago.com';
 
-export async function mpGet(env, path, params) {
+async function mpRequest(env, method, path, { params, body, text = false } = {}) {
   const url = new URL(API + path);
   for (const [k, v] of Object.entries(params || {})) url.searchParams.set(k, String(v));
+  const headers = { authorization: `Bearer ${env.MP_ACCESS_TOKEN}` };
+  if (body !== undefined) headers['content-type'] = 'application/json';
   let res;
   try {
-    res = await fetch(url, { headers: { authorization: `Bearer ${env.MP_ACCESS_TOKEN}` } });
+    res = await fetch(url, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
   } catch (e) {
     return { http: 0, body: null, error: 'sin conexión con Mercado Pago' };
   }
-  let body = null;
-  try {
-    body = await res.json();
-  } catch {
-    /* respuesta sin JSON */
+  const raw = await res.text();
+  let parsed = null;
+  if (!text) {
+    try {
+      parsed = raw ? JSON.parse(raw) : null;
+    } catch {
+      /* respuesta sin JSON */
+    }
   }
-  const error = res.ok ? null : [body?.error, body?.message].filter(Boolean).join(' · ').slice(0, 200) || `HTTP ${res.status}`;
-  return { http: res.status, body, error };
+  const error = res.ok ? null : [parsed?.error, parsed?.message].filter(Boolean).join(' · ').slice(0, 200) || `HTTP ${res.status}`;
+  return { http: res.status, body: text ? raw : parsed, error };
 }
+
+export const mpGet = (env, path, params) => mpRequest(env, 'GET', path, { params });
+export const mpGetText = (env, path) => mpRequest(env, 'GET', path, { text: true });
+export const mpPost = (env, path, body) => mpRequest(env, 'POST', path, { body });
 
 const OPERATION_TYPES = {
   regular_payment: 'pago',
@@ -56,7 +66,9 @@ export function normalizePayment(p, myId) {
   const iCollected = String(collectorId ?? '') === String(myId);
   const amount = round(p.transaction_amount);
   const direction = iPaid && iCollected ? 'interno' : iPaid ? 'sale' : iCollected ? 'entra' : 'desconocido';
-  const fecha = p.date_approved || p.date_created;
+  // date_created = cuándo lo hiciste (lo que muestra la app de MP). date_approved puede llegar días
+  // después (ej.: Uber con la Mastercard prepaga).
+  const fecha = p.date_created || p.date_approved;
   return {
     id: `pay_${p.id}`,
     fecha,

@@ -1,12 +1,13 @@
 # FinTrack API (Cloudflare Worker)
 
-Worker que guarda el token de Mercado Pago como secret, habla con MP y le devuelve los datos a la app. Etapa 0: solo existe `/test`.
+Worker que guarda el token de Mercado Pago como secret, habla con MP y le devuelve los datos a la app. Etapa 0: `/test` y `/reporte`.
 
 Dirección: <https://fintrack-api.rodricingolani1.workers.dev> · se redespliega solo con cada push a `main` que toque `worker/`.
 
 ## Endpoints
 
 - `GET /test` → últimos 20 movimientos normalizados, saldo (si MP lo da) y un diagnóstico de cada fuente (`fuentes`: qué respondió, con qué código y qué campos trae).
+- `GET /reporte` → reporte de dinero en cuenta de los últimos 30 días (incluye transferencias a CBU/CVU de otros bancos). La primera vez lo pide y crea la configuración de reportes en tu cuenta de MP (sin programación automática); a los 2-3 minutos, volvé a abrirlo y lo descarga y resume.
 
 Todo pide contraseña (Basic Auth con el secret `FINTRACK_PASSWORD`). Sin contraseña configurada, el Worker no atiende nada.
 
@@ -60,4 +61,4 @@ Los secrets no se pueden volver a leer desde el panel; si te equivocás, cargalo
 
 ## Desarrollo
 
-Pruebas con Mercado Pago simulado (desde la raíz del repo): `node --test worker/test/worker.test.mjs`.
+Pruebas con Mercado Pago simulado (desde la raíz del repo): `node --test worker/test/worker.test.mjs worker/test/report.test.mjs`.

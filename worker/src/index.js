@@ -4,6 +4,7 @@
 
 import { authorize } from './auth.js';
 import { mpGet, normalizePayment, normalizeMovement, normalizeOrder, fieldNames, NOT_A_MOVEMENT } from './mp.js';
+import { settlementReport } from './report.js';
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data, null, 2), {
@@ -18,8 +19,12 @@ export default {
 
     const { pathname } = new URL(request.url);
     if (request.method !== 'GET') return json({ error: 'Solo GET.' }, 405);
-    if (pathname === '/') return json({ app: 'FinTrack API', endpoints: ['/test'] });
+    if (pathname === '/') return json({ app: 'FinTrack API', endpoints: ['/test', '/reporte'] });
     if (pathname === '/test') return json(await test(env));
+    if (pathname === '/reporte') {
+      if (!env.MP_ACCESS_TOKEN) return json({ ok: false, error: 'Falta el secret MP_ACCESS_TOKEN en Cloudflare.' });
+      return json(await settlementReport(env));
+    }
     return json({ error: 'No existe.' }, 404);
   },
 };

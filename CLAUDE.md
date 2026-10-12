@@ -48,7 +48,7 @@ App de finanzas personales de Rodrigo. Es solo para él, no es un producto. PWA 
   - Las fechas vienen en `-04:00`: convertir siempre al día de Argentina.
 - Más adelante: frontend en Cloudflare (Pages o el mismo Worker con static assets), D1 para movimientos y cron diario.
 - Secrets y bindings se configuran en el panel de Cloudflare, nunca en el código.
-- Pruebas del Worker (con Mercado Pago simulado): `node --test worker/test/worker.test.mjs`.
+- Pruebas del Worker (con Mercado Pago simulado): `node --test worker/test/worker.test.mjs worker/test/report.test.mjs`.
 
 ## Cómo trabajar
 1. Antes de commitear, probá con Playwright en viewport de iPhone 13 (390×844). Sacá screenshots de las pantallas que tocaste y fijate que no haya errores en la consola. Probá también la navegación atrás.
