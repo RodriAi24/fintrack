@@ -40,6 +40,12 @@ App de finanzas personales de Rodrigo. Es solo para él, no es un producto. PWA 
 - La API vive en `worker/` (Cloudflare Worker `fintrack-api`, config en `worker/wrangler.jsonc`). Se despliega solo con Workers Builds en cada push a `main` (raíz `worker`, comando `npx wrangler deploy`). Rodrigo no instala nada en su compu.
 - `worker/src/mp.js` es el cliente de Mercado Pago: solo GET y normalización a movimientos (`fecha, monto, moneda, sentido, tipo, descripcion, contraparte`). Montos negativos = sale plata.
 - Endpoints `/v1/payments/search` (marcado legacy, sin fecha de baja), `/mercadopago_account/*` (no documentados) y `/v1/orders` (solo cobros de la integración): cualquiera puede dejar de andar; el código tiene que tolerar que una fuente falle sin romper las demás.
+- Probado con la cuenta real (12/10/2026):
+  - `payments/search?payer.id=<yo>` **sí** trae los pagos que hace Rodrigo (QR, Uber, transferencias a otros usuarios de MP, compras con tarjeta). En esos MP manda `payer_id` en el primer nivel y el destinatario en `collector` (nombre, email).
+  - `payments/search?collector.id=<yo>` trae lo que cobra (transferencias recibidas, etc.), con el objeto `payer`.
+  - `/mercadopago_account/movements/search` y `/users/{id}/mercadopago_account/balance` dan 403: **no hay saldo ni rendimientos por API**.
+  - `/v1/orders` responde pero vacío (solo ve cobros hechos con la integración).
+  - Las fechas vienen en `-04:00`: convertir siempre al día de Argentina.
 - Más adelante: frontend en Cloudflare (Pages o el mismo Worker con static assets), D1 para movimientos y cron diario.
 - Secrets y bindings se configuran en el panel de Cloudflare, nunca en el código.
 - Pruebas del Worker (con Mercado Pago simulado): `node --test worker/test/worker.test.mjs`.
