@@ -37,15 +37,30 @@ const OPERATION_TYPES = {
 const round = n => Math.round(Number(n || 0) * 100) / 100;
 const fullName = p => [p?.first_name, p?.last_name].filter(Boolean).join(' ') || null;
 
-// Pago de /v1/payments/search → movimiento
+// Estados que no movieron plata: no son movimientos
+export const NOT_A_MOVEMENT = new Set(['cancelled', 'rejected', 'pending', 'in_process', 'authorized']);
+
+// Día calendario en Argentina (MP devuelve fechas en -04:00)
+export function localDay(iso) {
+  if (!iso) return null;
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' }).format(new Date(iso));
+}
+
+// Pago de /v1/payments/search → movimiento.
+// Ojo: cuando pagaste vos, MP manda `payer_id` (sin objeto payer) y el destinatario en `collector`;
+// cuando cobraste, manda el objeto `payer` y `collector_id`.
 export function normalizePayment(p, myId) {
-  const iPaid = String(p.payer?.id ?? '') === String(myId);
-  const iCollected = String(p.collector_id ?? p.collector?.id ?? '') === String(myId);
+  const payerId = p.payer?.id ?? p.payer_id;
+  const collectorId = p.collector_id ?? p.collector?.id;
+  const iPaid = String(payerId ?? '') === String(myId);
+  const iCollected = String(collectorId ?? '') === String(myId);
   const amount = round(p.transaction_amount);
   const direction = iPaid && iCollected ? 'interno' : iPaid ? 'sale' : iCollected ? 'entra' : 'desconocido';
+  const fecha = p.date_approved || p.date_created;
   return {
     id: `pay_${p.id}`,
-    fecha: p.date_approved || p.date_created,
+    fecha,
+    dia: localDay(fecha),
     monto: direction === 'sale' ? -amount : amount,
     moneda: p.currency_id,
     sentido: direction,
@@ -53,7 +68,7 @@ export function normalizePayment(p, myId) {
     medio: p.payment_type_id || null,
     descripcion: p.description || p.additional_info?.items?.[0]?.title || p.statement_descriptor || null,
     contraparte: iPaid
-      ? p.collector?.nickname || p.statement_descriptor || p.point_of_interaction?.business_info?.sub_unit || null
+      ? fullName(p.collector) || p.collector?.email || p.statement_descriptor || null
       : fullName(p.payer) || p.payer?.email || null,
     estado: p.status,
     fuente: 'payments',
@@ -63,10 +78,12 @@ export function normalizePayment(p, myId) {
 // Movimiento de /mercadopago_account/movements/search (no documentado: mapeo defensivo)
 export function normalizeMovement(m) {
   const amount = round(m.amount ?? m.net_amount ?? m.transaction_amount);
+  const fecha = m.date_created || m.date_released || m.date;
   return {
     id: `mov_${m.id}`,
     ref: m.reference_id ? `pay_${m.reference_id}` : null,
-    fecha: m.date_created || m.date_released || m.date,
+    fecha,
+    dia: localDay(fecha),
     monto: amount,
     moneda: m.currency_id || null,
     sentido: amount < 0 ? 'sale' : 'entra',
@@ -81,9 +98,11 @@ export function normalizeMovement(m) {
 
 // Order de /v1/orders → movimiento (son cobros hechos con tu integración)
 export function normalizeOrder(o) {
+  const fecha = o.created_date || o.last_updated_date;
   return {
     id: `ord_${o.id}`,
-    fecha: o.created_date || o.last_updated_date,
+    fecha,
+    dia: localDay(fecha),
     monto: round(o.total_amount ?? o.total_paid_amount),
     moneda: o.currency || null,
     sentido: 'entra',

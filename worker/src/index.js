@@ -3,7 +3,7 @@
 // y devuelve los últimos 20 movimientos, el saldo (si se puede) y un diagnóstico por fuente.
 
 import { authorize } from './auth.js';
-import { mpGet, normalizePayment, normalizeMovement, normalizeOrder, fieldNames } from './mp.js';
+import { mpGet, normalizePayment, normalizeMovement, normalizeOrder, fieldNames, NOT_A_MOVEMENT } from './mp.js';
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data, null, 2), {
@@ -39,7 +39,7 @@ async function test(env) {
   const daysAgo = d => new Date(now.getTime() - d * 86400_000).toISOString().replace(/\.\d{3}Z$/, 'Z');
   const paySearch = role => mpGet(env, '/v1/payments/search', {
     [`${role}.id`]: myId, sort: 'date_created', criteria: 'desc', range: 'date_created',
-    begin_date: 'NOW-90DAYS', end_date: 'NOW', limit: 30,
+    begin_date: 'NOW-90DAYS', end_date: 'NOW', limit: 50,
   });
 
   const [asPayer, asCollector, movements, orders, balance] = await Promise.all([
@@ -63,9 +63,10 @@ async function test(env) {
     byId.set(n.id, n);
   }
   for (const o of orderItems) byId.set(`ord_${o.id}`, normalizeOrder(o));
-  const movimientos = [...byId.values()]
-    .filter(m => m.fecha)
-    .sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)))
+  const all = [...byId.values()];
+  const movimientos = all
+    .filter(m => m.fecha && !NOT_A_MOVEMENT.has(m.estado))
+    .sort((a, b) => Date.parse(b.fecha) - Date.parse(a.fecha))
     .slice(0, 20);
 
   const diag = (r, items, extra = {}) => ({
@@ -83,6 +84,7 @@ async function test(env) {
     cuenta: { pais: me.body.site_id, tipo: me.body.user_type },
     saldo: balance.http === 200 ? balance.body : { disponible: false, motivo: balance.error },
     movimientos,
+    descartados: all.filter(m => NOT_A_MOVEMENT.has(m.estado)).length,
     fuentes: {
       pagos_que_hiciste: diag(asPayer, payerItems, { endpoint: 'GET /v1/payments/search?payer.id=yo' }),
       pagos_que_recibiste: diag(asCollector, collectorItems, { endpoint: 'GET /v1/payments/search?collector.id=yo' }),
